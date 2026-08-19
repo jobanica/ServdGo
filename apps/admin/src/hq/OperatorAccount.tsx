@@ -88,13 +88,12 @@ export function OperatorAccount({ territory, staff, onCreated, embedded = false 
 
   if (!isSupabaseConfigured) return null;
 
-  const Frame = embedded
-    ? ({ children }: { children: React.ReactNode }) => <div>{children}</div>
-    : ({ children }: { children: React.ReactNode }) =>
-        <Card title="Operator account">{children}</Card>;
-
-  return (
-    <Frame>
+  // Deliberately a variable and not a component: a component defined inside
+  // render is a new type on every render, so React unmounts and remounts the
+  // whole subtree — which meant the name field lost focus after every single
+  // keystroke and the caret jumped to the next input.
+  const body = (
+    <>
       {appointed ? (
         <p className="text-sm text-black/60">
           <b>{appointed.full_name ?? 'Someone'}</b> currently runs {territory.name}. Making another
@@ -215,8 +214,10 @@ export function OperatorAccount({ territory, staff, onCreated, embedded = false 
           <HandOver territory={territory} staff={staff} onDone={onCreated} />
         </div>
       )}
-    </Frame>
+    </>
   );
+
+  return embedded ? <div>{body}</div> : <Card title="Operator account">{body}</Card>;
 }
 
 /** Move the city to an existing account. No new login, no password involved. */
