@@ -362,14 +362,14 @@ select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000005
 
 select pg_temp.check('the first line is the header',
   (select line from hq_export('deliveries', '11111111-1111-1111-1111-111111111111',
-                              current_date - 1, current_date) as t(line) limit 1),
+                              business_today() - 1, business_today()) as t(line) limit 1),
   'order_id,placed_at,delivered_at,status,service,rider,customer,contact,address,delivery_fee,store_fees,convenience_fee,goods,commission,payment');
 select pg_temp.check('every order in the window came out',
   (select count(*) - 1 from hq_export('deliveries', '11111111-1111-1111-1111-111111111111',
-                                      current_date - 1, current_date) as t(line)), 3::bigint);
+                                      business_today() - 1, business_today()) as t(line)), 3::bigint);
 select pg_temp.check('a comma and a quote in a name do not break the file',
   (select count(*) from hq_export('deliveries', '11111111-1111-1111-1111-111111111111',
-                                  current_date - 1, current_date) as t(line)
+                                  business_today() - 1, business_today()) as t(line)
     where line like '%"Dela Cruz, Juan ""JD"""%'), 1::bigint);
 select pg_temp.check('and the export itself was recorded',
   (select count(*) from (
@@ -398,7 +398,7 @@ begin
 end $$;
 select pg_temp.check('but their own city exports fine',
   (select count(*) > 0 from hq_export('deliveries', '11111111-1111-1111-1111-111111111111',
-                                      current_date - 1, current_date) as t(line)), true);
+                                      business_today() - 1, business_today()) as t(line)), true);
 
 -- ---------------------------------------------------------------------------
 -- 7. A record of what somebody did outlives the somebody.
@@ -414,7 +414,7 @@ insert into audit_log (actor_user_id, actor_role, territory_id, action)
 values ('a0000000-0000-0000-0000-000000000001', 'admin',
         '11111111-1111-1111-1111-111111111111', 'test.something');
 insert into settlements (rider_id, business_day, amount_due, status, confirmed_by)
-values ('b0000000-0000-0000-0000-000000000003', current_date, 100, 'confirmed',
+values ('b0000000-0000-0000-0000-000000000003', business_today(), 100, 'confirmed',
         'a0000000-0000-0000-0000-000000000001');
 update territory_onboarding_checklist
    set done = true, done_by = 'a0000000-0000-0000-0000-000000000001'

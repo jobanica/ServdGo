@@ -34,9 +34,9 @@ values
 -- Royalty already earned and settled by riders, so it is owed to HQ.
 insert into royalty_ledger (territory_id, kind, base_amount, rate, amount, business_day)
 values
-  ('11111111-1111-1111-1111-111111111111', 'royalty', 1000, 0.30, 300, current_date - 10),
-  ('11111111-1111-1111-1111-111111111111', 'royalty',  500, 0.30, 150, current_date - 5),
-  ('22222222-2222-2222-2222-222222222222', 'royalty',  800, 0.30, 240, current_date - 5);
+  ('11111111-1111-1111-1111-111111111111', 'royalty', 1000, 0.30, 300, business_today() - 10),
+  ('11111111-1111-1111-1111-111111111111', 'royalty',  500, 0.30, 150, business_today() - 5),
+  ('22222222-2222-2222-2222-222222222222', 'royalty',  800, 0.30, 240, business_today() - 5);
 
 -- ---------------------------------------------------------------------------
 -- 1. A city cannot be created already trading.
@@ -59,7 +59,7 @@ end $$;
 -- ---------------------------------------------------------------------------
 reset role;
 set local role service_role;
-select run_monthly_invoicing(current_date) as issued \gset
+select run_monthly_invoicing(business_today()) as issued \gset
 select pg_temp.check('an invoice is issued per live city', :'issued'::int, 2);
 
 select pg_temp.check('the fixed fee is billed alongside the royalty',
@@ -76,7 +76,7 @@ select pg_temp.check('the fixed fee landed on the ledger, not only on the invoic
     where territory_id = '11111111-1111-1111-1111-111111111111' and kind = 'franchise_fee'), 1);
 
 -- Re-running must not double-bill.
-select run_monthly_invoicing(current_date);
+select run_monthly_invoicing(business_today());
 select pg_temp.check('re-running does not double-bill',
   (select amount_due from operator_settlements
     where territory_id = '11111111-1111-1111-1111-111111111111'), 2950.00::numeric);
@@ -95,7 +95,7 @@ select pg_temp.check('the due date is the period end plus that city''s grace day
 select pg_temp.check('an invoice inside its grace period is current',
   (select bucket from invoice_aging where territory_id = '11111111-1111-1111-1111-111111111111'), 'current');
 
-update operator_settlements set due_at = current_date - 20
+update operator_settlements set due_at = business_today() - 20
  where territory_id = '11111111-1111-1111-1111-111111111111';
 select pg_temp.check('twenty days late lands in the 16-30 bucket',
   (select bucket from invoice_aging where territory_id = '11111111-1111-1111-1111-111111111111'), '16-30');

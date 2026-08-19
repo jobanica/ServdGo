@@ -13,6 +13,7 @@ Four pushes, each with its migrations, tests and screens:
 | 3 — watching | scorecard, thresholds, alert generators | 0103–0104 |
 | 4 — platform | view-as, overrides, integrations, flags, notices, exports | 0105–0109 |
 | — | account issuance, and records that outlive people | 0110 |
+| — | today means today in the city, not in UTC | 0111 |
 
 The decisions worth writing down are below. Everything else is in the migration
 comments, next to the code it explains.
@@ -132,6 +133,31 @@ written by triggers and by `auth.uid()`, never typed in, so the integrity the
 constraint was buying was not integrity anyone was at risk of losing. Columns
 that are genuinely relationships — a rider's profile, a customer's profile, an
 open view-as session — keep their cascades.
+
+## "Today" means today in the city
+
+Caught by the suite failing at 22:12 UTC, which is 06:12 the next morning in
+Manila. Everything the business records is dated by the city's clock —
+`commission_ledger.business_day` is a Manila date. But `current_date` in Postgres
+is a **UTC** date, and the two disagree from 16:00 UTC until midnight, which is
+midnight to 08:00 in Manila, every day.
+
+A franchisor asking for "the last 30 days up to today" therefore got a window
+ending yesterday, and the morning's trading was invisible until eight o'clock.
+Not a rounding error — a whole shift missing from the number the franchise is run
+on. The same slip aged invoices and expired documents eight hours early.
+
+`business_today(territory)` (`0111`) returns today in that city's timezone, or
+the platform's when no city is named, and the aging view, the expiry view, the
+overdue lookup and the export defaults all use it. The rule: **never compare
+`current_date` against a date the business wrote.**
+
+Still outstanding, and only visible with a city outside the Philippines:
+about a dozen places still hardcode `Asia/Manila` when *writing* a business day
+(`record_commission_on_delivery`, the scorecard, the invoice run). They agree
+with each other and with `business_today()` today, so nothing is inconsistent —
+but the second country makes them wrong together. `territories.timezone` already
+exists for when that happens.
 
 ## Money is never a float
 

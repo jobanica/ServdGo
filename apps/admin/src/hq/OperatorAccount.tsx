@@ -27,10 +27,12 @@ interface Made {
   existing: boolean;
 }
 
-export function OperatorAccount({ territory, staff, onCreated }: {
+export function OperatorAccount({ territory, staff, onCreated, embedded = false }: {
   territory: Territory;
   staff: StaffMember[];
   onCreated: () => void;
+  /** Rendered inside another card — drop the second border. */
+  embedded?: boolean;
 }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -86,8 +88,13 @@ export function OperatorAccount({ territory, staff, onCreated }: {
 
   if (!isSupabaseConfigured) return null;
 
+  const Frame = embedded
+    ? ({ children }: { children: React.ReactNode }) => <div>{children}</div>
+    : ({ children }: { children: React.ReactNode }) =>
+        <Card title="Operator account">{children}</Card>;
+
   return (
-    <Card title="Operator account">
+    <Frame>
       {appointed ? (
         <p className="text-sm text-black/60">
           <b>{appointed.full_name ?? 'Someone'}</b> currently runs {territory.name}. Making another
@@ -208,7 +215,7 @@ export function OperatorAccount({ territory, staff, onCreated }: {
           <HandOver territory={territory} staff={staff} onDone={onCreated} />
         </div>
       )}
-    </Card>
+    </Frame>
   );
 }
 

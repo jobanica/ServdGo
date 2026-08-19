@@ -30,6 +30,7 @@ import { Announcements, AnnouncementBanner } from './hq/Announcements.tsx';
 import { Audit } from './hq/Audit.tsx';
 import { Platform } from './hq/Platform.tsx';
 import { ViewAsBanner, useViewingAs } from './hq/ViewAs.tsx';
+import { Operators } from './hq/Operators.tsx';
 import { Merchants } from './Merchants.tsx';
 import {
   IconDashboard, IconChart, IconStore, IconRiders, IconScooter, IconOrders, IconHistory, IconWallet,
@@ -55,6 +56,7 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'staff', label: 'Staff', icon: IconUsers },
   { key: 'settings', label: 'Settings', icon: IconSettings },
   { key: 'territories', label: 'Territories', icon: IconStore },
+  { key: 'operators', label: 'Operator accounts', icon: IconUsers },
   { key: 'invoices', label: 'Invoices', icon: IconWallet },
   { key: 'scorecard', label: 'Scorecard', icon: IconChart },
   { key: 'hqAlerts', label: 'Alerts', icon: IconMegaphone },
@@ -72,7 +74,7 @@ const TITLES: Record<Tab, string> = {
   orders: 'Live orders', history: 'Order history', settlements: 'Settlements',
   royalty: 'Franchise royalty', merchants: 'Partner restaurants',
   broadcast: 'Broadcast SMS', areas: 'Service areas', users: 'Users & installs', staff: 'Staff', settings: 'Settings',
-  territories: 'Territories', invoices: 'Invoices',
+  territories: 'Territories', operators: 'Operator accounts', invoices: 'Invoices',
   scorecard: 'Partner scorecard', hqAlerts: 'Alerts',
   hqDeliveries: 'Delivery overrides', integrations: 'Partner integrations',
   webhooks: 'Partner callbacks', announcements: 'Announcements',
@@ -94,7 +96,7 @@ const PATHS: Record<Tab, string> = {
   history: '/history', settlements: '/settlements', royalty: '/royalty',
   merchants: '/merchants', broadcast: '/broadcast', areas: '/areas',
   users: '/users', settings: '/settings', staff: '/staff',
-  territories: '/hq/tenants', invoices: '/hq/invoices',
+  territories: '/hq/tenants', operators: '/hq/operators', invoices: '/hq/invoices',
   scorecard: '/hq/scorecard', hqAlerts: '/hq/alerts',
   hqDeliveries: '/hq/deliveries', integrations: '/hq/integrations',
   webhooks: '/hq/webhooks', announcements: '/hq/announcements',
@@ -213,6 +215,7 @@ export function App() {
                   <Route path="/hq/tenants/:id" element={<TenantDetail />} />
                 </Routes>
               )}
+              {tab === 'operators' && <Operators />}
               {tab === 'invoices' && <Invoices />}
               {tab === 'scorecard' && <Scorecard />}
               {tab === 'hqAlerts' && <Alerts />}

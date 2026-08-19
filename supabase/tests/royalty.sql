@@ -145,8 +145,8 @@ select pg_temp.check('an operator sees only their own royalty entries',
   (select count(*)::int from royalty_ledger where territory_id = '22222222-2222-2222-2222-222222222222'), 0);
 
 select operator_submit_royalty_settlement(
-  (select period_start from royalty_period(current_date)),
-  (select period_end from royalty_period(current_date)),
+  (select period_start from royalty_period(business_today())),
+  (select period_end from royalty_period(business_today())),
   'gcash', 'REF-1', null) as submitted \gset
 
 select pg_temp.check('the submitted amount is computed, not taken on trust',
@@ -252,13 +252,13 @@ select pg_temp.check('a complete city opens',
 -- The cross-city view, and who may see it.
 -- ---------------------------------------------------------------------------
 select pg_temp.check('the franchisor sees every city',
-  (select count(*)::int from franchisor_overview(current_date - 30, current_date)
+  (select count(*)::int from franchisor_overview(business_today() - 30, business_today())
     where territory_name in ('Cebu', 'Davao', 'Iloilo')), 3);
 select pg_temp.check('and the revenue each one made',
-  (select platform_revenue from franchisor_overview(current_date - 30, current_date)
+  (select platform_revenue from franchisor_overview(business_today() - 30, business_today())
     where territory_name = 'Cebu'), 320.00::numeric);
 select pg_temp.check('and what it has paid across',
-  (select royalty_settled from franchisor_overview(current_date - 30, current_date)
+  (select royalty_settled from franchisor_overview(business_today() - 30, business_today())
     where territory_name = 'Cebu'), 36.00::numeric);
 
 reset role;
@@ -267,7 +267,7 @@ set local role authenticated;
 do $$
 begin
   begin
-    perform * from franchisor_overview(current_date - 30, current_date);
+    perform * from franchisor_overview(business_today() - 30, business_today());
     raise exception 'FAIL an operator read the cross-city view';
   exception when insufficient_privilege then
     raise notice 'ok  an operator cannot read the cross-city view';
@@ -276,14 +276,14 @@ end $$;
 
 select pg_temp.check('an operator can see their own summary',
   (territory_royalty_summary('11111111-1111-1111-1111-111111111111',
-                             current_date - 30, current_date) ->> 'royaltyDue')::numeric,
+                             business_today() - 30, business_today()) ->> 'royaltyDue')::numeric,
   0.00::numeric);
 
 do $$
 begin
   begin
     perform territory_royalty_summary('22222222-2222-2222-2222-222222222222',
-                                      current_date - 30, current_date);
+                                      business_today() - 30, business_today());
     raise exception 'FAIL an operator read another city''s summary';
   exception when insufficient_privilege then
     raise notice 'ok  an operator cannot read another city''s summary';

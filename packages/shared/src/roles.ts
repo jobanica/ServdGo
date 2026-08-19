@@ -19,7 +19,8 @@ export type AdminSection =
   | 'dashboard' | 'analytics' | 'stores' | 'ridersActive' | 'riders'
   | 'orders' | 'history' | 'settlements' | 'royalty' | 'merchants' | 'broadcast'
   | 'areas' | 'users' | 'settings' | 'staff' | 'territories' | 'invoices' | 'scorecard' | 'hqAlerts'
-  | 'hqDeliveries' | 'integrations' | 'webhooks' | 'announcements' | 'audit' | 'platform';
+  | 'hqDeliveries' | 'integrations' | 'webhooks' | 'announcements' | 'audit' | 'platform'
+  | 'operators';
 
 export const STAFF_ROLES: StaffRole[] = ['admin', 'manager', 'dispatcher', 'support'];
 
@@ -33,8 +34,8 @@ export const ROLE_LABEL: Record<ConsoleRole, string> = {
 const ALL: AdminSection[] = [
   'dashboard', 'analytics', 'stores', 'ridersActive', 'riders',
   'orders', 'history', 'settlements', 'royalty', 'merchants', 'broadcast', 'areas',
-  'users', 'settings', 'staff', 'territories', 'invoices', 'scorecard', 'hqAlerts',
-  'hqDeliveries', 'integrations', 'webhooks', 'announcements', 'audit', 'platform',
+  'users', 'settings', 'staff', 'territories', 'operators', 'invoices', 'scorecard',
+  'hqAlerts', 'hqDeliveries', 'integrations', 'webhooks', 'announcements', 'audit', 'platform',
 ];
 
 /**
@@ -44,7 +45,7 @@ const ALL: AdminSection[] = [
  * them as the franchisor, so this list closes and the operator's opens.
  */
 const HQ_ONLY: AdminSection[] = [
-  'territories', 'invoices', 'scorecard', 'hqAlerts', 'hqDeliveries',
+  'territories', 'operators', 'invoices', 'scorecard', 'hqAlerts', 'hqDeliveries',
   'integrations', 'webhooks', 'announcements', 'audit', 'platform',
 ];
 

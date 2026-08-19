@@ -240,11 +240,11 @@ reset role;
 set local role service_role;
 insert into territory_documents (territory_id, kind, label, file_url, expires_at) values
   ('11111111-1111-1111-1111-111111111111', 'agreement', 'Franchise agreement',
-   '11111111-1111-1111-1111-111111111111/agreement.pdf', current_date + 400),
+   '11111111-1111-1111-1111-111111111111/agreement.pdf', business_today() + 400),
   ('11111111-1111-1111-1111-111111111111', 'permit', 'Business permit',
-   '11111111-1111-1111-1111-111111111111/permit.pdf', current_date + 10),
+   '11111111-1111-1111-1111-111111111111/permit.pdf', business_today() + 10),
   ('11111111-1111-1111-1111-111111111111', 'insurance', 'Insurance',
-   '11111111-1111-1111-1111-111111111111/insurance.pdf', current_date - 1);
+   '11111111-1111-1111-1111-111111111111/insurance.pdf', business_today() - 1);
 
 select pg_temp.check('a document far from expiry is fine',
   (select state from territory_document_expiry where kind = 'agreement'), 'ok');
