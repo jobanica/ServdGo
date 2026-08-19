@@ -81,10 +81,10 @@ they are done.
 
 | App | Easy Buy today | ServdGo |
 |---|---|---|
-| Customer web | https://ebd-customer.vercel.app | not deployed |
-| Rider app | https://ebd-rider.vercel.app | not deployed |
-| Admin dashboard | https://ebd-admin.vercel.app | not deployed |
-| Backend | Supabase `difvleyqqixettmbkkno` | **new project needed** |
+| Customer web | https://ebd-customer.vercel.app | https://servdgo.vercel.app |
+| Rider app | https://ebd-rider.vercel.app | not deployed yet |
+| Admin dashboard | https://ebd-admin.vercel.app | not deployed yet |
+| Backend | Supabase `difvleyqqixettmbkkno` | Supabase `odlbrbzcqxormqiheeqi` (ServdGo) |
 
 Each app is a static Vite SPA on Vercel, talking to its hosted Supabase project
 over the REST/Realtime API with the public **anon** key. Row Level Security

@@ -29,7 +29,7 @@ export const SUPPORT_EMAIL = 'ngasparillo@gmail.com';
 export const SUPPORT_PHONE: string | null = null;
 
 /** Where the published policy documents live. */
-export const CUSTOMER_SITE = 'https://ebd-customer.vercel.app';
+export const CUSTOMER_SITE = 'https://servdgo.vercel.app';
 export const PRIVACY_URL = `${CUSTOMER_SITE}/privacy.html`;
 export const TERMS_URL = `${CUSTOMER_SITE}/terms.html`;
 export const ACCOUNT_DELETION_URL = `${CUSTOMER_SITE}/account-deletion.html`;

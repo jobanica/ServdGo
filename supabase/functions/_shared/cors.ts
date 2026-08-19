@@ -1,6 +1,6 @@
 // Shared CORS headers for browser-invoked Edge Functions.
 //
-// The admin app calls these from https://ebd-admin.vercel.app, so the browser
+// The admin app calls these from its own Vercel deployment, so the browser
 // sends a preflight OPTIONS request first. Without these headers (and a 2xx
 // reply to OPTIONS) the browser blocks the call — surfaced in supabase-js as
 // "Failed to send a request to the Edge Function".
