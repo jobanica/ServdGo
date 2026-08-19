@@ -12,6 +12,7 @@ Four pushes, each with its migrations, tests and screens:
 | 2 — money | franchise fee, invoicing, aging, dunning, auto-suspend | 0098–0102 |
 | 3 — watching | scorecard, thresholds, alert generators | 0103–0104 |
 | 4 — platform | view-as, overrides, integrations, flags, notices, exports | 0105–0109 |
+| — | account issuance, and records that outlive people | 0110 |
 
 The decisions worth writing down are below. Everything else is in the migration
 comments, next to the code it explains.
@@ -83,6 +84,55 @@ refund, and it is a person's decision, not a button.
 Re-dispatch clears the declines. Offering an order back to everyone who already
 passed on it is offering it to nobody.
 
+## There is no sign-up
+
+Nobody creates their own console account. A franchisee's login is made by the
+franchisor on the city's page (**Tenants → a city → Actions → Operator
+account**), and the details are handed over out of band; the franchisee changes
+the password themselves with "Forgot password?" on the sign-in screen. The
+sign-in screen says so, so a new operator does not go looking for a button that
+will never exist.
+
+`create-staff` is the only door, and it takes the caller's own token:
+
+| caller | may create | for which city |
+|---|---|---|
+| franchisor | any staff role, and may appoint the city's operator | the city they name |
+| operator | staff roles | **their own**, taken from their profile — a `territoryId` in the request is ignored |
+| anyone else | nothing | — |
+
+It calls `is_franchisor()` through the caller's token rather than reading their
+profile role, so it answers the same way every RLS policy does. That matters
+because `is_franchisor()` is false during a view-as session, and an operator's
+branch would otherwise let a franchisor create accounts in a city they are only
+supposed to be *looking* at. That case is refused explicitly.
+
+An email that already has an account is reported back rather than failed on: the
+answer carries `emailTaken`, and the console offers to give that account the role
+instead, leaving its password alone.
+
+The password is generated in the browser, shown once, and never stored anywhere
+readable — so it is copied and sent now, or reset later.
+
+## A record of what somebody did outlives the somebody
+
+Fourteen columns across the schema stamp *who did this* — who confirmed a
+settlement, ticked a checklist item, acknowledged an alert. Each was a foreign
+key to `profiles` with no delete action, which quietly made anyone who had ever
+acted **undeletable**; the first sign of it was a raw constraint error when a
+console account was removed.
+
+`on delete cascade` would delete the history with the person. `on delete set
+null` would keep the history and erase who did it — which, on an append-only
+audit log and on a money record, is the one fact worth keeping.
+
+So a "who did it" stamp is treated as a **record, not a relationship**: the id
+stays as a plain value and the constraint is gone (`0110`). These columns are
+written by triggers and by `auth.uid()`, never typed in, so the integrity the
+constraint was buying was not integrity anyone was at risk of losing. Columns
+that are genuinely relationships — a rider's profile, a customer's profile, an
+open view-as session — keep their cascades.
+
 ## Money is never a float
 
 `numeric(12,2)` throughout, and the ledger is append-only. Royalty is booked on
@@ -130,7 +180,7 @@ which is enough to route a pin, cheap to draw, and does not need PostGIS.
 ## What the test harness had to learn
 
 `scripts/db_test.sh` replays every migration and runs `supabase/tests/*.sql`
-against a throwaway cluster — 262 assertions.
+against a throwaway cluster — 265 assertions.
 
 It originally applied each migration statement by statement, auto-committing.
 Supabase's deployment path runs a migration as **one transaction**, and the

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { listStaff, setUserRole, revokeStaff, createStaff, type StaffMember } from '@servdgo/supabase';
+import {
+  listStaff, setUserRole, revokeStaff, createStaff, generatePassword, type StaffMember,
+} from '@servdgo/supabase';
 import { STAFF_ROLES, ROLE_LABEL, type StaffRole,
   errMessage,
 } from '@servdgo/shared';
@@ -7,9 +9,9 @@ import { supabase } from './lib/supabase.ts';
 import { Card, Th, Td, Muted, ErrorNote } from './ui.tsx';
 
 const SAMPLE: StaffMember[] = [
-  { id: 's1', full_name: 'owner@servdgo.ph', role: 'admin' },
-  { id: 's2', full_name: 'manager@servdgo.ph', role: 'manager' },
-  { id: 's3', full_name: 'dispatch@servdgo.ph', role: 'dispatcher' },
+  { id: 's1', full_name: 'owner@servdgo.ph', role: 'admin', territory_id: null },
+  { id: 's2', full_name: 'manager@servdgo.ph', role: 'manager', territory_id: null },
+  { id: 's3', full_name: 'dispatch@servdgo.ph', role: 'dispatcher', territory_id: null },
 ];
 
 const roleChip: Record<StaffRole, string> = {
@@ -28,7 +30,7 @@ export function Staff() {
 
   // Add-staff form
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(() => generatePassword());
   const [role, setRole] = useState<StaffRole>('dispatcher');
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -59,8 +61,8 @@ export function Staff() {
     try {
       if (!supabase) { setNotice('Connect Supabase and deploy create-staff to add accounts.'); return; }
       await createStaff(supabase, { email, password, role });
-      setEmail(''); setPassword('');
-      setNotice('Staff account created.');
+      setEmail(''); setPassword(generatePassword());
+      setNotice(`Created. Send them ${email} and the password you set — it is not stored.`);
       await load();
     } catch (e) {
       setError(errMessage(e));
@@ -86,6 +88,10 @@ export function Staff() {
         {notice && <p className="mt-2 text-sm text-green-700">✓ {notice}</p>}
         <p className="mt-2 text-xs text-black/40">
           Roles: Admin (full), Manager (ops + settlements), Dispatcher (orders + riders), Support (orders + broadcast).
+        </p>
+        <p className="mt-1 text-xs text-black/40">
+          Accounts made here belong to your city. There is no sign-up screen — send the person
+          their email and temporary password, and they change it with "Forgot password?".
         </p>
       </Card>
 

@@ -395,9 +395,36 @@ Datasets: `deliveries`, `commissions`, `remittances`, `royalty`, `invoices`.
 The minimum rider version is set in the console under **Platform settings**;
 the rider app checks it at launch and holds older builds at an update screen.
 
+## Deploying functions without the CLI
+
+`supabase functions deploy` is the normal route. Where the CLI cannot reach
+`api.supabase.com` — inside a proxied container, where its Go client ignores
+`HTTPS_PROXY` — `scripts/deploy_functions.sh` does the same thing through the
+Management API:
+
+```bash
+SUPABASE_ACCESS_TOKEN=sbp_… SUPABASE_PROJECT_REF=… ./scripts/deploy_functions.sh
+./scripts/deploy_functions.sh create-staff v1-config   # or just these
+```
+
+It uploads each function with `supabase/functions/_shared/` alongside it, so
+`../_shared/…` imports resolve. The SMS functions are left out of the default
+list: they run and fail until their provider secrets are set.
+
 ## Admin sign-in & provisioning
 
-The admin console writes to RLS-protected tables, so it requires a signed-in user
+There is no sign-up screen. Every console account is made by somebody who already
+has one:
+
+- The **franchisor** creates a city's operator under **Tenants → a city →
+  Actions → Operator account**, and sends them the email and temporary password.
+- An **operator** creates their own city's staff under **Staff**.
+
+Both go through the `create-staff` function, which holds the service role. The
+recipient changes their password with "Forgot password?" on the sign-in screen.
+
+The first account of all is a bootstrap, since there is nobody to create it. The
+admin console writes to RLS-protected tables, so it requires a signed-in user
 whose `profiles.role = 'admin'` (email + password — no SMS needed). Provision the
 first admin **once**:
 

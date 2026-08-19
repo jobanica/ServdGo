@@ -109,6 +109,11 @@ function SignIn() {
         </button>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button type="button" onClick={() => { setMode('forgot'); setError(null); }} className="w-full text-sm text-brand-charcoal">Forgot password?</button>
+        {/* There is no sign-up on purpose. Saying so is kinder than letting a
+            new operator hunt for a button that will never exist. */}
+        <p className="pt-1 text-center text-xs text-black/45">
+          Accounts are issued by ServdGo HQ. If you are a new franchisee, ask HQ for your login.
+        </p>
       </form>
     </Shell>
   );

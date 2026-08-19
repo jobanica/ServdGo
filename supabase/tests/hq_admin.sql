@@ -400,4 +400,39 @@ select pg_temp.check('but their own city exports fine',
   (select count(*) > 0 from hq_export('deliveries', '11111111-1111-1111-1111-111111111111',
                                       current_date - 1, current_date) as t(line)), true);
 
+-- ---------------------------------------------------------------------------
+-- 7. A record of what somebody did outlives the somebody.
+--
+--    Every "who did it" stamp used to be a foreign key with no delete action,
+--    which made anyone who had ever acted undeletable — and said so with a raw
+--    constraint error.
+-- ---------------------------------------------------------------------------
+set local role service_role;
+
+-- The Cebu operator leaves a trail across the schema.
+insert into audit_log (actor_user_id, actor_role, territory_id, action)
+values ('a0000000-0000-0000-0000-000000000001', 'admin',
+        '11111111-1111-1111-1111-111111111111', 'test.something');
+insert into settlements (rider_id, business_day, amount_due, status, confirmed_by)
+values ('b0000000-0000-0000-0000-000000000003', current_date, 100, 'confirmed',
+        'a0000000-0000-0000-0000-000000000001');
+update territory_onboarding_checklist
+   set done = true, done_by = 'a0000000-0000-0000-0000-000000000001'
+ where territory_id = '11111111-1111-1111-1111-111111111111'
+   and item_key = (select item_key from territory_onboarding_checklist
+                    where territory_id = '11111111-1111-1111-1111-111111111111'
+                      and not auto limit 1);
+
+delete from profiles where id = 'a0000000-0000-0000-0000-000000000001';
+select pg_temp.check('an operator who has acted can still be removed',
+                     (select count(*) from profiles
+                       where id = 'a0000000-0000-0000-0000-000000000001'), 0::bigint);
+select pg_temp.check('and what they did is still on the audit log',
+                     (select actor_user_id from audit_log where action = 'test.something'),
+                     'a0000000-0000-0000-0000-000000000001'::uuid);
+select pg_temp.check('and the settlement still names who confirmed it',
+                     (select confirmed_by from settlements
+                       where rider_id = 'b0000000-0000-0000-0000-000000000003'),
+                     'a0000000-0000-0000-0000-000000000001'::uuid);
+
 rollback;

@@ -11,13 +11,15 @@ import {
   getTerritory, setTerritoryBoundary, listChecklist, setChecklistItem,
   approveTerritory, goLive, suspendTerritory, terminateTerritory,
   listDocuments, listConfigHistory, checkOverlap, signedDocumentUrl,
-  TERRITORY_STATUS_LABEL,
+  TERRITORY_STATUS_LABEL, listStaff,
   type Territory, type ChecklistItem, type TerritoryDocument, type ConfigChange,
+  type StaffMember,
 } from '@servdgo/supabase';
 import { errMessage } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td, peso } from '../ui.tsx';
 import { ViewAsButton } from './ViewAs.tsx';
+import { OperatorAccount } from './OperatorAccount.tsx';
 import { Export } from './Export.tsx';
 
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
@@ -32,6 +34,7 @@ export function TenantDetail() {
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [docs, setDocs] = useState<TerritoryDocument[]>([]);
   const [history, setHistory] = useState<ConfigChange[]>([]);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -40,13 +43,14 @@ export function TenantDetail() {
     if (!supabase || !isSupabaseConfigured || !id) return;
     setError(null);
     try {
-      const [terr, cl, dc, hs] = await Promise.all([
+      const [terr, cl, dc, hs, st] = await Promise.all([
         getTerritory(supabase, id),
         listChecklist(supabase, id),
         listDocuments(supabase, id),
         listConfigHistory(supabase, id),
+        listStaff(supabase, id),
       ]);
-      setT(terr); setChecklist(cl); setDocs(dc); setHistory(hs);
+      setT(terr); setChecklist(cl); setDocs(dc); setHistory(hs); setStaff(st);
     } catch (e) { setError(errMessage(e)); }
   }, [id]);
   useEffect(() => { void load(); }, [load]);
@@ -210,7 +214,8 @@ export function TenantDetail() {
       {tab === 'Export' && <Export territory={t} />}
 
       {tab === 'Actions' && (
-        <Actions t={t} outstanding={outstanding.length} busy={busy} run={run} />
+        <Actions t={t} outstanding={outstanding.length} busy={busy} run={run}
+          staff={staff} onStaffChanged={load} />
       )}
     </div>
   );
@@ -291,9 +296,10 @@ function BoundaryEditor({ t, onSaved }: { t: Territory; onSaved: () => Promise<v
   );
 }
 
-function Actions({ t, outstanding, busy, run }: {
+function Actions({ t, outstanding, busy, run, staff, onStaffChanged }: {
   t: Territory; outstanding: number; busy: boolean;
   run: (fn: () => Promise<unknown>, ok?: string) => Promise<void>;
+  staff: StaffMember[]; onStaffChanged: () => void;
 }) {
   const [typed, setTyped] = useState('');
   const [reason, setReason] = useState('');
@@ -317,6 +323,8 @@ function Actions({ t, outstanding, busy, run }: {
           <Muted>{outstanding} checklist item{outstanding === 1 ? '' : 's'} still outstanding — opening is refused until they are clear.</Muted>
         )}
       </Card>
+
+      <OperatorAccount territory={t} staff={staff} onCreated={onStaffChanged} />
 
       <Card title="See it as they see it">
         <p className="text-sm text-black/60">
