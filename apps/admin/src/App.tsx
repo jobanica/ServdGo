@@ -23,6 +23,13 @@ import { Invoices } from './hq/Invoices.tsx';
 import { Scorecard } from './hq/Scorecard.tsx';
 import { Alerts } from './hq/Alerts.tsx';
 import { Royalty } from './Royalty.tsx';
+import { Deliveries } from './hq/Deliveries.tsx';
+import { Integrations } from './hq/Integrations.tsx';
+import { Webhooks } from './hq/Webhooks.tsx';
+import { Announcements, AnnouncementBanner } from './hq/Announcements.tsx';
+import { Audit } from './hq/Audit.tsx';
+import { Platform } from './hq/Platform.tsx';
+import { ViewAsBanner, useViewingAs } from './hq/ViewAs.tsx';
 import { Merchants } from './Merchants.tsx';
 import {
   IconDashboard, IconChart, IconStore, IconRiders, IconScooter, IconOrders, IconHistory, IconWallet,
@@ -51,6 +58,12 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'invoices', label: 'Invoices', icon: IconWallet },
   { key: 'scorecard', label: 'Scorecard', icon: IconChart },
   { key: 'hqAlerts', label: 'Alerts', icon: IconMegaphone },
+  { key: 'hqDeliveries', label: 'Delivery overrides', icon: IconOrders },
+  { key: 'integrations', label: 'Integrations', icon: IconStore },
+  { key: 'webhooks', label: 'Callbacks', icon: IconHistory },
+  { key: 'announcements', label: 'Announcements', icon: IconMegaphone },
+  { key: 'audit', label: 'Audit log', icon: IconSearch },
+  { key: 'platform', label: 'Platform settings', icon: IconSettings },
 ];
 
 const TITLES: Record<Tab, string> = {
@@ -61,6 +74,9 @@ const TITLES: Record<Tab, string> = {
   broadcast: 'Broadcast SMS', areas: 'Service areas', users: 'Users & installs', staff: 'Staff', settings: 'Settings',
   territories: 'Territories', invoices: 'Invoices',
   scorecard: 'Partner scorecard', hqAlerts: 'Alerts',
+  hqDeliveries: 'Delivery overrides', integrations: 'Partner integrations',
+  webhooks: 'Partner callbacks', announcements: 'Announcements',
+  audit: 'Audit log', platform: 'Platform settings',
 };
 
 /**
@@ -80,6 +96,9 @@ const PATHS: Record<Tab, string> = {
   users: '/users', settings: '/settings', staff: '/staff',
   territories: '/hq/tenants', invoices: '/hq/invoices',
   scorecard: '/hq/scorecard', hqAlerts: '/hq/alerts',
+  hqDeliveries: '/hq/deliveries', integrations: '/hq/integrations',
+  webhooks: '/hq/webhooks', announcements: '/hq/announcements',
+  audit: '/hq/audit', platform: '/hq/settings',
 };
 
 function tabFromPath(pathname: string, role: ConsoleRole): Tab {
@@ -94,6 +113,10 @@ function tabFromPath(pathname: string, role: ConsoleRole): Tab {
 
 export function App() {
   const role = useAdminRole();
+  // While the franchisor is viewing a city, the database reports them as that
+  // city's staff, so useAdminRole() already returns the operator's role and the
+  // operator's sections. The banner is what explains why.
+  const { territoryId: viewingAs } = useViewingAs();
   const nav = NAV.filter((n) => can(role, n.key));
   const location = useLocation();
   const navigate = useNavigate();
@@ -103,6 +126,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#f7f5f3] text-brand-ink">
+      {viewingAs && <ViewAsBanner territoryId={viewingAs} />}
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-brand-orange text-white">
         <div className="flex items-center gap-3 px-4 py-3">
@@ -173,6 +197,8 @@ export function App() {
             </p>
           )}
 
+          <AnnouncementBanner />
+
           {!can(role, tab) ? (
             <p className="rounded-xl bg-white p-6 text-sm text-black/50 shadow-sm ring-1 ring-black/5">
               Your role ({ROLE_LABEL[role]}) doesn't have access to this section.
@@ -190,6 +216,12 @@ export function App() {
               {tab === 'invoices' && <Invoices />}
               {tab === 'scorecard' && <Scorecard />}
               {tab === 'hqAlerts' && <Alerts />}
+              {tab === 'hqDeliveries' && <Deliveries />}
+              {tab === 'integrations' && <Integrations />}
+              {tab === 'webhooks' && <Webhooks />}
+              {tab === 'announcements' && <Announcements />}
+              {tab === 'audit' && <Audit />}
+              {tab === 'platform' && <Platform />}
               {tab === 'merchants' && <Merchants />}
               {tab === 'royalty' && <Royalty />}
               {tab === 'stores' && <Stores />}

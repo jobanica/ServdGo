@@ -44,6 +44,7 @@ import { usePushRegistration } from './usePushRegistration.ts';
 import { useNewOrderAlert } from './useNewOrderAlert.ts';
 import { isAlertMuted, setAlertMuted, playNewOrderAlert } from './alert.ts';
 import { usePlatformStatus, ClosedBanner } from './PlatformStatus.tsx';
+import { AnnouncementBanner } from './Announcements.tsx';
 import { supabase } from './lib/supabase.ts';
 import { APP_VERSION } from './config.ts';
 import { DeleteAccount } from './DeleteAccount.tsx';
@@ -174,6 +175,7 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
 
       <main className="mx-auto max-w-lg px-5 py-4">
         <ClosedBanner status={platform} workLeft={pool.length + active.length} />
+        <AnnouncementBanner />
         {error && <p className="mb-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
         {tab === 'dashboard' && (

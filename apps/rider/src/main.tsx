@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { recordAppInstall, isInstalledApp } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { RiderGate } from './RiderGate.tsx';
+import { VersionGate } from './VersionGate.tsx';
 
 // Count rider-app installs: the packaged Android build always counts, and the
 // web build counts once it's running as an installed app. Deduped per device.
@@ -17,6 +18,8 @@ if (supabase) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RiderGate />
+    <VersionGate>
+      <RiderGate />
+    </VersionGate>
   </StrictMode>,
 );

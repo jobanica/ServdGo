@@ -371,6 +371,30 @@ so it also authorizes an authenticated **admin** caller (verifies
 `profiles.role = 'admin'`) — the shared secret is only needed for server-to-server
 use. Respect consent/opt-out before broadcasting to customers.
 
+## Platform config and CSV exports
+
+Two more functions, both thin wrappers over database functions that hold the
+logic and the permission checks:
+
+```bash
+# What an app may know before anybody signs in — deployed without JWT
+# verification on purpose: a rider whose build is too old cannot sign in, and
+# still has to be told to update.
+supabase functions deploy v1-config --no-verify-jwt
+curl "$SUPABASE_URL/functions/v1/v1-config"
+
+# A city's records as a streamed CSV file. Uses the caller's own token, so an
+# operator gets their own city and the franchisor gets any of them.
+supabase functions deploy hq-export
+curl -H "Authorization: Bearer <user-jwt>" \
+  "$SUPABASE_URL/functions/v1/hq-export?dataset=deliveries&territory=<uuid>&from=2026-01-01&to=2026-01-31"
+```
+
+Datasets: `deliveries`, `commissions`, `remittances`, `royalty`, `invoices`.
+
+The minimum rider version is set in the console under **Platform settings**;
+the rider app checks it at launch and holds older builds at an update screen.
+
 ## Admin sign-in & provisioning
 
 The admin console writes to RLS-protected tables, so it requires a signed-in user

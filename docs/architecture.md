@@ -71,3 +71,19 @@ Supabase Realtime covers two core requirements without extra infrastructure:
 - **Payments (later):** PayMongo / Xendit.
 - **SMS/notifications:** Semaphore (OTP, order status).
 - **Deploy:** Vercel / Railway.
+
+## HQ super admin
+
+The franchisor's half of the console — tenants, invoicing, monitoring, and the
+platform controls — is documented separately, with the decisions behind it:
+[hq-super-admin.md](./hq-super-admin.md). The three that reach furthest into the
+rest of the system:
+
+- **Roles stay in helper functions** (`is_franchisor`, `is_staff`,
+  `current_territory_id`), not in JWT claims. 83 policies rest on them.
+- **Viewing a city as its operator is a database session**, not a URL parameter:
+  those three functions answer differently while it is open, and a
+  statement-level trigger on every table refuses writes. Any migration that adds
+  a public table must call `hq_attach_readonly_guards()`.
+- **Money is `numeric(12,2)`**, never a float, and royalty is booked on
+  settlement rather than on delivery.

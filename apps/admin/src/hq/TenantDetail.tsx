@@ -17,9 +17,11 @@ import {
 import { errMessage } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td, peso } from '../ui.tsx';
+import { ViewAsButton } from './ViewAs.tsx';
+import { Export } from './Export.tsx';
 
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
-const TABS = ['Overview', 'Checklist', 'Documents', 'Territory', 'Rev-share', 'Actions'] as const;
+const TABS = ['Overview', 'Checklist', 'Documents', 'Territory', 'Rev-share', 'Export', 'Actions'] as const;
 type TabName = typeof TABS[number];
 
 export function TenantDetail() {
@@ -205,6 +207,8 @@ export function TenantDetail() {
         </Card>
       )}
 
+      {tab === 'Export' && <Export territory={t} />}
+
       {tab === 'Actions' && (
         <Actions t={t} outstanding={outstanding.length} busy={busy} run={run} />
       )}
@@ -312,6 +316,14 @@ function Actions({ t, outstanding, busy, run }: {
         {outstanding > 0 && (
           <Muted>{outstanding} checklist item{outstanding === 1 ? '' : 's'} still outstanding — opening is refused until they are clear.</Muted>
         )}
+      </Card>
+
+      <Card title="See it as they see it">
+        <p className="text-sm text-black/60">
+          Opens the console as this city's operator — their rows, their blind spots, and no way
+          to change anything while you are in there. The visit is recorded.
+        </p>
+        <div className="mt-3"><ViewAsButton territory={t} /></div>
       </Card>
 
       <Card title="Suspend">

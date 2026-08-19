@@ -26,3 +26,4 @@ export * from './monitoring.ts';
 export * from './merchants.ts';
 export * from './settings.ts';
 export * from './analytics.ts';
+export * from './platform.ts';

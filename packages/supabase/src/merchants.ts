@@ -36,10 +36,14 @@ export interface MerchantApiKey {
 export interface WebhookDelivery {
   id: string;
   merchant_id: string;
+  order_id: string;
   event: string;
+  /** The body that was posted, so a failure can be read rather than guessed at. */
+  payload: Record<string, unknown>;
   status: 'pending' | 'delivered' | 'failed';
   attempts: number;
   last_error: string | null;
+  next_attempt_at: string;
   created_at: string;
   delivered_at: string | null;
 }
@@ -133,14 +137,18 @@ export async function revokeMerchantKey(db: SupabaseClient, keyId: string): Prom
 
 /** Recent callbacks — the first question when a partner says an order went missing. */
 export async function listWebhookDeliveries(
-  db: SupabaseClient, merchantId?: string, limit = 50,
+  db: SupabaseClient,
+  filter: { merchantId?: string; status?: WebhookDelivery['status'] } | string = {},
+  limit = 50,
 ): Promise<WebhookDelivery[]> {
+  const opts = typeof filter === 'string' ? { merchantId: filter } : filter;
   let q = db
     .from('merchant_webhook_deliveries')
-    .select('id, merchant_id, event, status, attempts, last_error, created_at, delivered_at')
+    .select('id, merchant_id, order_id, event, payload, status, attempts, last_error, next_attempt_at, created_at, delivered_at')
     .order('created_at', { ascending: false })
     .limit(limit);
-  if (merchantId) q = q.eq('merchant_id', merchantId);
+  if (opts.merchantId) q = q.eq('merchant_id', opts.merchantId);
+  if (opts.status) q = q.eq('status', opts.status);
   const { data, error } = await q;
   if (error) throw error;
   return (data ?? []) as WebhookDelivery[];

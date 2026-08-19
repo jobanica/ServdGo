@@ -269,3 +269,24 @@ Each lands with its migrations, tests and UI together and `npm run build` green.
 7. **Q7 view-as-tenant** — build it, knowing it modifies `current_territory_id()`?
 8. **Q8 naming** — keep territory/franchisor in code (recommended) or rename?
 9. **Sequencing** — four pushes as above, or all at once?
+
+---
+
+## Built
+
+All four pushes are in. What actually shipped differs from the table above in
+file numbering and in a few decisions taken while building; the design decisions
+are recorded in [docs/hq-super-admin.md](docs/hq-super-admin.md).
+
+| Push | Migrations | Tests |
+|---|---|---|
+| 1 — lifecycle | 0090–0097 | `hq_lifecycle.sql` (24) |
+| 2 — money | 0098–0102 | `hq_billing.sql` (26) |
+| 3 — watching | 0103–0104 | `hq_monitoring.sql` (25) |
+| 4 — platform | 0105–0109 | `hq_platform.sql` (29), `hq_admin.sql` (40) |
+
+262 database assertions in total (`npm run test:db`), plus `npm test`,
+`npm run typecheck` and `npm run build` across the three apps.
+
+**Q7 was answered yes**, and view-as was built as its own migration with its own
+tests, as promised: `0105_view_as_tenant.sql` and `supabase/tests/hq_platform.sql`.

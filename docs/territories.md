@@ -85,9 +85,10 @@ reads to answer "who ordered this". See
 ./scripts/db_test.sh
 ```
 
-Creates a throwaway PostgreSQL cluster, replays every migration into it, and runs
-`supabase/tests/`. It needs local PostgreSQL 16 server binaries and touches no
-hosted project. `supabase/tests/territory_isolation.sql` stands up two cities 600
+Creates a throwaway PostgreSQL cluster, replays every migration into it — each as
+a single transaction, the way Supabase applies them — and runs `supabase/tests/`:
+262 assertions across eight files. It needs local PostgreSQL 16 server binaries
+and touches no hosted project. `supabase/tests/territory_isolation.sql` stands up two cities 600
 km apart and asserts, among other things, that the Cebu operator cannot read,
 write, or claim anything in Davao.
 

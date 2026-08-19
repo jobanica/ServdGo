@@ -18,7 +18,8 @@ export type ConsoleRole = StaffRole | 'franchisor';
 export type AdminSection =
   | 'dashboard' | 'analytics' | 'stores' | 'ridersActive' | 'riders'
   | 'orders' | 'history' | 'settlements' | 'royalty' | 'merchants' | 'broadcast'
-  | 'areas' | 'users' | 'settings' | 'staff' | 'territories' | 'invoices' | 'scorecard' | 'hqAlerts';
+  | 'areas' | 'users' | 'settings' | 'staff' | 'territories' | 'invoices' | 'scorecard' | 'hqAlerts'
+  | 'hqDeliveries' | 'integrations' | 'webhooks' | 'announcements' | 'audit' | 'platform';
 
 export const STAFF_ROLES: StaffRole[] = ['admin', 'manager', 'dispatcher', 'support'];
 
@@ -33,16 +34,28 @@ const ALL: AdminSection[] = [
   'dashboard', 'analytics', 'stores', 'ridersActive', 'riders',
   'orders', 'history', 'settlements', 'royalty', 'merchants', 'broadcast', 'areas',
   'users', 'settings', 'staff', 'territories', 'invoices', 'scorecard', 'hqAlerts',
+  'hqDeliveries', 'integrations', 'webhooks', 'announcements', 'audit', 'platform',
+];
+
+/**
+ * The sections that belong to the network rather than to a city. An operator
+ * gets everything else; the franchisor gets only these, because they do not run
+ * a city — and when they view one as its operator the database stops treating
+ * them as the franchisor, so this list closes and the operator's opens.
+ */
+const HQ_ONLY: AdminSection[] = [
+  'territories', 'invoices', 'scorecard', 'hqAlerts', 'hqDeliveries',
+  'integrations', 'webhooks', 'announcements', 'audit', 'platform',
 ];
 
 /** Sections each role may open. Settings, staff and the royalty owed are the
  *  operator's; territories are the franchisor's. */
 const ACCESS: Record<ConsoleRole, AdminSection[]> = {
-  admin: ALL.filter((s) => s !== 'territories'),
+  admin: ALL.filter((s) => !HQ_ONLY.includes(s)),
   manager: ['dashboard', 'analytics', 'stores', 'ridersActive', 'riders', 'orders', 'history', 'settlements', 'merchants', 'broadcast', 'areas', 'users'],
   dispatcher: ['dashboard', 'ridersActive', 'riders', 'orders', 'history'],
   support: ['dashboard', 'orders', 'history', 'broadcast'],
-  franchisor: ['territories', 'invoices', 'scorecard', 'hqAlerts'],
+  franchisor: [...HQ_ONLY],
 };
 
 /** True when a role may open a section. */

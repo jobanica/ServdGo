@@ -243,7 +243,10 @@ export async function listConfigHistory(
 
 export async function listAudit(
   db: SupabaseClient,
-  filter: { territoryId?: string; action?: string; actorId?: string; since?: string } = {},
+  filter: {
+    territoryId?: string; action?: string; actorId?: string;
+    entityId?: string; since?: string; until?: string;
+  } = {},
   limit = 200,
 ): Promise<AuditEntry[]> {
   let q = db
@@ -254,7 +257,9 @@ export async function listAudit(
   if (filter.territoryId) q = q.eq('territory_id', filter.territoryId);
   if (filter.action) q = q.ilike('action', `%${filter.action}%`);
   if (filter.actorId) q = q.eq('actor_user_id', filter.actorId);
+  if (filter.entityId) q = q.eq('entity_id', filter.entityId);
   if (filter.since) q = q.gte('created_at', filter.since);
+  if (filter.until) q = q.lte('created_at', filter.until);
   const { data, error } = await q;
   if (error) throw error;
   return (data ?? []) as AuditEntry[];
