@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { listOrderMessages, sendOrderMessage, uploadChatPhoto, subscribeOrderMessages, type OrderMessage } from '@ebd/supabase';
+import { listOrderMessages, sendOrderMessage, uploadChatPhoto, subscribeOrderMessages, type OrderMessage } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
 /** A button that opens the order chat and shows an unread-message badge. */

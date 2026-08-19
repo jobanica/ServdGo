@@ -6,7 +6,7 @@
  * toggle, independent of the system-wide operating-hours switch.
  */
 
-import { roundPeso } from '@ebd/shared';
+import { roundPeso } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface StoreInput {

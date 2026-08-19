@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
-import { saveRiderPushToken } from '@ebd/supabase';
+import { saveRiderPushToken } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
 /**

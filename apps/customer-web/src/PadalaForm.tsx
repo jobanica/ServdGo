@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { commission, type FeePayer,
   errMessage,
-} from '@ebd/shared';
-import { buildPadalaOrderRow, createPadalaOrder, type PadalaRequestInput } from '@ebd/supabase';
-import { resolveDeliveryFee, DEFAULT_DISTANCE_FEE_CONFIG, type DeliveryFeeModel, type DistanceFeeConfig } from '@ebd/shared';
-import { getAppSettings } from '@ebd/supabase';
+} from '@servdgo/shared';
+import { buildPadalaOrderRow, createPadalaOrder, type PadalaRequestInput } from '@servdgo/supabase';
+import { resolveDeliveryFee, DEFAULT_DISTANCE_FEE_CONFIG, type DeliveryFeeModel, type DistanceFeeConfig } from '@servdgo/shared';
+import { getAppSettings } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Field, Row, inputCls, peso, PaymentChoice, type PayChoice } from './ui.tsx';
 import { LocationPicker, type LatLngValue } from './LocationPicker.tsx';
@@ -12,7 +12,7 @@ import { AreaPicker, kmBetween } from './AreaPicker.tsx';
 import { useDefaultAddress, useAddressPrefill, DeliveryAddressField } from './DeliveryAddress.tsx';
 import { AddressChooser, useSavedAddresses, useAreaBackfill } from './AddressChooser.tsx';
 import { useRiderAvailability, NoRidersNotice, NO_RIDERS_MESSAGE } from './RiderAvailability.tsx';
-import type { AreaSelection } from '@ebd/supabase';
+import type { AreaSelection } from '@servdgo/supabase';
 import { useAuth } from './auth/AuthContext.tsx';
 
 const DEFAULT_DELIVERY_FEE = 50;

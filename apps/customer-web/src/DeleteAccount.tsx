@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { deleteMyAccount, signOut } from '@ebd/supabase';
-import { errMessage, ACCOUNT_DELETION_URL } from '@ebd/shared';
+import { deleteMyAccount, signOut } from '@servdgo/supabase';
+import { errMessage, ACCOUNT_DELETION_URL } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 
 /**

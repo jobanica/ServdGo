@@ -25,12 +25,12 @@ import {
   type LedgerEntry,
   type OrderStatus,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import {
   subscribeToNewOrders, signOut,
   getRiderProfile, updateRiderProfile, uploadRiderPhoto, type RiderProfile,
   getAppSettings, uploadSettlementReceipt, type AppSettings,
-} from '@ebd/supabase';
+} from '@servdgo/supabase';
 import { makeRiderData, type RiderData, type RiderOrder } from './data/index.ts';
 import type { OrderAddon } from './data/types.ts';
 import { peso } from './ui.tsx';
@@ -1899,7 +1899,7 @@ function SettingsView({ live, online, busy, onToggleOnline, profile, onProfileSa
         </button>
       )}
       {!canEdit && <p className="px-1 text-xs text-black/40">Connect the app to edit your profile.</p>}
-      <p className="px-1 pb-2 text-center text-xs text-black/35">Easy Buy Delivery — Rider · v{APP_VERSION}</p>
+      <p className="px-1 pb-2 text-center text-xs text-black/35">ServdGo — Rider · v{APP_VERSION}</p>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   listMenuPriceProposals, reviewMenuPriceProposal, type MenuPriceProposal,
-} from '@ebd/supabase';
-import { errMessage } from '@ebd/shared';
+} from '@servdgo/supabase';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 
 const peso = (n: number) => `₱${n.toFixed(2)}`;

@@ -1,4 +1,4 @@
-# Easy Buy Delivery
+# ServdGo
 
 **Pabili • Padala Delivery Services**
 
@@ -89,8 +89,8 @@ background GPS is required (rider app).
 ```
 docs/                     project spec (overview, flows, data model, decisions)
 supabase/migrations/      Postgres schema, RLS, settlement functions
-packages/shared/          @ebd/shared — pricing/commission/cart/settlement logic + types
-packages/supabase/        @ebd/supabase — data-access layer over supabase-js
+packages/shared/          @servdgo/shared — pricing/commission/cart/settlement logic + types
+packages/supabase/        @servdgo/supabase — data-access layer over supabase-js
 apps/customer-web/        customer ordering (Food / Pabili / Padala)
 apps/rider/               rider app (pool, delivery flow, settlement gate)
 apps/admin/               operator dashboard (stores, riders, orders)
@@ -112,9 +112,9 @@ For the backend, see [`supabase/README.md`](supabase/README.md).
 
 - ✅ **Phase 0** — Supabase schema (enums, core tables, unified order queue,
   commission ledger + settlement functions, RLS; validated against Postgres 16)
-  and `@ebd/shared` (commission formula, order-cost + cart math, settlement
+  and `@servdgo/shared` (commission formula, order-cost + cart math, settlement
   gate, order-status state machine).
-- ✅ **Phase 1 (Padala)** — `@ebd/supabase` data layer + customer web request
+- ✅ **Phase 1 (Padala)** — `@servdgo/supabase` data layer + customer web request
   form + admin rider-approval / live-orders.
 - ✅ **Phase 2 (Food)** — admin store/menu management with per-merchant on/off
   toggle, and the customer multi-store cart with ₱25/store fee math.

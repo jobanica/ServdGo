@@ -17,8 +17,8 @@ import {
   type DistanceFeeConfig,
   type FeeConfig,
   errMessage,
-} from '@ebd/shared';
-import { listAvailableStores, listMenu, buildFoodOrder, createFoodOrder, getAppSettings } from '@ebd/supabase';
+} from '@servdgo/shared';
+import { listAvailableStores, listMenu, buildFoodOrder, createFoodOrder, getAppSettings } from '@servdgo/supabase';
 import { useRiderAvailability, NoRidersNotice, NO_RIDERS_MESSAGE } from './RiderAvailability.tsx';
 import { AddressChooser, useSavedAddresses, useAreaBackfill } from './AddressChooser.tsx';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
@@ -27,7 +27,7 @@ import { peso, PaymentChoice, type PayChoice } from './ui.tsx';
 import { LocationPicker, type LatLngValue } from './LocationPicker.tsx';
 import { useDefaultAddress, useAddressPrefill, DeliveryAddressField } from './DeliveryAddress.tsx';
 import { AreaPicker, kmBetween } from './AreaPicker.tsx';
-import type { AreaSelection } from '@ebd/supabase';
+import type { AreaSelection } from '@servdgo/supabase';
 import { useAuth } from './auth/AuthContext.tsx';
 
 const DELIVERY_FEE = 50;
@@ -420,7 +420,7 @@ export function FoodFlow() {
           {/* Promo hero */}
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-green to-brand-purple p-5 text-white shadow-md">
             <div className="absolute -right-6 -top-8 h-32 w-32 rounded-full bg-brand-yellow/30 blur-2xl" />
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">Easy Buy Delivery</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">ServdGo</p>
             <h2 className="mt-1 max-w-[15rem] text-2xl font-black leading-tight">Your favorite local spots, delivered</h2>
             <p className="mt-1 text-sm text-white/85">Food, Pabili &amp; Padala — one rider, one order.</p>
           </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { isInstalledApp } from '@ebd/supabase';
+import { isInstalledApp } from '@servdgo/supabase';
 import { isInAppBrowser, inAppBrowserName, isAndroid, openInChrome } from './inAppBrowser.tsx';
 import { isIOS } from './geo.ts';
 
@@ -29,7 +29,7 @@ function snooze(): void {
 }
 
 /**
- * "Install Easy Buy Delivery" — the banner that turns a browser tab into an
+ * "Install ServdGo" — the banner that turns a browser tab into an
  * app on the home screen.
  *
  * Three different browsers, three different truths:
@@ -94,7 +94,7 @@ export function InstallApp() {
         <div className="flex items-start gap-3">
           <img src="/icons/pwa-192x192.png" alt="" className="h-11 w-11 shrink-0 rounded-xl ring-1 ring-black/10" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold text-brand-ink">Install Easy Buy Delivery</p>
+            <p className="text-sm font-bold text-brand-ink">Install ServdGo</p>
             <p className="mt-0.5 text-xs text-black/55">
               {inApp
                 ? `Opening in ${inAppBrowserName()} — install from Chrome instead.`
@@ -134,7 +134,7 @@ export function InstallApp() {
               <ol className="mt-2 space-y-1 rounded-xl bg-brand-green/[0.06] p-3 text-xs text-black/70">
                 <li>1. Tap the <b>Share</b> button at the bottom of Safari — the square with an arrow going up.</li>
                 <li>2. Scroll down and tap <b>Add to Home Screen</b>.</li>
-                <li>3. Tap <b>Add</b>. The Easy Buy icon appears with your other apps.</li>
+                <li>3. Tap <b>Add</b>. The ServdGo icon appears with your other apps.</li>
               </ol>
             )}
           </>

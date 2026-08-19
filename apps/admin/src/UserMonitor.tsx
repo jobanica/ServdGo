@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getUserActivity, type UserActivity } from '@ebd/supabase';
+import { getUserActivity, type UserActivity } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote } from './ui.tsx';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 
 const SAMPLE: UserActivity = {
   window_days: 30,

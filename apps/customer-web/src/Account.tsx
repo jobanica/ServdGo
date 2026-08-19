@@ -3,22 +3,22 @@ import {
   getMyCustomer, listCustomerOrders, listAddresses, addAddress, deleteAddress, setDefaultAddress, cancelOrder,
   orderGoodsAmount, orderGoodsIsFinal,
   type MyCustomer, type CustomerOrder, type CustomerAddress,
-} from '@ebd/supabase';
+} from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { useAuth } from './auth/AuthContext.tsx';
 import { LocationPicker, type LatLngValue } from './LocationPicker.tsx';
 import { AreaPicker } from './AreaPicker.tsx';
-import type { AreaSelection } from '@ebd/supabase';
+import type { AreaSelection } from '@servdgo/supabase';
 import { PayRider } from './PayRider.tsx';
 import { peso } from './ui.tsx';
 import { REQUIRE_ACCOUNT, APP_VERSION } from './config.ts';
-import { SUPPORT_EMAIL, SUPPORT_PHONE, PRIVACY_URL, TERMS_URL } from '@ebd/shared';
+import { SUPPORT_EMAIL, SUPPORT_PHONE, PRIVACY_URL, TERMS_URL } from '@servdgo/shared';
 import { DeleteAccount } from './DeleteAccount.tsx';
 import { FixPin } from './FixPin.tsx';
 import { SaveDeliveredAddress } from './SaveDeliveredAddress.tsx';
 import { AddToOrder } from './AddToOrder.tsx';
 import { OrderDetails } from './OrderDetails.tsx';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
 
@@ -185,7 +185,7 @@ export function Account() {
           Sign out
         </button>
       )}
-      <p className="pb-2 text-center text-xs text-black/35">Easy Buy Delivery · v{APP_VERSION}</p>
+      <p className="pb-2 text-center text-xs text-black/35">ServdGo · v{APP_VERSION}</p>
     </div>
   );
 }

@@ -7,7 +7,7 @@
  * for replay.
  */
 
-import { TRACKING_INTERVAL_MS, type LatLng } from '@ebd/shared';
+import { TRACKING_INTERVAL_MS, type LatLng } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface LocationPing extends LatLng {

@@ -1,4 +1,4 @@
-# @ebd/shared
+# @servdgo/shared
 
 The shared TypeScript layer reused across the customer web/mobile apps, the rider
 app, and the admin dashboard. Pure logic and types — no UI, no I/O.

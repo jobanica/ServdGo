@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { setStoreMarkup, setMenuItemMarkup } from '@ebd/supabase';
-import { errMessage } from '@ebd/shared';
+import { setStoreMarkup, setMenuItemMarkup } from '@servdgo/supabase';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Toggle } from './ui.tsx';
 

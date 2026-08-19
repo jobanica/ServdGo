@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildFoodOrder, type FoodCheckoutInput } from './food.ts';
-import { DEFAULT_FEE_CONFIG, type CartLine } from '@ebd/shared';
+import { DEFAULT_FEE_CONFIG, type CartLine } from '@servdgo/shared';
 
 const lines: CartLine[] = [
   { storeId: 'A', menuItemId: 'm1', name: 'Burger', unitPrice: 120, qty: 2,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { listServiceAreas, groupAreas, type ServiceArea, type AreaSelection } from '@ebd/supabase';
+import { listServiceAreas, groupAreas, type ServiceArea, type AreaSelection } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
 const sel = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green';

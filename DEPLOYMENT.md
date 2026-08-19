@@ -1,5 +1,66 @@
 # Deployment
 
+## Rebrand to ServdGo — what still needs doing outside the repo
+
+The codebase now says **ServdGo** everywhere, including the Android application
+IDs (`com.easybuydelivery.*` → `com.servdgo.*`). Several things a rebrand
+touches live in other people's consoles, not in git. Delete this section once
+they are done.
+
+1. **Firebase / push notifications — required before push works again.**
+   The two `google-services.json` files had their `package_name` fields updated
+   so Gradle still builds, but the Firebase project `easy-buy-delivery` has the
+   apps registered under the *old* IDs, so FCM registration will be rejected.
+   Fix: Firebase console → Project settings → Add app → Android, once for
+   `com.servdgo.customer` and once for `com.servdgo.rider` → download the new
+   `google-services.json` → replace both copies in
+   `apps/customer-web/android/app/` and `apps/rider/android/app/`. The project
+   ID `easy-buy-delivery` and the storage bucket cannot be renamed; only the
+   display name can. They are internal and never shown to a customer.
+
+2. **Google Play — check before you ship.** Changing `applicationId` makes it a
+   different app to Play; a published listing cannot be renamed onto a new ID.
+   Nothing here suggests the apps went live under the old IDs (`versionCode 1`,
+   and `assetlinks.json` still holds a placeholder fingerprint), which is why
+   the rename was safe to do now. If either app *is* already published, revert
+   the two `applicationId` / `namespace` values in
+   `apps/*/android/app/build.gradle` and change only the display names.
+
+3. **Deployment URLs are unchanged.** `ebd-customer`, `ebd-rider` and
+   `ebd-admin` on Vercel are live hosts, so they were left alone. To rename the
+   Vercel projects to `servdgo-*`, update all of: `CUSTOMER_SITE` in
+   `packages/shared/src/legal.ts`, the allowed origin in
+   `supabase/functions/_shared/cors.ts`, the Live URLs table above, the
+   `bubblewrap init --manifest` URL, and the three policy URLs in the Play
+   Console — then re-run the customer build so the legal pages regenerate.
+
+4. **`assetlinks.json`** still carries
+   `REPLACE_WITH_YOUR_APP_SIGNING_SHA256_FINGERPRINT`. It needs the Play app
+   signing fingerprint for the new package before deep links verify.
+
+5. **Artwork is still the old logo.** No image was changed — every launcher
+   icon (`apps/*/android/app/src/main/res/mipmap-*`), splash screen
+   (`drawable-*`), PWA icon (`apps/customer-web/public/icons/`) and Play listing
+   graphic (`docs/store-assets/`) still shows the Easy Buy scooter mark. These
+   need new ServdGo artwork.
+
+6. **Brand colours are still the old palette.** The green/purple/yellow tokens
+   in `docs/branding.md` and the three `src/index.css` files were sampled from
+   the Easy Buy logo. Re-sample from the ServdGo logo and update both places
+   together.
+
+7. **SMS sender ID.** The store-notification sender is now `ServdGo` (7
+   characters, within the 11-character limit). If the provider requires sender
+   IDs to be pre-registered, register it before relying on it.
+
+8. **Run the rebrand migration.** `supabase/migrations/0076_rebrand_servdgo.sql`
+   updates the "we're closed" message the database serves. Migrations 0001-0075
+   were deliberately left untouched — they are the record of what already ran.
+
+9. **Supabase project.** `project_id` in `supabase/config.toml` is now
+   `servdgo`; that name is local-CLI only. The hosted project ref
+   `difvleyqqixettmbkkno` is unchanged.
+
 ## Live URLs
 
 | App | URL | Backend |
@@ -38,7 +99,7 @@ Build and deploy one app (from the repo root):
 
 ```bash
 # hosted env in apps/<app>/.env, then:
-npm run build --workspace @ebd/<app>        # -> apps/<app>/dist
+npm run build --workspace @servdgo/<app>        # -> apps/<app>/dist
 cd apps/<app>/dist && vercel deploy --prod --yes
 ```
 
@@ -69,7 +130,7 @@ bubblewrap build          # produces app-release-signed.aab
 Then publish `/.well-known/assetlinks.json` on the domain with the **SHA-256
 fingerprint** of your signing key (template committed at
 `apps/customer-web/public/.well-known/assetlinks.json` — replace the placeholder,
-package `com.easybuydelivery.customer`). This removes the browser URL bar.
+package `com.servdgo.customer`). This removes the browser URL bar.
 
 Get the fingerprint from **Play Console → your app → Test and release → Setup →
 App signing → App signing key certificate → SHA-256**. Use the *app signing*
@@ -79,7 +140,7 @@ fingerprint will not match and the TWA will keep showing the URL bar.
 ### Rider app → Capacitor (native, background GPS)
 
 The rider app is wrapped with Capacitor (`apps/rider/android/`), appId
-`com.easybuydelivery.rider`. It needs background location, which a TWA can't do.
+`com.servdgo.rider`. It needs background location, which a TWA can't do.
 
 ```bash
 cd apps/rider
@@ -170,13 +231,13 @@ call, off by default (preserves the no-merchant-onboarding model).
 update app_settings set sms_notify_stores = true;
 # secrets
 supabase secrets set SEMAPHORE_API_KEY=<key>       # https://semaphore.co
-supabase secrets set SEMAPHORE_SENDER_NAME=EasyBuy # optional, must be registered
+supabase secrets set SEMAPHORE_SENDER_NAME=ServdGo # optional, must be registered
 supabase functions deploy notify-store
 # Dashboard → Database → Webhooks: on orders INSERT → call notify-store
 ```
 
 `supabase/functions/notify-store` groups `order_items` by `store_id`, composes
-the message (`composeStoreOrderSms` in `@ebd/shared`), and sends to each store's
+the message (`composeStoreOrderSms` in `@servdgo/shared`), and sends to each store's
 `contact_number` via the configured provider (stores without a number are skipped
 — the rider still calls). Only fires for food orders when the toggle is on.
 
@@ -191,13 +252,13 @@ request), and numbers are normalized to `639XXXXXXXXX`.
 ```bash
 supabase secrets set SMS_PROVIDER=bulksms_ph
 supabase secrets set BULKSMS_PH_USERNAME=<user> BULKSMS_PH_PASSWORD=<pass>
-supabase secrets set BULKSMS_PH_SENDER=EasyBuy   # optional, ≤11 chars, must be registered
+supabase secrets set BULKSMS_PH_SENDER=ServdGo   # optional, ≤11 chars, must be registered
 ```
 
 **Semaphore** — comma-separated bulk:
 
 ```bash
-supabase secrets set SMS_PROVIDER=semaphore SEMAPHORE_API_KEY=<key> SEMAPHORE_SENDER_NAME=EasyBuy
+supabase secrets set SMS_PROVIDER=semaphore SEMAPHORE_API_KEY=<key> SEMAPHORE_SENDER_NAME=ServdGo
 ```
 
 ### Bulk broadcast (announcements / promos)

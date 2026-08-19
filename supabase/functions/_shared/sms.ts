@@ -8,7 +8,7 @@
 //   bulksms_ph: BULKSMS_PH_USERNAME, BULKSMS_PH_PASSWORD, BULKSMS_PH_SENDER (opt)
 //   semaphore : SEMAPHORE_API_KEY, SEMAPHORE_SENDER_NAME (opt)
 
-/** Normalize a PH mobile to 639XXXXXXXXX (mirror of @ebd/shared normalizePhMobile). */
+/** Normalize a PH mobile to 639XXXXXXXXX (mirror of @servdgo/shared normalizePhMobile). */
 export function normalizePhMobile(raw: string): string {
   const d = raw.replace(/\D/g, '');
   if (d.startsWith('63')) return d;

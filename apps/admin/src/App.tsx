@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signOut } from '@ebd/supabase';
+import { signOut } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Dashboard } from './Dashboard.tsx';
 import { Stores } from './Stores.tsx';
@@ -15,7 +15,7 @@ import { Analytics } from './Analytics.tsx';
 import { Riders } from './Riders.tsx';
 import { Staff } from './Staff.tsx';
 import { useAdminRole } from './AdminGate.tsx';
-import { can, ROLE_LABEL, type AdminSection } from '@ebd/shared';
+import { can, ROLE_LABEL, type AdminSection } from '@servdgo/shared';
 import {
   IconDashboard, IconChart, IconStore, IconRiders, IconScooter, IconOrders, IconHistory, IconWallet,
   IconSettings, IconMegaphone, IconUsers, IconSearch, IconMenu,
@@ -62,7 +62,7 @@ export function App() {
           </button>
           <div className="flex items-center gap-2 font-extrabold text-lg">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20"><IconScooter /></span>
-            Easy Buy
+            ServdGo
           </div>
           <div className="mx-auto hidden max-w-md flex-1 items-center gap-2 rounded-xl bg-white/15 px-3 py-2 md:flex">
             <span className="opacity-90"><IconSearch /></span>
@@ -70,7 +70,7 @@ export function App() {
               className="w-full bg-transparent text-sm text-white placeholder-white/70 outline-none" />
           </div>
           <div className="ml-auto flex items-center gap-2 rounded-xl bg-white/15 py-1 pl-1 pr-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-purple text-xs font-bold">EB</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-purple text-xs font-bold">SG</span>
             <span className="hidden text-sm font-semibold sm:inline">{ROLE_LABEL[role]}</span>
             {isSupabaseConfigured && supabase && (
               <button onClick={() => void signOut(supabase!)}
@@ -113,7 +113,7 @@ export function App() {
         <main className="min-w-0 flex-1 p-4 sm:p-6">
           <div className="mb-5">
             <h1 className="text-2xl font-extrabold">{TITLES[tab]}</h1>
-            <p className="text-sm text-black/50">Easy Buy Delivery — operator console</p>
+            <p className="text-sm text-black/50">ServdGo — operator console</p>
           </div>
 
           {!isSupabaseConfigured && (

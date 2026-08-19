@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { isNewAddress, type SavedAddress } from '@ebd/shared';
-import type { CustomerOrder } from '@ebd/supabase';
+import { isNewAddress, type SavedAddress } from '@servdgo/shared';
+import type { CustomerOrder } from '@servdgo/supabase';
 import { SaveAddressPrompt, useSavedAddresses } from './AddressChooser.tsx';
 
 /**

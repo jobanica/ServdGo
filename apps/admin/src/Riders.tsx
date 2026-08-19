@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { listActiveRiders, setRiderLocked, setRiderSuspended, deleteRider, type ActiveRider } from '@ebd/supabase';
+import { listActiveRiders, setRiderLocked, setRiderSuspended, deleteRider, type ActiveRider } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { Card, Th, Td, Muted, ErrorNote, peso } from './ui.tsx';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 import { SAMPLE_RIDERS, onDutyFor } from './OnDuty.tsx';
 import { RefusalHistory, PinCorrectionLog } from './Refusals.tsx';
 

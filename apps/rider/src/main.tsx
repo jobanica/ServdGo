@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { Capacitor } from '@capacitor/core';
-import { recordAppInstall, isInstalledApp } from '@ebd/supabase';
+import { recordAppInstall, isInstalledApp } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { RiderGate } from './RiderGate.tsx';
 

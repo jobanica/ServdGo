@@ -1,4 +1,4 @@
-import { geolocationHelp, coarseFixHelp, isCoarseFix } from '@ebd/shared';
+import { geolocationHelp, coarseFixHelp, isCoarseFix } from '@servdgo/shared';
 
 /** iPhone/iPad, including iPadOS which reports itself as a Mac with a touchscreen. */
 function isIOS(): boolean {

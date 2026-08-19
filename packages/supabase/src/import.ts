@@ -4,7 +4,7 @@
  * without duplicating the store.
  */
 
-import { groupByStore, type ParsedMenuRow } from '@ebd/shared';
+import { groupByStore, type ParsedMenuRow } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface ImportSummary {

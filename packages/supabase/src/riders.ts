@@ -2,7 +2,7 @@
  * Rider application + approval data access (admin side).
  */
 
-import type { RiderApplicationStatus } from '@ebd/shared';
+import type { RiderApplicationStatus } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface RiderApplicationInput {

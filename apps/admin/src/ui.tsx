@@ -1,4 +1,4 @@
-import type { RiderApplicationStatus } from '@ebd/shared';
+import type { RiderApplicationStatus } from '@servdgo/shared';
 
 export const peso = (n: number) => `₱${Number(n).toFixed(2)}`;
 

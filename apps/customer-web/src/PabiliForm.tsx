@@ -3,16 +3,16 @@ import { validateBudget, resolveDeliveryFee, DEFAULT_DISTANCE_FEE_CONFIG,
   DEFAULT_FEE_CONFIG, storeFeeTotal, MAX_STORES_PER_ORDER,
   type DeliveryFeeModel, type DistanceFeeConfig,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { buildPabiliOrderRow, createPabiliOrder, getAppSettings, pabiliItemsSummary,
-  type PabiliRequestInput, type PabiliItemInput, type PabiliStoreInput } from '@ebd/supabase';
+  type PabiliRequestInput, type PabiliItemInput, type PabiliStoreInput } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Field, Row, inputCls, peso, PaymentChoice, type PayChoice } from './ui.tsx';
 import { LocationPicker, type LatLngValue } from './LocationPicker.tsx';
 import { AreaPicker, kmBetween } from './AreaPicker.tsx';
 import { useDefaultAddress, useAddressPrefill, DeliveryAddressField } from './DeliveryAddress.tsx';
 import { AddressChooser, useSavedAddresses, useAreaBackfill } from './AddressChooser.tsx';
-import type { AreaSelection } from '@ebd/supabase';
+import type { AreaSelection } from '@servdgo/supabase';
 import { useAuth } from './auth/AuthContext.tsx';
 import { useRiderAvailability, NoRidersNotice, NO_RIDERS_MESSAGE } from './RiderAvailability.tsx';
 

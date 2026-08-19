@@ -12,8 +12,8 @@ export default defineConfig({
       injectRegister: false, // we register manually in main.tsx to auto-reload on update
       includeAssets: ['favicon.png', 'icons/apple-touch-icon.png'],
       manifest: {
-        name: 'Easy Buy Delivery',
-        short_name: 'Easy Buy',
+        name: 'ServdGo',
+        short_name: 'ServdGo',
         description: 'Pabili • Padala Delivery Services — order food, buy-anything, and send packages.',
         theme_color: '#6DBE22',
         background_color: '#6DBE22',

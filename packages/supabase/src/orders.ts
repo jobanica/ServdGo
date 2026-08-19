@@ -3,7 +3,7 @@
  * Admin reads all orders (RLS `orders_admin_all`).
  */
 
-import type { OrderStatus, ServiceType } from '@ebd/shared';
+import type { OrderStatus, ServiceType } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface OrderListFilters {

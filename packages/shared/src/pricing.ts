@@ -1,5 +1,5 @@
 /**
- * Pricing & commission math for Easy Buy Delivery.
+ * Pricing & commission math for ServdGo.
  *
  * Locked commission formula (confirmed by operator):
  *

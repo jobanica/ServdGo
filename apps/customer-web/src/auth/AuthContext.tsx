@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { ensureCustomer, getMyCustomer, listAddresses, onAuthChange, signOut as sbSignOut } from '@ebd/supabase';
+import { ensureCustomer, getMyCustomer, listAddresses, onAuthChange, signOut as sbSignOut } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.ts';
 import { REQUIRE_ACCOUNT } from '../config.ts';
 

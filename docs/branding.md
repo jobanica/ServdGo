@@ -1,14 +1,18 @@
 # Branding
 
-**Easy Buy Delivery** — *Pabili • Padala Delivery Services*
+**ServdGo** — *Pabili • Padala Delivery Services*
 
-From the logo: green circle, purple ring, yellow arched wordmark, white
-scooter/cutlery icon.
+> **Carried over from Easy Buy Delivery.** The palette and mark described below
+> were sampled from the *old* logo — green circle, purple ring, yellow arched
+> wordmark, white scooter/cutlery icon — and are still what the apps render.
+> They are a placeholder until the ServdGo logo exists: re-sample from it, then
+> update the tokens here **and** the matching `:root` block in
+> `apps/admin/src/index.css`, `apps/customer-web/src/index.css` and
+> `apps/rider/src/index.css` together.
 
 ## Palette
 
-Sampled hex values — **approximate**. Confirm exact hexes by sampling the actual
-logo PNG before locking design tokens.
+Sampled hex values — **approximate**, and from the previous logo.
 
 | Role | Color | Hex (approx) |
 |---|---|---|

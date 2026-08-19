@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { countAudience, type BroadcastAudience } from '@ebd/supabase';
+import { countAudience, type BroadcastAudience } from '@servdgo/supabase';
 import { smsSegments,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Card } from './ui.tsx';
 

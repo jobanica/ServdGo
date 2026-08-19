@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { LatLng } from '@ebd/shared';
+import type { LatLng } from '@servdgo/shared';
 
 /**
  * The rider's own position, watched once for the whole app.

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { listActiveRiders, onDutyRiders, type ActiveRider } from '@ebd/supabase';
-import { errMessage } from '@ebd/shared';
+import { listActiveRiders, onDutyRiders, type ActiveRider } from '@servdgo/supabase';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Card, ErrorNote } from './ui.tsx';
 import { IconScooter } from './icons.tsx';

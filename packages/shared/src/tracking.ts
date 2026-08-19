@@ -2,7 +2,7 @@
  * Geo helpers for live rider tracking.
  *
  * The transport (how a rider's lat/lng reaches the customer) is Supabase
- * Realtime — see @ebd/supabase/tracking. These are the pure calculations the
+ * Realtime — see @servdgo/supabase/tracking. These are the pure calculations the
  * map and ETA need. Map tile provider is open decision #9.
  */
 

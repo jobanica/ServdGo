@@ -1,8 +1,8 @@
 import { useMemo, useRef, useState } from 'react';
 import { parseMenuCsv, groupByStore,
   errMessage,
-} from '@ebd/shared';
-import { importMenuRows } from '@ebd/supabase';
+} from '@servdgo/shared';
+import { importMenuRows } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { Card, peso } from './ui.tsx';
 

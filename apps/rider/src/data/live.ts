@@ -1,4 +1,4 @@
-import { manilaDay, type EarningRecord, type LedgerEntry, type OrderStatus } from '@ebd/shared';
+import { manilaDay, type EarningRecord, type LedgerEntry, type OrderStatus } from '@servdgo/shared';
 import {
   listOpenOrders,
   listRiderActiveOrders,
@@ -24,7 +24,7 @@ import {
   getRiderOnline,
   setRiderOnline,
   type SupabaseClient,
-} from '@ebd/supabase';
+} from '@servdgo/supabase';
 import type { RiderData, RiderOrder } from './types.ts';
 
 function toRiderOrder(row: Record<string, unknown>): RiderOrder {

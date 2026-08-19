@@ -19,5 +19,5 @@ export const REQUIRE_DOCUMENTS = false;
 /** App version shown in Settings → About. */
 export const APP_VERSION = '1.0.0';
 
-// Support contact and the published policy URLs live in @ebd/shared/legal, so
+// Support contact and the published policy URLs live in @servdgo/shared/legal, so
 // both apps and the legal pages themselves can never drift apart.

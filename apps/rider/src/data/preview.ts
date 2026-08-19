@@ -1,8 +1,8 @@
-import type { EarningRecord, LedgerEntry, OrderStatus } from '@ebd/shared';
+import type { EarningRecord, LedgerEntry, OrderStatus } from '@servdgo/shared';
 import {
   needsOverBudgetConfirmation, canTransition, generatesSettlementBalance,
   filterEarnings, manilaDay,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import type { RiderData, RiderOrder } from './types.ts';
 
 /** YYYY-MM-DD helpers for seeding a believable ledger. */

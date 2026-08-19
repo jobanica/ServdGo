@@ -6,7 +6,7 @@
  * `create-staff` Edge Function (see supabase/functions/create-staff).
  */
 
-import { STAFF_ROLES, type StaffRole } from '@ebd/shared';
+import { STAFF_ROLES, type StaffRole } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface StaffMember {

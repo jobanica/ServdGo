@@ -12,7 +12,7 @@ import {
   type CartLine,
   type FeeConfig,
   type PaymentMethod,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface FoodCheckoutInput {

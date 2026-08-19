@@ -8,7 +8,7 @@
  */
 
 /** Trading name shown to users and named as the operator in the policy. */
-export const OPERATOR_NAME = 'Easy Buy Delivery';
+export const OPERATOR_NAME = 'ServdGo';
 
 /**
  * Public contact address for privacy requests, support and account deletion.
@@ -39,6 +39,6 @@ export const POLICY_LAST_UPDATED = '2026-08-04';
 
 /** Android package names, as published on Google Play. */
 export const ANDROID_PACKAGES = {
-  customer: 'com.easybuydelivery.customer',
-  rider: 'com.easybuydelivery.rider',
+  customer: 'com.servdgo.customer',
+  rider: 'com.servdgo.rider',
 } as const;

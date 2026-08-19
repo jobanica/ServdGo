@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import {
   getMyOrderDetail, getOrderRiderInfo, orderGoodsAmount, orderGoodsIsFinal,
   type MyOrderDetail, type OrderRiderInfo,
-} from '@ebd/supabase';
-import { errMessage } from '@ebd/shared';
+} from '@servdgo/supabase';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { peso } from './ui.tsx';
 

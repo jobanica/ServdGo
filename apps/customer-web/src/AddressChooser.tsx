@@ -2,10 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getMyCustomer, listAddresses, addAddress, setDefaultAddress, setAddressArea,
   type CustomerAddress, type AreaSelection,
-} from '@ebd/supabase';
+} from '@servdgo/supabase';
 import {
   sortAddresses, addressTitle, availableLabels, nextAddressLabel, findSavedAddress,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { LocationPicker, type LatLngValue } from './LocationPicker.tsx';
 import { AreaPicker } from './AreaPicker.tsx';

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
-import { listStaff, setUserRole, revokeStaff, createStaff, type StaffMember } from '@ebd/supabase';
+import { listStaff, setUserRole, revokeStaff, createStaff, type StaffMember } from '@servdgo/supabase';
 import { STAFF_ROLES, ROLE_LABEL, type StaffRole,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Card, Th, Td, Muted, ErrorNote } from './ui.tsx';
 
 const SAMPLE: StaffMember[] = [
-  { id: 's1', full_name: 'owner@easybuy.ph', role: 'admin' },
-  { id: 's2', full_name: 'manager@easybuy.ph', role: 'manager' },
-  { id: 's3', full_name: 'dispatch@easybuy.ph', role: 'dispatcher' },
+  { id: 's1', full_name: 'owner@servdgo.ph', role: 'admin' },
+  { id: 's2', full_name: 'manager@servdgo.ph', role: 'manager' },
+  { id: 's3', full_name: 'dispatch@servdgo.ph', role: 'dispatcher' },
 ];
 
 const roleChip: Record<StaffRole, string> = {

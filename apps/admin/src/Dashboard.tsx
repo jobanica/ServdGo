@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { listAllStores, listRiders, listOpenOrders, listRiderBalances } from '@ebd/supabase';
+import { listAllStores, listRiders, listOpenOrders, listRiderBalances } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { Card, peso } from './ui.tsx';
 import { LiveOrders } from './LiveOrders.tsx';
@@ -42,7 +42,7 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: string) => void })
       {/* Branded promo / status banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-green to-[#4e9e15] p-6 text-white shadow-sm">
         <div className="relative z-10 max-w-md">
-          <p className="text-sm font-medium opacity-90">Easy Buy Delivery</p>
+          <p className="text-sm font-medium opacity-90">ServdGo</p>
           <h2 className="mt-1 text-2xl font-extrabold leading-tight">
             Pabili • Padala <span className="text-brand-yellow">delivered fast</span>
           </h2>

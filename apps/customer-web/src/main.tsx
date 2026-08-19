@@ -5,7 +5,7 @@ import './index.css';
 import { App } from './App.tsx';
 import { AuthProvider } from './auth/AuthContext.tsx';
 import { AuthGate } from './auth/AuthGate.tsx';
-import { recordAppInstall, isInstalledApp } from '@ebd/supabase';
+import { recordAppInstall, isInstalledApp } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
 // Count installs of the customer app: when the browser confirms an install, and

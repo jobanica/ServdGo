@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { listOrders, getOrderDetail } from '@ebd/supabase';
-import type { ServiceType, OrderStatus } from '@ebd/shared';
-import { errMessage } from '@ebd/shared';
+import { listOrders, getOrderDetail } from '@servdgo/supabase';
+import type { ServiceType, OrderStatus } from '@servdgo/shared';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { useDayRange } from './DateRange.tsx';
 import { Card, Th, Td, Muted, ErrorNote, peso } from './ui.tsx';

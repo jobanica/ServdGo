@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { haversineMeters, etaMinutes, lerpLatLng, type LatLng } from '@ebd/shared';
-import { subscribeRiderLocation } from '@ebd/supabase';
+import { haversineMeters, etaMinutes, lerpLatLng, type LatLng } from '@servdgo/shared';
+import { subscribeRiderLocation } from '@servdgo/supabase';
 import { supabase } from '../lib/supabase.ts';
 
 export interface TrackingState {

@@ -10,7 +10,7 @@
 export const REQUIRE_ACCOUNT = true;
 
 /** Operator hotline shown in the customer Account → Help section. */
-// Support contact lives in @ebd/shared/legal — one source for both apps and
+// Support contact lives in @servdgo/shared/legal — one source for both apps and
 // the published policy pages.
 
 /** App version shown in Account → About. */

@@ -56,7 +56,7 @@ export interface PlatformStatus {
 
 /** The default announcement, used when the operator hasn't written their own. */
 export const CLOSED_MESSAGE =
-  "Easy Buy Delivery is closed at the moment. We're not taking new orders right now — please try again later.";
+  "ServdGo is closed at the moment. We're not taking new orders right now — please try again later.";
 
 /**
  * Are we open, and how much work is still out there?

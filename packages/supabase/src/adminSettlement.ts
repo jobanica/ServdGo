@@ -9,7 +9,7 @@ import {
   type LedgerEntry,
   type RiderBalance,
   type RiderLedgerGroup,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 function toLedgerEntry(row: Record<string, unknown>): LedgerEntry {

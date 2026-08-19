@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getMyCustomer, listAddresses, type CustomerAddress } from '@ebd/supabase';
+import { getMyCustomer, listAddresses, type CustomerAddress } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import type { LatLngValue } from './LocationPicker.tsx';
-import type { AreaSelection } from '@ebd/supabase';
+import type { AreaSelection } from '@servdgo/supabase';
 
 /**
  * The customer's saved default address, loaded once per form.

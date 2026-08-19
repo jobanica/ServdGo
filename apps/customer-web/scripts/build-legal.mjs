@@ -1,5 +1,5 @@
 /**
- * Generate the published legal pages from the constants in @ebd/shared/legal.
+ * Generate the published legal pages from the constants in @servdgo/shared/legal.
  *
  * Google Play needs three URLs that work in a browser, without the app and
  * without JavaScript: a privacy policy, terms, and a page describing account
@@ -15,7 +15,7 @@ import {
   OPERATOR_NAME, SUPPORT_EMAIL, SUPPORT_PHONE,
   PRIVACY_URL, TERMS_URL, ACCOUNT_DELETION_URL,
   POLICY_LAST_UPDATED, ANDROID_PACKAGES, CUSTOMER_SITE,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../public');
 

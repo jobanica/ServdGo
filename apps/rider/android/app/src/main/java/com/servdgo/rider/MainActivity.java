@@ -1,4 +1,4 @@
-package com.easybuydelivery.customer;
+package com.servdgo.rider;
 
 import com.getcapacitor.BridgeActivity;
 

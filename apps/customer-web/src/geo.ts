@@ -1,4 +1,4 @@
-import { geolocationHelp, coarseFixHelp, isCoarseFix, type GeoContext } from '@ebd/shared';
+import { geolocationHelp, coarseFixHelp, isCoarseFix, type GeoContext } from '@servdgo/shared';
 import { isInAppBrowser, inAppBrowserName } from './inAppBrowser.tsx';
 
 /** iPhone/iPad, including iPadOS which reports itself as a Mac with a touchscreen. */

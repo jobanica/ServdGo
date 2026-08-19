@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   listRiderRequestEvents, summarizeRefusals, listPinCorrections,
   type RiderRequestEvent, type RiderRefusalTally, type PinCorrection,
-} from '@ebd/supabase';
-import { errMessage, manilaDay, shiftDay } from '@ebd/shared';
+} from '@servdgo/supabase';
+import { errMessage, manilaDay, shiftDay } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Card, Th, Td, ErrorNote, peso } from './ui.tsx';
 import { useDayRange } from './DateRange.tsx';

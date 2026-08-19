@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { getActiveDelivery, getOrderRiderInfo, respondToItemChange, cancelEmptyOrder,
   orderGoodsAmount, orderGoodsIsFinal, listOrderAddons, requestOrderAddon, cancelOrderAddon,
   getAppSettings,
-  type ActiveDelivery, type OrderRiderInfo, type OrderAddon } from '@ebd/supabase';
+  type ActiveDelivery, type OrderRiderInfo, type OrderAddon } from '@servdgo/supabase';
 import { supabase } from '../lib/supabase.ts';
 import { useAuth } from '../auth/AuthContext.tsx';
 import { TrackingMap } from './TrackingMap.tsx';
 import { PayRider } from '../PayRider.tsx';
 import { ChatButton } from '../Chat.tsx';
 import { peso } from '../ui.tsx';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 import { useArrivalAlert, ArrivalBanner, NotificationOptIn } from '../ArrivalAlert.tsx';
 
 /** "My order" — what the customer ordered, shown alongside the live map. */

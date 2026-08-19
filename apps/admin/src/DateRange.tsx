@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { manilaDay, shiftDay } from '@ebd/shared';
+import { manilaDay, shiftDay } from '@servdgo/shared';
 
 export interface DayRange { from: string; to: string }
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { countAvailableRiders } from '@ebd/supabase';
-import type { ServiceType } from '@ebd/shared';
+import { countAvailableRiders } from '@servdgo/supabase';
+import type { ServiceType } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 
 /** What the customer is told when the pool has nobody watching it. */

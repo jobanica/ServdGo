@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import type { OrderStatus } from '@ebd/shared';
-import { startPublishingLocation, openLocationChannel } from '@ebd/supabase';
+import type { OrderStatus } from '@servdgo/shared';
+import { startPublishingLocation, openLocationChannel } from '@servdgo/supabase';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { supabase } from './lib/supabase.ts';
 
@@ -53,7 +53,7 @@ function nativeWatch(orderId: string): () => void {
 
   void BackgroundGeolocation.addWatcher(
     {
-      backgroundTitle: 'Easy Buy Rider — delivering',
+      backgroundTitle: 'ServdGo Rider — delivering',
       backgroundMessage: 'Sharing your location so the customer can track the delivery.',
       requestPermissions: true,
       stale: false,

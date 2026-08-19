@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getPlatformStatus, CLOSED_MESSAGE, type PlatformStatus } from '@ebd/supabase';
+import { getPlatformStatus, CLOSED_MESSAGE, type PlatformStatus } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 
 /**

@@ -1,5 +1,5 @@
 {
-  "name": "@ebd/admin",
+  "name": "@servdgo/admin",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ebd/shared": "*",
-    "@ebd/supabase": "*",
+    "@servdgo/shared": "*",
+    "@servdgo/supabase": "*",
     "leaflet": "^1.9.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

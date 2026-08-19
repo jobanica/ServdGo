@@ -3,11 +3,11 @@ import {
   onAuthChange, onPasswordRecovery, sendPasswordReset, updatePassword,
   signInWithPassword, signUpWithPassword, ensureRider, signOut,
   uploadRiderDocument, riderDocumentsComplete, RIDER_DOCUMENT_LABELS, type RiderDocumentKind,
-} from '@ebd/supabase';
+} from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { App } from './App.tsx';
 import { REQUIRE_DOCUMENTS } from './config.ts';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 
 interface RiderRec {
   id: string;
@@ -196,7 +196,7 @@ function Landing({ onStart, signedInEmail }: { onStart: (mode: 'signin' | 'signu
           Deliver faster,<br /><span className="text-brand-green">earn smarter</span>
         </h1>
         <p className="mt-3 text-sm text-black/55">
-          Accept orders across your town and earn on your own schedule with Easy Buy Delivery.
+          Accept orders across your town and earn on your own schedule with ServdGo.
         </p>
 
         <div className="flex flex-1 items-center justify-center py-6">
@@ -241,7 +241,7 @@ function Shell({ title, sub, children }: { title: string; sub: string; children:
     <div className="min-h-screen">
       <header className="bg-brand-purple text-white">
         <div className="mx-auto max-w-sm px-5 py-4">
-          <h1 className="text-lg font-bold">Easy Buy Rider</h1>
+          <h1 className="text-lg font-bold">ServdGo Rider</h1>
           <p className="text-xs opacity-90">{sub}</p>
         </div>
       </header>

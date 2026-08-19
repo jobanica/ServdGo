@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { summarizeRiderBalances, type RiderBalance,
   errMessage,
-} from '@ebd/shared';
-import { listRiderBalances, listPendingSettlements, confirmSettlement } from '@ebd/supabase';
+} from '@servdgo/shared';
+import { listRiderBalances, listPendingSettlements, confirmSettlement } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
 const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });

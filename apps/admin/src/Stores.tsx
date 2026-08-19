@@ -21,10 +21,10 @@ import {
   deleteStore,
   deleteMenuItem,
   copyStoreMenu,
-} from '@ebd/supabase';
+} from '@servdgo/supabase';
 import { isOpenNow, scheduleLabel, WEEKDAYS, ALL_DAYS,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { ImportMenu } from './ImportMenu.tsx';
 import { MapPicker, type MapValue } from './MapPicker.tsx';

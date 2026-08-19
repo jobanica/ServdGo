@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { correctOrderPins } from '@ebd/supabase';
-import { errMessage } from '@ebd/shared';
+import { correctOrderPins } from '@servdgo/supabase';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { LocationPicker, type LatLngValue } from './LocationPicker.tsx';
 

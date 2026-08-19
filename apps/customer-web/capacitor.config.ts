@@ -9,8 +9,8 @@ import type { CapacitorConfig } from '@capacitor/cli';
  * that ships inside the APK is the interface.
  */
 const config: CapacitorConfig = {
-  appId: 'com.easybuydelivery.customer',
-  appName: 'Easy Buy Delivery',
+  appId: 'com.servdgo.customer',
+  appName: 'ServdGo',
   webDir: 'dist',
   plugins: {
     PushNotifications: { presentationOptions: ['badge', 'sound', 'alert'] },

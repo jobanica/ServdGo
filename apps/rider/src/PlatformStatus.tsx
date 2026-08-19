@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getPlatformStatus, CLOSED_MESSAGE, type PlatformStatus } from '@ebd/supabase';
+import { getPlatformStatus, CLOSED_MESSAGE, type PlatformStatus } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
 /**
@@ -40,7 +40,7 @@ export function ClosedBanner({ status, workLeft }: { status: PlatformStatus; wor
     <div className={`mb-4 rounded-2xl p-4 ring-1 ${
       draining ? 'bg-brand-yellow/20 ring-brand-yellow' : 'bg-black/[0.04] ring-black/10'}`} role="status">
       <p className={`text-sm font-bold ${draining ? 'text-yellow-900' : 'text-black/70'}`}>
-        🕒 Easy Buy Delivery is closed
+        🕒 ServdGo is closed
       </p>
       <p className={`mt-1 text-sm ${draining ? 'text-yellow-900/85' : 'text-black/55'}`}>
         {status.message ?? CLOSED_MESSAGE}

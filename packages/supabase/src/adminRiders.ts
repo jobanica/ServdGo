@@ -3,7 +3,7 @@
  * delivery, owed balance, lock state, plus a manual lock/unlock action.
  */
 
-import { owedBalance, overdueBalance, isLockedOut, type LedgerEntry } from '@ebd/shared';
+import { owedBalance, overdueBalance, isLockedOut, type LedgerEntry } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export type RiderActivity = 'suspended' | 'locked' | 'on_delivery' | 'available' | 'offline';

@@ -3,7 +3,7 @@
  * aggregation is done in JS over a capped fetch (admin reads all orders).
  */
 
-import { manilaDay, normalizeRange, shiftDay, type DayRange, type ServiceType } from '@ebd/shared';
+import { manilaDay, normalizeRange, shiftDay, type DayRange, type ServiceType } from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**

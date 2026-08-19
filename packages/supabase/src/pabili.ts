@@ -15,7 +15,7 @@ import {
   type FeeConfig,
   type PabiliBudget,
   type PaymentMethod,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface PabiliStoreInput {

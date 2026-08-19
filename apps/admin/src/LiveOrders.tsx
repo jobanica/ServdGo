@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { listActiveOrdersAdmin, adminCancelOrder } from '@ebd/supabase';
+import { listActiveOrdersAdmin, adminCancelOrder } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { Th, Td, Muted, ErrorNote, Card, peso } from './ui.tsx';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 
 interface RiderRef { id: string; name: string; mobile_number: string | null }
 interface OrderRow {

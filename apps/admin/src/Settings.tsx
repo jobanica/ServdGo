@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getAppSettings, updateAppSettings, uploadSettlementQr, getPlatformStatus,
-  type AppSettings, type PlatformStatus } from '@ebd/supabase';
+  type AppSettings, type PlatformStatus } from '@servdgo/supabase';
 import { commission, distanceDeliveryFee,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Card, Muted, peso } from './ui.tsx';
 

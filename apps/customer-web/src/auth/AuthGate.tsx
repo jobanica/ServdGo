@@ -1,11 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { signInWithPassword, signUpWithPassword, sendPasswordReset, updatePassword, onPasswordRecovery } from '@ebd/supabase';
+import { signInWithPassword, signUpWithPassword, sendPasswordReset, updatePassword, onPasswordRecovery } from '@servdgo/supabase';
 import { supabase } from '../lib/supabase.ts';
 import { FirstAddressForm } from '../AddressChooser.tsx';
 import { useAuth } from './AuthContext.tsx';
 import { inputCls } from '../ui.tsx';
 import { REQUIRE_ACCOUNT } from '../config.ts';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 
 /**
  * Account gate. With REQUIRE_ACCOUNT on, a customer must sign in with their
@@ -94,9 +94,9 @@ function Shell({ title, children }: { title: string; children: ReactNode }) {
 
         <div className="relative mx-auto w-full max-w-md px-6 text-center">
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/95 p-2 shadow-lg ring-4 ring-white/20">
-            <img src="/icons/pwa-512x512.png" alt="Easy Buy Delivery" className="h-full w-full object-contain" />
+            <img src="/icons/pwa-512x512.png" alt="ServdGo" className="h-full w-full object-contain" />
           </span>
-          <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight">Easy Buy Delivery</h1>
+          <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight">ServdGo</h1>
           <p className="mt-1.5 text-sm text-white/85">
             Food, errands and parcels — delivered across your town by one trusted rider.
           </p>
@@ -130,7 +130,7 @@ function Shell({ title, children }: { title: string; children: ReactNode }) {
         </div>
 
         <p className="mt-6 text-center text-[11px] text-black/35">
-          © {new Date().getFullYear()} Easy Buy Delivery
+          © {new Date().getFullYear()} ServdGo
         </p>
       </main>
     </div>

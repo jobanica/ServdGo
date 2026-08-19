@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAppSettings } from '@ebd/supabase';
+import { getAppSettings } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { PadalaForm } from './PadalaForm.tsx';
 import { InstallApp } from './InstallApp.tsx';
@@ -57,7 +57,7 @@ export function App() {
           <div className="flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-lg font-black">E</span>
             <div className="leading-tight">
-              <h1 className="text-base font-extrabold tracking-tight">Easy Buy Delivery</h1>
+              <h1 className="text-base font-extrabold tracking-tight">ServdGo</h1>
               <p className="text-[11px] opacity-90">Food • Pabili • Padala</p>
             </div>
           </div>

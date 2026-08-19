@@ -7,19 +7,19 @@
 // Wire as a Database Webhook on `orders` INSERT. Secrets depend on SMS_PROVIDER
 // (see _shared/sms.ts) — e.g. for BulkSMS Philippines (iSMS):
 //   supabase secrets set SMS_PROVIDER=bulksms_ph
-//   supabase secrets set BULKSMS_PH_USERNAME=... BULKSMS_PH_PASSWORD=... BULKSMS_PH_SENDER=EasyBuy
+//   supabase secrets set BULKSMS_PH_USERNAME=... BULKSMS_PH_PASSWORD=... BULKSMS_PH_SENDER=ServdGo
 //   SUPABASE_SERVICE_ROLE_KEY is injected automatically.
 //
 // Deploy:  supabase functions deploy notify-store
 //
 // Runs on Supabase's edge runtime (Deno) — not the local dev stack used for this
-// repo's verification. Message text mirrors @ebd/shared composeStoreOrderSms.
+// repo's verification. Message text mirrors @servdgo/shared composeStoreOrderSms.
 
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { sendSms } from '../_shared/sms.ts';
 
 function composeStoreOrderSms(storeName: string, items: { name: string; qty: number }[], customerContact?: string, notes?: string) {
-  const parts = [`Easy Buy Delivery order for ${storeName}:`, ...items.map((i) => `${i.qty}x ${i.name}`)];
+  const parts = [`ServdGo order for ${storeName}:`, ...items.map((i) => `${i.qty}x ${i.name}`)];
   if (notes?.trim()) parts.push(`Note: ${notes.trim()}`);
   if (customerContact) parts.push(`Customer: ${customerContact}`);
   parts.push('Please prepare for pickup.');

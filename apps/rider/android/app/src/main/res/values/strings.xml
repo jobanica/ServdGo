@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Easy Buy Rider</string>
-    <string name="title_activity_main">Easy Buy Rider</string>
-    <string name="package_name">com.easybuydelivery.rider</string>
-    <string name="custom_url_scheme">com.easybuydelivery.rider</string>
+    <string name="app_name">ServdGo Rider</string>
+    <string name="title_activity_main">ServdGo Rider</string>
+    <string name="package_name">com.servdgo.rider</string>
+    <string name="custom_url_scheme">com.servdgo.rider</string>
 </resources>

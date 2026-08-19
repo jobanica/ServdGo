@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getAnalytics, analyticsRange, type Analytics as Data } from '@ebd/supabase';
-import type { DayRange, ServiceType } from '@ebd/shared';
-import type { DayCount as DayPoint } from '@ebd/supabase';
-import { errMessage, manilaDay, shiftDay } from '@ebd/shared';
+import { getAnalytics, analyticsRange, type Analytics as Data } from '@servdgo/supabase';
+import type { DayRange, ServiceType } from '@servdgo/shared';
+import type { DayCount as DayPoint } from '@servdgo/supabase';
+import { errMessage, manilaDay, shiftDay } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td, peso } from './ui.tsx';
 

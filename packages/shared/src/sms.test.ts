@@ -7,7 +7,7 @@ test('composes a store order SMS with items', () => {
     storeName: 'Lutong Bahay',
     items: [{ name: 'Chicken Adobo', qty: 2 }, { name: 'Extra Rice', qty: 1 }],
   });
-  assert.match(body, /Easy Buy Delivery order for Lutong Bahay:/);
+  assert.match(body, /ServdGo order for Lutong Bahay:/);
   assert.match(body, /2x Chicken Adobo/);
   assert.match(body, /1x Extra Rice/);
   assert.match(body, /Please prepare for pickup\./);

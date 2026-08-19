@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import type { LatLng } from '@ebd/shared';
-import type { OrderRiderInfo } from '@ebd/supabase';
+import type { LatLng } from '@servdgo/shared';
+import type { OrderRiderInfo } from '@servdgo/supabase';
 import { useTracking } from './useTracking.ts';
 
 const pinIcon = (bg: string, emoji: string) =>

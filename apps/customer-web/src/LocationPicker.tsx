@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { isInAppBrowser, inAppBrowserName, isAndroid, openInChrome, copyCurrentLink } from './inAppBrowser.tsx';
 import { locateOnce, locationAlreadyGranted } from './geo.ts';
-import { getAppSettings } from '@ebd/supabase';
+import { getAppSettings } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -67,7 +67,7 @@ export function InAppBrowserNotice() {
     <div className="mb-2 rounded-lg bg-brand-yellow/25 p-3 ring-1 ring-brand-yellow/60">
       <p className="text-sm font-bold text-yellow-900">⚠️ Open in Chrome to use your location</p>
       <p className="mt-0.5 text-xs text-yellow-900/80">
-        You&apos;re browsing inside {app}, which blocks &ldquo;Use my location&rdquo;. Open Easy Buy
+        You&apos;re browsing inside {app}, which blocks &ldquo;Use my location&rdquo;. Open ServdGo
         Delivery in Chrome and it will work — or just tap the map to drop your pin manually.
       </p>
       <div className="mt-2 flex flex-wrap gap-2">

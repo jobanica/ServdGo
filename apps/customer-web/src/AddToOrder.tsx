@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   addOrderItem, addOrderStore, listOrderStores, listMenu, listAvailableStores,
   listOrderAddons, type AddableStore, type OrderAddon,
-} from '@ebd/supabase';
-import { errMessage, MAX_STORES_PER_ORDER } from '@ebd/shared';
+} from '@servdgo/supabase';
+import { errMessage, MAX_STORES_PER_ORDER } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { peso } from './ui.tsx';
 

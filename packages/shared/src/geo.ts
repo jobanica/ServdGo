@@ -44,7 +44,7 @@ export function geolocationHelp(code: number, ctx: GeoContext): string {
   if (code === GEO_PERMISSION_DENIED) {
     if (ctx.ios && ctx.standalone) {
       return 'Location is switched off for this app. Open Settings › Privacy & Security › '
-        + 'Location Services, turn it on, then find Easy Buy Delivery in the list and choose '
+        + 'Location Services, turn it on, then find ServdGo in the list and choose '
         + `"While Using the App". ${FALLBACK}`;
     }
     if (ctx.ios) {

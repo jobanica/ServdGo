@@ -27,11 +27,11 @@ export interface StoreOrderSms {
  *
  * @example
  * composeStoreOrderSms({ storeName: 'Lutong Bahay', items: [{name:'Adobo',qty:2}] })
- * // "Easy Buy Delivery order for Lutong Bahay:\n2x Adobo\nPlease prepare for pickup."
+ * // "ServdGo order for Lutong Bahay:\n2x Adobo\nPlease prepare for pickup."
  */
 export function composeStoreOrderSms(order: StoreOrderSms): string {
   const lines = order.items.map((i) => `${i.qty}x ${i.name}`);
-  const parts = [`Easy Buy Delivery order for ${order.storeName}:`, ...lines];
+  const parts = [`ServdGo order for ${order.storeName}:`, ...lines];
   if (order.notes?.trim()) parts.push(`Note: ${order.notes.trim()}`);
   if (order.customerContact) parts.push(`Customer: ${order.customerContact}`);
   parts.push('Please prepare for pickup.');

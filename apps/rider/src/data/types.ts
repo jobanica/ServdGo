@@ -1,5 +1,5 @@
-import type { OrderStatus, ServiceType, LedgerEntry, PaymentMethod, EarningRecord } from '@ebd/shared';
-import type { OrderItemStatus, OrderAddon, RiderPinCorrectionResult, BuyStorePinResult } from '@ebd/supabase';
+import type { OrderStatus, ServiceType, LedgerEntry, PaymentMethod, EarningRecord } from '@servdgo/shared';
+import type { OrderItemStatus, OrderAddon, RiderPinCorrectionResult, BuyStorePinResult } from '@servdgo/supabase';
 
 export type { OrderAddon };
 

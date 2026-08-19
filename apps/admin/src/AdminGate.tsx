@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { onAuthChange, onPasswordRecovery, sendPasswordReset, updatePassword, signOut } from '@ebd/supabase';
+import { onAuthChange, onPasswordRecovery, sendPasswordReset, updatePassword, signOut } from '@servdgo/supabase';
 import { isStaffRole, type StaffRole,
   errMessage,
-} from '@ebd/shared';
+} from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { IconScooter } from './icons.tsx';
 
@@ -163,7 +163,7 @@ function Shell({ children }: { children: ReactNode }) {
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
         <div className="mb-4 flex items-center gap-2 font-extrabold text-lg text-brand-green">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-green text-white"><IconScooter /></span>
-          Easy Buy Admin
+          ServdGo Admin
         </div>
         {children}
       </div>

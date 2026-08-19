@@ -1,7 +1,7 @@
 /**
  * Rider-side settlement & active-order data access.
  *
- * The daily gate is enforced with the pure helpers in @ebd/shared
+ * The daily gate is enforced with the pure helpers in @servdgo/shared
  * (owedBalance / overdueBalance / isLockedOut) applied to the rider's ledger
  * rows loaded here.
  */

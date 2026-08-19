@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { getOrderPayToRider, getAppSettings, uploadPaymentReceipt, setOrderPaymentReference, type OrderPayToRider } from '@ebd/supabase';
+import { getOrderPayToRider, getAppSettings, uploadPaymentReceipt, setOrderPaymentReference, type OrderPayToRider } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 import { Qr } from './Qr.tsx';
 import { peso } from './ui.tsx';
-import { errMessage } from '@ebd/shared';
+import { errMessage } from '@servdgo/shared';
 
 /**
  * Pay-your-rider panel for GCash-to-rider orders: shows who/where to pay

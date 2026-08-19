@@ -17,7 +17,7 @@ test('a denied iPhone request names the Safari settings path', () => {
 
 test('a home-screen install points at the app entry, not Safari Websites', () => {
   const msg = geolocationHelp(GEO_PERMISSION_DENIED, homeScreen);
-  assert.match(msg, /Easy Buy Delivery in the list/);
+  assert.match(msg, /ServdGo in the list/);
   assert.doesNotMatch(msg, /Safari Websites/);
 });
 

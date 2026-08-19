@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { listRiders, setRiderApplicationStatus, getRiderDocumentUrl, RIDER_DOCUMENT_LABELS, type RiderDocumentKind } from '@ebd/supabase';
-import type { RiderApplicationStatus } from '@ebd/shared';
-import { errMessage } from '@ebd/shared';
+import { listRiders, setRiderApplicationStatus, getRiderDocumentUrl, RIDER_DOCUMENT_LABELS, type RiderDocumentKind } from '@servdgo/supabase';
+import type { RiderApplicationStatus } from '@servdgo/shared';
+import { errMessage } from '@servdgo/shared';
 import { supabase } from './lib/supabase.ts';
 import { Th, Td, Muted, ErrorNote, StatusPill, Card } from './ui.tsx';
 

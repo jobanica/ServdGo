@@ -21,13 +21,13 @@ export function Welcome({ onOrder, onTrack }: { onOrder: () => void; onTrack: ()
 
         {/* Headline */}
         <h1 className="mt-6 text-center text-5xl font-black leading-[1.05] tracking-tight drop-shadow-sm">
-          Welcome to<br />Easy Buy<br /><span className="text-brand-yellow">Delivery</span>
+          Welcome to<br /><span className="text-brand-yellow">ServdGo</span>
         </h1>
 
         {/* Logo medallion */}
         <div className="flex flex-1 items-center justify-center py-6">
           <div className="flex h-52 w-52 items-center justify-center rounded-full bg-white/95 p-4 shadow-2xl ring-8 ring-white/20">
-            <img src="/icons/pwa-512x512.png" alt="Easy Buy Delivery" className="h-full w-full object-contain" />
+            <img src="/icons/pwa-512x512.png" alt="ServdGo" className="h-full w-full object-contain" />
           </div>
         </div>
 
