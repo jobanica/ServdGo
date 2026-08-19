@@ -1,11 +1,18 @@
 /**
- * App settings (the singleton `app_settings` row) and audience counts for
- * broadcasts. Admin-only writes are enforced by RLS.
+ * App settings and audience counts for broadcasts.
+ *
+ * `app_settings` is no longer a single row — it is a view that resolves to the
+ * caller's own territory, so an operator in one city reads and writes their own
+ * numbers through the same query an operator in another city uses. Writes are
+ * held to the caller's territory by RLS and by the view's update trigger.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface AppSettings {
+  /** The territory these settings belong to. Null when the caller has no city. */
+  territory_id: string | null;
+  territory_name: string | null;
   is_open: boolean;
   /** Shown to customers and riders while closed. Null uses the default wording. */
   closed_message: string | null;
@@ -42,10 +49,20 @@ export interface AppSettings {
   service_center_lat: number | null;
   service_center_lng: number | null;
   service_radius_km: number;
+  /**
+   * The band every territory's commission rate is held to. Franchisor-set and
+   * read-only to an operator — shown so they can see the limits they are moving
+   * inside rather than discovering them on save.
+   */
+  commission_rate_min: number;
+  commission_rate_max: number;
 }
 
 export interface PlatformStatus {
   open: boolean;
+  /** The city this answer is about. */
+  territory: string | null;
+  territoryName: string | null;
   /** The operator's own wording, when they set one. */
   message: string | null;
   /** Orders neither delivered nor cancelled — the queue that must drain. */
@@ -73,6 +90,8 @@ export async function getPlatformStatus(db: SupabaseClient): Promise<PlatformSta
     // Unknown means open: a failed lookup must never shutter a working service.
     open: s.open !== false,
     message: s.message ?? null,
+    territory: s.territory ?? null,
+    territoryName: s.territoryName ?? null,
     outstanding: Number(s.outstanding ?? 0),
     unassigned: Number(s.unassigned ?? 0),
   };

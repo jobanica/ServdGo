@@ -61,30 +61,81 @@ they are done.
    `servdgo`; that name is local-CLI only. The hosted project ref
    `difvleyqqixettmbkkno` is unchanged.
 
+## ServdGo is a fork — do not point it at Easy Buy
+
+> This repository is a copy of Easy Buy Delivery that has been rebranded and
+> reshaped into a franchise platform. **It needs its own Supabase project, its
+> own Vercel projects and its own Play listings.**
+>
+> `supabase db push` from this repository against Easy Buy's project
+> (`difvleyqqixettmbkkno`) would restructure a live database that real riders
+> are settling real money against: `app_settings` is replaced by a view,
+> territory columns and new security rules land on every table. There is no
+> undo. Link to the new project and check `supabase projects list` before any
+> push.
+>
+> Table below is Easy Buy's, kept only so the mapping is obvious. Replace each
+> row as the ServdGo equivalent is stood up.
+
 ## Live URLs
 
-| App | URL | Backend |
+| App | Easy Buy today | ServdGo |
 |---|---|---|
-| Customer web | https://ebd-customer.vercel.app | Supabase project `difvleyqqixettmbkkno` |
-| Rider app | https://ebd-rider.vercel.app | same |
-| Admin dashboard | https://ebd-admin.vercel.app | same |
+| Customer web | https://ebd-customer.vercel.app | not deployed |
+| Rider app | https://ebd-rider.vercel.app | not deployed |
+| Admin dashboard | https://ebd-admin.vercel.app | not deployed |
+| Backend | Supabase `difvleyqqixettmbkkno` | **new project needed** |
 
-Both are static Vite SPAs on Vercel, talking to the hosted Supabase project over
-its REST/Realtime API with the public **anon** key. Row Level Security governs
-access; the anon key is safe to ship in the client bundle.
+Each app is a static Vite SPA on Vercel, talking to its hosted Supabase project
+over the REST/Realtime API with the public **anon** key. Row Level Security
+governs access; the anon key is safe to ship in the client bundle.
 
 ## Supabase (backend)
 
-The schema lives in [`supabase/migrations/`](supabase/migrations) (`0001`–`0006`).
-Apply it to a project with the CLI:
+The schema lives in [`supabase/migrations/`](supabase/migrations). Apply it to a
+**new, empty** project with the CLI:
 
 ```bash
-supabase link --project-ref <ref>
+supabase link --project-ref <ref-of-the-new-servdgo-project>
 supabase db push
 ```
 
 `0006_grants.sql` is required — without the table GRANTs, PostgREST returns
 "permission denied" even with RLS policies in place.
+
+Migrations `0077`–`0081` are the franchise model: territories, per-city security,
+pickup routing, and `app_settings` becoming a per-territory view. See
+[docs/territories.md](docs/territories.md).
+
+### Before pushing, run the schema against a throwaway database
+
+```bash
+./scripts/db_test.sh
+```
+
+It creates a temporary PostgreSQL cluster, replays every migration into it, and
+runs `supabase/tests/` — including the check that one city operator cannot read,
+write, or claim anything belonging to another. It needs local PostgreSQL 16
+server binaries and never touches a hosted project.
+
+### Seeding the first city
+
+The migrations create one territory, `first-city`, carrying whatever settings the
+`app_settings` row held. Rename it, draw its boundary, and give the franchisor an
+account before anyone signs in:
+
+```sql
+update territories
+   set name = 'Your city', slug = 'your-city',
+       service_center_lat = <lat>, service_center_lng = <lng>, service_radius_km = <km>,
+       status = 'active'
+ where slug = 'first-city';
+
+update profiles set role = 'franchisor', territory_id = null where id = '<your-auth-uid>';
+```
+
+Run both as the service role (the SQL editor does). A territory that is not
+`active` takes no orders, and only a franchisor can change that.
 
 ## Vercel (frontends)
 

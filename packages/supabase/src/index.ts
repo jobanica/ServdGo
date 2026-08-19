@@ -18,5 +18,6 @@ export * from './chat.ts';
 export * from './areas.ts';
 export * from './installs.ts';
 export * from './notifications.ts';
+export * from './territories.ts';
 export * from './settings.ts';
 export * from './analytics.ts';

@@ -9,7 +9,7 @@ import { supabase } from './lib/supabase.ts';
  * mid-shift. Re-checked every minute so a reopen clears the notice by itself.
  */
 export function usePlatformStatus(): PlatformStatus & { recheck: () => Promise<void> } {
-  const [status, setStatus] = useState<PlatformStatus>({ open: true, message: null, outstanding: 0, unassigned: 0 });
+  const [status, setStatus] = useState<PlatformStatus>({ open: true, message: null, territory: null, territoryName: null, outstanding: 0, unassigned: 0 });
 
   const recheck = useCallback(async () => {
     if (!supabase) return;

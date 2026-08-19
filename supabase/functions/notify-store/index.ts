@@ -33,9 +33,18 @@ Deno.serve(async (req) => {
 
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
-  // Respect the admin toggle.
-  const { data: settings } = await db.from('app_settings').select('sms_notify_stores').single();
-  if (!settings?.sms_notify_stores) return new Response('disabled', { status: 200 });
+  // Respect the operator's toggle — the one belonging to this order's city.
+  //
+  // This runs on the service role, which has no signed-in user and therefore no
+  // territory in context, so the per-territory `app_settings` view would resolve
+  // to nothing. Read the territory the order was routed to instead.
+  if (!order.territory_id) return new Response('no territory', { status: 200 });
+  const { data: territory } = await db
+    .from('territories')
+    .select('sms_notify_stores')
+    .eq('id', order.territory_id)
+    .single();
+  if (!territory?.sms_notify_stores) return new Response('disabled', { status: 200 });
 
   // Line items tagged with their store.
   const { data: items } = await db

@@ -10,7 +10,7 @@ import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
  * announcement clears itself when the operator reopens.
  */
 export function usePlatformStatus(): PlatformStatus & { checking: boolean; recheck: () => Promise<void> } {
-  const [status, setStatus] = useState<PlatformStatus>({ open: true, message: null, outstanding: 0, unassigned: 0 });
+  const [status, setStatus] = useState<PlatformStatus>({ open: true, message: null, territory: null, territoryName: null, outstanding: 0, unassigned: 0 });
   const [checking, setChecking] = useState(true);
 
   const recheck = useCallback(async () => {

@@ -2,10 +2,15 @@
 
 **Pabili • Padala Delivery Services**
 
-A local, single-municipality delivery platform built as a set of thin frontends
-over one shared Supabase backend. It runs three service types — **Food**,
-**Pabili** (buy-anything), and **Padala** (point-to-point courier) — on a single
-rider network.
+A delivery platform built as a set of thin frontends over one shared Supabase
+backend. It runs three service types — **Food**, **Pabili** (buy-anything), and
+**Padala** (point-to-point courier) — on a single rider network.
+
+It is a **franchise**: each city is a *territory* with its own operator, who sets
+their own commission inside a band the franchisor controls, and each operator can
+see only their own city. See [docs/territories.md](docs/territories.md) for the
+model and [docs/franchise-plan.md](docs/franchise-plan.md) for what is built and
+what is not.
 
 The defining model: **no merchant onboarding.** Stores are not partners and do
 not log in. The admin manually adds every store and its menu. Riders act as the

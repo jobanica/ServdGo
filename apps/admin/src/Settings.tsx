@@ -8,6 +8,8 @@ import { supabase } from './lib/supabase.ts';
 import { Card, Muted, peso } from './ui.tsx';
 
 const SAMPLE: AppSettings = {
+  territory_id: null, territory_name: 'Preview city',
+  commission_rate_min: 0.1, commission_rate_max: 0.25,
   is_open: true, closed_message: null, schedule: null, default_delivery_fee: 50, per_store_fee: 25,
   convenience_fee: 0, convenience_fee_food: 0, convenience_fee_pabili: 0, convenience_fee_padala: 0,
   commission_rate: 0.15, markup_operator_share: 1, delivery_fee_model: 'flat',
@@ -70,6 +72,18 @@ export function Settings() {
 
   return (
     <div className="max-w-3xl space-y-5">
+      {/* Whose settings these are. Every number below belongs to one city. */}
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-xl bg-brand-charcoal/5 px-4 py-3
+                      ring-1 ring-brand-charcoal/10">
+        <span className="text-xs font-semibold uppercase tracking-wide text-black/50">Territory</span>
+        <span className="text-sm font-bold">{s.territory_name ?? 'No territory assigned'}</span>
+        <span className="text-xs text-black/50">
+          {s.territory_name
+            ? 'These settings apply to this city only.'
+            : 'Ask the franchisor to assign you to a city before changing anything.'}
+        </span>
+      </div>
+
       {/* Operating hours */}
       <Card title="Operating hours">
         <label className="flex items-center justify-between">
@@ -187,9 +201,15 @@ export function Settings() {
               onChange={(e) => set('per_store_fee', Number(e.target.value))} />
           </Field>
           <Field label="Commission rate (%)">
-            <input type="number" min={0} max={100} step={0.5} className={inp}
+            <input type="number" step={0.5} className={inp}
+              min={Math.round(s.commission_rate_min * 1000) / 10}
+              max={Math.round(s.commission_rate_max * 1000) / 10}
               value={Math.round(s.commission_rate * 1000) / 10}
               onChange={(e) => set('commission_rate', Number(e.target.value) / 100)} />
+            <span className="mt-1 block text-xs text-black/50">
+              Must sit between {Math.round(s.commission_rate_min * 1000) / 10}% and{' '}
+              {Math.round(s.commission_rate_max * 1000) / 10}% — the band is set by the franchisor.
+            </span>
           </Field>
           <Field label="Convenience fee — Food (₱)">
             <input type="number" min={0} className={inp} value={s.convenience_fee_food}
@@ -240,6 +260,8 @@ export function Settings() {
         <p className="mb-3 text-sm text-black/60">
           Orders whose drop-off pin falls outside this radius are rejected — even if the customer
           picked a serviceable barangay. Set the radius to <b>0</b> to turn the check off.
+          <b> Only the franchisor can change a territory's boundary</b>, so saving a different
+          centre or radius here will be refused.
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Centre latitude">
