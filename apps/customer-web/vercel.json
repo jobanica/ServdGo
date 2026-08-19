@@ -1,4 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "installCommand": "npm ci --prefix ../..",
+  "buildCommand": "npm run build -w @servdgo/customer-web --prefix ../..",
+  "outputDirectory": "dist",
+  "framework": "vite"
 }

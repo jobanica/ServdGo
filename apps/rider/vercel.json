@@ -7,7 +7,7 @@
     }
   ],
   "installCommand": "npm ci --prefix ../..",
-  "buildCommand": "npm run build -w @servdgo/admin --prefix ../..",
+  "buildCommand": "npm run build -w @servdgo/rider --prefix ../..",
   "outputDirectory": "dist",
   "framework": "vite"
 }
