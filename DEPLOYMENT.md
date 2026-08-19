@@ -148,8 +148,16 @@ select assign_territory_operator(
 select approve_territory((select id from territories where slug = 'your-city'));
 ```
 
-Run step 1 as the service role (the Supabase SQL editor does). Steps 3 and 4 go
+Step 1 has to run from the Supabase SQL editor or a `postgres`/`service_role`
+connection — the role guard refuses to grant `franchisor` to anyone else, which
+is what stops a city operator promoting themselves. Steps 3 and 4 then go
 through the franchisor's own account, which is the path the console uses.
+
+> A subtlety worth knowing: before 0089 the guard exempted only `service_role`,
+> while the SQL editor connects as `postgres` — so this step failed, and failed
+> quietly on any client that swallows the error, leaving the role as `customer`.
+> If you ever see that, check `select role from profiles where id = '…'` rather
+> than trusting the update reported success.
 
 A territory that is not `active` takes no orders, and only the franchisor can
 change that.

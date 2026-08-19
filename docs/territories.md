@@ -143,6 +143,10 @@ hanging.
 details. Each of those is only discoverable once real orders are running, which
 is exactly when it is expensive.
 
+The first franchisor is a bootstrap: only the franchisor can grant that role, so
+the very first one has to be set from a `postgres` or `service_role` connection.
+An operator signed into the console still cannot grant it to themselves.
+
 ## What is not built yet
 
 - **The customer app is not territory-aware.** It reads fees through
