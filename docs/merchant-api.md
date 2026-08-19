@@ -131,6 +131,21 @@ The same body, for polling or for reconciling after an outage.
 
 ## Webhooks
 
+### Who provides what
+
+Setting a restaurant up, the two callback fields come from opposite directions
+and this trips people up:
+
+| | who provides it | if it is missing |
+|---|---|---|
+| **Webhook URL** | **the restaurant** — an endpoint on their own system | leave it blank; they poll `/merchant-order` instead, which is a perfectly good way to run |
+| **Signing secret** | **us** — press *Generate* in the console | callbacks go out unsigned, and they have no way to tell a real one from anything else that finds the URL |
+
+Send them three things together: their API key (shown once, at creation), the
+signing secret, and the verification snippet below. The console's *Partner
+restaurants → Where callbacks go* panel has all of it on screen.
+
+
 Every status change is posted to the URL the operator holds for the restaurant.
 The body is the same object `/merchant-order` returns, plus `event`:
 

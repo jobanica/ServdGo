@@ -13,10 +13,35 @@ import {
   type Merchant, type MerchantApiKey, type WebhookDelivery,
 } from '@servdgo/supabase';
 import { errMessage } from '@servdgo/shared';
+import { generatePassword } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td } from './ui.tsx';
+import { MapPicker, type MapValue } from './MapPicker.tsx';
 
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
+
+/** A URL-safe handle from the restaurant's name, so nobody has to invent one. */
+const slugify = (name: string) =>
+  name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+
+/**
+ * The secret we sign callbacks with.
+ *
+ * Generated here, not by the restaurant: it is shared, and the side that has to
+ * be sure it is random should be the side that makes it.
+ */
+const newSigningSecret = () => `whsec_${generatePassword(32)}`;
+
+/** The street address at a pin, from OpenStreetMap. Null when it cannot say. */
+async function addressAt(lat: number, lng: number): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+      { headers: { 'Accept-Language': 'en' } });
+    const hit = await res.json() as { display_name?: string };
+    return hit.display_name ?? null;
+  } catch { return null; }
+}
 
 const SAMPLE: Merchant[] = [
   { id: '1', name: 'Lutong Bahay', slug: 'lutong-bahay', pickup_lat: 10.3157, pickup_lng: 123.8854,
@@ -31,6 +56,8 @@ export function Merchants() {
   const [keys, setKeys] = useState<MerchantApiKey[]>([]);
   const [deliveries, setDeliveries] = useState<WebhookDelivery[]>([]);
   const [freshKey, setFreshKey] = useState<string | null>(null);
+  const [whUrl, setWhUrl] = useState('');
+  const [whSecret, setWhSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -38,6 +65,15 @@ export function Merchants() {
     name: '', slug: '', pickupAddress: '', pickupLat: '', pickupLng: '',
     contactName: '', contactNumber: '', webhookUrl: '', webhookSecret: '',
   });
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [fillingAddress, setFillingAddress] = useState(false);
+
+  // The map's value and the two number fields are the same thing seen twice.
+  const pin: MapValue | null =
+    draft.pickupLat && draft.pickupLng
+      && Number.isFinite(Number(draft.pickupLat)) && Number.isFinite(Number(draft.pickupLng))
+      ? { lat: Number(draft.pickupLat), lng: Number(draft.pickupLng) }
+      : null;
 
   const load = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) return;
@@ -48,6 +84,9 @@ export function Merchants() {
 
   const openMerchant = useCallback(async (id: string) => {
     setSelected(id); setFreshKey(null); setError(null);
+    // The secret is write-only — we hold a hash of nothing here, so the field
+    // starts empty and blank means "keep what is already set".
+    setWhSecret('');
     if (!supabase || !isSupabaseConfigured) return;
     try {
       const [k, d] = await Promise.all([
@@ -67,6 +106,9 @@ export function Merchants() {
 
   const current = rows.find((r) => r.id === selected) ?? null;
 
+  // The URL is readable, so the field shows what is set; the secret is not.
+  useEffect(() => { setWhUrl(current?.webhook_url ?? ''); }, [current?.id]);
+
   return (
     <div className="space-y-5">
       {error && <ErrorNote msg={error} />}
@@ -78,19 +120,46 @@ export function Merchants() {
         </button>
       }>
         {adding && (
-          <div className="mb-4 rounded-xl bg-black/[0.02] p-3">
+          <div className="mb-4 space-y-3 rounded-xl bg-black/[0.02] p-3">
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Name">
                 <input className={inp} value={draft.name}
-                  onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+                  onChange={(e) => setDraft({
+                    ...draft,
+                    name: e.target.value,
+                    // The slug follows the name until somebody edits it themselves.
+                    slug: slugTouched ? draft.slug : slugify(e.target.value),
+                  })} />
               </Field>
               <Field label="Slug">
                 <input className={inp} value={draft.slug} placeholder="lutong-bahay"
-                  onChange={(e) => setDraft({ ...draft, slug: e.target.value })} />
+                  onChange={(e) => { setSlugTouched(true); setDraft({ ...draft, slug: e.target.value }); }} />
               </Field>
+            </div>
+
+            <Field label="Where the rider collects">
+              <MapPicker value={pin} onChange={(v) => {
+                setDraft((d) => ({ ...d, pickupLat: String(v.lat), pickupLng: String(v.lng) }));
+              }} height={260} />
+            </Field>
+
+            <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Pickup address">
-                <input className={inp} value={draft.pickupAddress}
-                  onChange={(e) => setDraft({ ...draft, pickupAddress: e.target.value })} />
+                <div className="flex gap-2">
+                  <input className={inp} value={draft.pickupAddress}
+                    onChange={(e) => setDraft({ ...draft, pickupAddress: e.target.value })} />
+                  <button type="button" disabled={!pin || fillingAddress}
+                    onClick={() => void (async () => {
+                      if (!pin) return;
+                      setFillingAddress(true);
+                      const found = await addressAt(pin.lat, pin.lng);
+                      if (found) setDraft((d) => ({ ...d, pickupAddress: found }));
+                      setFillingAddress(false);
+                    })()}
+                    className="shrink-0 rounded-lg px-3 py-2 text-xs font-semibold ring-1 ring-black/10 hover:bg-black/5 disabled:opacity-40">
+                    {fillingAddress ? '…' : 'From pin'}
+                  </button>
+                </div>
               </Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Pickup latitude">
@@ -110,16 +179,35 @@ export function Merchants() {
                 <input className={inp} value={draft.contactNumber}
                   onChange={(e) => setDraft({ ...draft, contactNumber: e.target.value })} />
               </Field>
-              <Field label="Webhook URL (optional)">
-                <input className={inp} value={draft.webhookUrl} placeholder="https://…"
-                  onChange={(e) => setDraft({ ...draft, webhookUrl: e.target.value })} />
-              </Field>
-              <Field label="Webhook signing secret (optional)">
-                <input className={inp} value={draft.webhookSecret}
-                  onChange={(e) => setDraft({ ...draft, webhookSecret: e.target.value })} />
-              </Field>
             </div>
-            <button disabled={busy || !draft.name || !draft.slug}
+
+            <div className="rounded-xl bg-white p-3 ring-1 ring-black/5">
+              <p className="text-sm font-semibold">Callbacks — optional, and theirs to provide</p>
+              <p className="mt-1 text-xs text-black/55">
+                The <b>URL</b> is an endpoint on the restaurant's own system; ask them for it. Leave
+                it blank and they poll us for status instead — nothing breaks. The <b>secret</b> is
+                ours to generate: we sign every callback with it so they can tell a real one from
+                anything else that finds the URL. Generate it here and send it with their API key.
+              </p>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <Field label="Webhook URL">
+                  <input className={inp} value={draft.webhookUrl} placeholder="https://their-system.example/hooks/servdgo"
+                    onChange={(e) => setDraft({ ...draft, webhookUrl: e.target.value })} />
+                </Field>
+                <Field label="Signing secret">
+                  <div className="flex gap-2">
+                    <input className={`${inp} font-mono`} value={draft.webhookSecret}
+                      onChange={(e) => setDraft({ ...draft, webhookSecret: e.target.value })} />
+                    <button type="button" onClick={() => setDraft({ ...draft, webhookSecret: newSigningSecret() })}
+                      className="shrink-0 rounded-lg px-3 py-2 text-xs font-semibold ring-1 ring-black/10 hover:bg-black/5">
+                      Generate
+                    </button>
+                  </div>
+                </Field>
+              </div>
+            </div>
+
+            <button disabled={busy || !draft.name || !draft.slug || !pin}
               onClick={() => void run(async () => {
                 await createMerchant(supabase!, {
                   name: draft.name, slug: draft.slug,
@@ -128,16 +216,17 @@ export function Merchants() {
                   contactName: draft.contactName, contactNumber: draft.contactNumber,
                   webhookUrl: draft.webhookUrl, webhookSecret: draft.webhookSecret,
                 });
-                setAdding(false);
+                setAdding(false); setSlugTouched(false);
                 setDraft({ name: '', slug: '', pickupAddress: '', pickupLat: '', pickupLng: '',
                   contactName: '', contactNumber: '', webhookUrl: '', webhookSecret: '' });
               })}
-              className="mt-3 rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
+              className="rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
               Add restaurant
             </button>
             <Muted>
-              The pickup pin decides which city's riders see the job, so it has to sit inside a
-              territory you run.
+              {pin
+                ? "The pickup pin decides which city's riders see the job, so it has to sit inside a territory you run."
+                : 'Drop the pin first — it is what routes the job to a city, so a restaurant cannot be added without one.'}
             </Muted>
           </div>
         )}
@@ -265,27 +354,54 @@ export function Merchants() {
           </Card>
 
           <Card title="Where callbacks go">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <p className="text-sm text-black/60">
+              When an order changes hands — accepted, picked up, delivered — we POST it to the
+              restaurant's own endpoint. That URL comes <b>from them</b>; ask their developer for
+              it. Leave it blank and they poll us instead, which is a perfectly good way to run.
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <Field label="Webhook URL">
-                <input className={inp} defaultValue={current.webhook_url ?? ''} id="wh-url" />
+                <input className={inp} value={whUrl} placeholder="https://their-system.example/hooks/servdgo"
+                  onChange={(e) => setWhUrl(e.target.value)} />
               </Field>
               <Field label="Signing secret">
-                <input className={inp} placeholder="leave blank to keep" id="wh-secret" />
+                <div className="flex gap-2">
+                  <input className={`${inp} font-mono`} value={whSecret}
+                    placeholder="leave blank to keep the current one"
+                    onChange={(e) => setWhSecret(e.target.value)} />
+                  <button type="button" onClick={() => setWhSecret(newSigningSecret())}
+                    className="shrink-0 rounded-lg px-3 py-2 text-xs font-semibold ring-1 ring-black/10 hover:bg-black/5">
+                    Generate
+                  </button>
+                </div>
               </Field>
             </div>
             <button disabled={busy}
-              onClick={() => void run(() => {
-                const url = (document.getElementById('wh-url') as HTMLInputElement).value.trim();
-                const secret = (document.getElementById('wh-secret') as HTMLInputElement).value.trim();
-                return setMerchantWebhook(supabase!, current.id, url || null, secret || null);
-              })}
+              onClick={() => void run(() =>
+                setMerchantWebhook(supabase!, current.id, whUrl.trim() || null, whSecret.trim() || null))}
               className="mt-3 rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
               Save
             </button>
-            <Muted>
-              Every callback is signed with this secret, so Servd can tell a real one from anything
-              else that finds the URL. Leave the URL blank and they poll instead.
-            </Muted>
+
+            <div className="mt-4 rounded-xl bg-black/[0.02] p-3">
+              <p className="text-sm font-semibold">What to send their developer</p>
+              <p className="mt-1 text-xs text-black/55">
+                Their API key (minted above, shown once), this signing secret, and how to check it.
+                Every callback carries a header signed with the secret:
+              </p>
+              <pre className="mt-2 overflow-x-auto rounded-lg bg-white p-3 text-xs ring-1 ring-black/5">
+{`X-ServdGo-Signature: t=<unix seconds>,v1=<hex>
+
+v1 = HMAC-SHA256(secret, "\${t}.\${raw request body}")`}
+              </pre>
+              <p className="mt-2 text-xs text-black/55">
+                They recompute it and compare. The timestamp is inside the signed string, so a
+                captured callback cannot be replayed later — tell them to reject anything more than
+                a few minutes old. A failure is retried with backoff and eventually parked, not
+                lost — anything that got that far is on HQ's Callbacks screen and can be replayed
+                by hand.
+              </p>
+            </div>
           </Card>
         </>
       )}
