@@ -13,7 +13,7 @@ import {
   type Merchant, type MerchantApiKey, type WebhookDelivery,
 } from '@servdgo/supabase';
 import { errMessage } from '@servdgo/shared';
-import { generatePassword } from '@servdgo/supabase';
+import { generatePassword, keyUsage, type KeyUsage } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td } from './ui.tsx';
 import { MapPicker, type MapValue } from './MapPicker.tsx';
@@ -65,6 +65,7 @@ export function Merchants() {
     name: '', slug: '', pickupAddress: '', pickupLat: '', pickupLng: '',
     contactName: '', contactNumber: '', webhookUrl: '', webhookSecret: '',
   });
+  const [allKeys, setAllKeys] = useState<KeyUsage[]>([]);
   const [slugTouched, setSlugTouched] = useState(false);
   const [fillingAddress, setFillingAddress] = useState(false);
 
@@ -77,8 +78,10 @@ export function Merchants() {
 
   const load = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) return;
-    try { setRows(await listMerchants(supabase)); }
-    catch (e) { setError(errMessage(e)); }
+    try {
+      const [ms, ks] = await Promise.all([listMerchants(supabase), keyUsage(supabase)]);
+      setRows(ms); setAllKeys(ks);
+    } catch (e) { setError(errMessage(e)); }
   }, []);
   useEffect(() => { void load(); }, [load]);
 
@@ -103,6 +106,32 @@ export function Merchants() {
     catch (e) { setError(errMessage(e)); }
     finally { setBusy(false); }
   }
+
+  /**
+   * Mint a key for a restaurant and leave it on screen.
+   *
+   * Deliberately not routed through run(): that reloads and reopens the
+   * restaurant afterwards, which clears freshKey — and a key that is shown once
+   * and then wiped by a refresh is a key nobody got.
+   */
+  async function mintFor(id: string) {
+    if (!supabase) return;
+    setBusy(true); setError(null);
+    try {
+      setSelected(id);
+      const key = await createMerchantKey(supabase, id, 'Servd');
+      const [k, d, all] = await Promise.all([
+        listMerchantKeys(supabase, id),
+        listWebhookDeliveries(supabase, id, 20),
+        keyUsage(supabase),
+      ]);
+      setKeys(k); setDeliveries(d); setAllKeys(all); setFreshKey(key);
+    } catch (e) { setError(errMessage(e)); }
+    finally { setBusy(false); }
+  }
+
+  const activeKeys = (merchantId: string) =>
+    allKeys.filter((k) => k.merchant_id === merchantId && !k.revoked_at).length;
 
   const current = rows.find((r) => r.id === selected) ?? null;
 
@@ -208,18 +237,27 @@ export function Merchants() {
             </div>
 
             <button disabled={busy || !draft.name || !draft.slug || !pin}
-              onClick={() => void run(async () => {
-                await createMerchant(supabase!, {
-                  name: draft.name, slug: draft.slug,
-                  pickupLat: Number(draft.pickupLat), pickupLng: Number(draft.pickupLng),
-                  pickupAddress: draft.pickupAddress,
-                  contactName: draft.contactName, contactNumber: draft.contactNumber,
-                  webhookUrl: draft.webhookUrl, webhookSecret: draft.webhookSecret,
-                });
-                setAdding(false); setSlugTouched(false);
-                setDraft({ name: '', slug: '', pickupAddress: '', pickupLat: '', pickupLng: '',
-                  contactName: '', contactNumber: '', webhookUrl: '', webhookSecret: '' });
-              })}
+              onClick={() => void (async () => {
+                if (!supabase) return;
+                setBusy(true); setError(null);
+                try {
+                  const id = await createMerchant(supabase, {
+                    name: draft.name, slug: draft.slug,
+                    pickupLat: Number(draft.pickupLat), pickupLng: Number(draft.pickupLng),
+                    pickupAddress: draft.pickupAddress,
+                    contactName: draft.contactName, contactNumber: draft.contactNumber,
+                    webhookUrl: draft.webhookUrl, webhookSecret: draft.webhookSecret,
+                  });
+                  setAdding(false); setSlugTouched(false);
+                  setDraft({ name: '', slug: '', pickupAddress: '', pickupLat: '', pickupLng: '',
+                    contactName: '', contactNumber: '', webhookUrl: '', webhookSecret: '' });
+                  await load();
+                  // Straight onto the key panel: a restaurant without a key
+                  // cannot call anything, so this is not a separate errand.
+                  await openMerchant(id);
+                } catch (e) { setError(errMessage(e)); }
+                finally { setBusy(false); }
+              })()}
               className="rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
               Add restaurant
             </button>
@@ -231,10 +269,15 @@ export function Merchants() {
           </div>
         )}
 
-        {rows.length === 0 ? <Muted>No partner restaurants yet.</Muted> : (
+        {rows.length === 0 ? (
+          <Muted>
+            No partner restaurants yet. Add one — its API key is minted afterwards, on the
+            restaurant itself, because a key belongs to a restaurant rather than to the city.
+          </Muted>
+        ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead><tr><Th>Restaurant</Th><Th>Pickup</Th><Th>Callbacks</Th><Th>Status</Th><Th>{''}</Th></tr></thead>
+              <thead><tr><Th>Restaurant</Th><Th>Pickup</Th><Th>API key</Th><Th>Callbacks</Th><Th>Status</Th><Th>{''}</Th></tr></thead>
               <tbody>
                 {rows.map((m) => (
                   <tr key={m.id} className="border-t border-black/5">
@@ -243,6 +286,16 @@ export function Merchants() {
                       <span className="block text-xs text-black/40">{m.slug}</span>
                     </Td>
                     <Td>{m.pickup_address ?? <span className="text-black/40">not pinned</span>}</Td>
+                    <Td>
+                      {activeKeys(m.id) > 0
+                        ? <span className="text-xs">{activeKeys(m.id)} active</span>
+                        : (
+                          <button disabled={busy} onClick={() => void mintFor(m.id)}
+                            className="rounded-lg bg-brand-orange px-2.5 py-1 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-50">
+                            Mint a key
+                          </button>
+                        )}
+                    </Td>
                     <Td>{m.webhook_url
                       ? <span className="text-xs">{m.webhook_url}</span>
                       : <span className="text-xs text-black/40">polls instead</span>}</Td>
@@ -303,12 +356,9 @@ export function Merchants() {
               </div>
             )}
             <div className="mt-3 flex flex-wrap gap-2">
-              <button disabled={busy}
-                onClick={() => void run(async () => {
-                  setFreshKey(await createMerchantKey(supabase!, current.id, 'Servd'));
-                })}
+              <button disabled={busy} onClick={() => void mintFor(current.id)}
                 className="rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
-                Mint a key
+                {keys.some((k) => !k.revoked_at) ? 'Mint another key' : 'Mint a key'}
               </button>
               <button disabled={busy}
                 onClick={() => void run(() => setMerchantActive(supabase!, current.id, !current.is_active))}
