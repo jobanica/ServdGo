@@ -1,0 +1,66 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "com.easybuydelivery.rider"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.easybuydelivery.rider"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    // Without this file there is no FCM, and a rider whose app is closed never
+    // hears about a new order — the app looks fine and quietly does nothing.
+    // Tolerable while developing; never something to ship.
+    logger.warn("\n  ⚠  google-services.json is missing — push notifications are DISABLED in this build.\n" +
+                "     Download it from the Firebase console (Project settings → your Android app)\n" +
+                "     into apps/rider/android/app/. See DEPLOYMENT.md.\n")
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.allTasks.any { it.name ==~ /(?i).*(assemble|bundle)Release.*/ }) {
+            throw new GradleException(
+                "google-services.json is required for a release build: without it riders get no " +
+                "order notifications when the app is closed. See DEPLOYMENT.md → Incoming-order notifications.")
+        }
+    }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Easy Buy Delivery</string>
+    <string name="title_activity_main">Easy Buy Delivery</string>
+    <string name="package_name">com.easybuydelivery.customer</string>
+    <string name="custom_url_scheme">com.easybuydelivery.customer</string>
+</resources>

@@ -1,0 +1,30 @@
+# dependencies
+node_modules/
+.pnp.*
+
+# build output
+dist/
+build/
+*.tsbuildinfo
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# test coverage
+coverage/

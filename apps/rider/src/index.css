@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+
+/* Easy Buy Delivery brand tokens (sampled from the logo — see docs/branding.md). */
+@theme {
+  --color-brand-green: #6dbe22;
+  --color-brand-purple: #5e2d91;
+  --color-brand-yellow: #f5e400;
+  --color-brand-ink: #1e1e1e;
+}
+
+body {
+  background: #f6f7f4;
+  color: var(--color-brand-ink);
+}

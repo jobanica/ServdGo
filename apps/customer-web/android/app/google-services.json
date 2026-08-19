@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "799412656596",
+    "project_id": "easy-buy-delivery",
+    "storage_bucket": "easy-buy-delivery.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799412656596:android:7c796f56b949f711465e41",
+        "android_client_info": {
+          "package_name": "com.easybuydelivery.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtkRjncqqME3ZtCziTTdzGnJXy6fu5Gkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799412656596:android:0fa6404a39cbf399465e41",
+        "android_client_info": {
+          "package_name": "com.easybuydelivery.rider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtkRjncqqME3ZtCziTTdzGnJXy6fu5Gkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
