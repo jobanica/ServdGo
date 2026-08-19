@@ -20,6 +20,8 @@ import { can, ROLE_LABEL, type AdminSection, type ConsoleRole } from '@servdgo/s
 import { Territories } from './Territories.tsx';
 import { TenantDetail } from './hq/TenantDetail.tsx';
 import { Invoices } from './hq/Invoices.tsx';
+import { Scorecard } from './hq/Scorecard.tsx';
+import { Alerts } from './hq/Alerts.tsx';
 import { Royalty } from './Royalty.tsx';
 import { Merchants } from './Merchants.tsx';
 import {
@@ -47,6 +49,8 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'settings', label: 'Settings', icon: IconSettings },
   { key: 'territories', label: 'Territories', icon: IconStore },
   { key: 'invoices', label: 'Invoices', icon: IconWallet },
+  { key: 'scorecard', label: 'Scorecard', icon: IconChart },
+  { key: 'hqAlerts', label: 'Alerts', icon: IconMegaphone },
 ];
 
 const TITLES: Record<Tab, string> = {
@@ -56,6 +60,7 @@ const TITLES: Record<Tab, string> = {
   royalty: 'Franchise royalty', merchants: 'Partner restaurants',
   broadcast: 'Broadcast SMS', areas: 'Service areas', users: 'Users & installs', staff: 'Staff', settings: 'Settings',
   territories: 'Territories', invoices: 'Invoices',
+  scorecard: 'Partner scorecard', hqAlerts: 'Alerts',
 };
 
 /**
@@ -74,6 +79,7 @@ const PATHS: Record<Tab, string> = {
   merchants: '/merchants', broadcast: '/broadcast', areas: '/areas',
   users: '/users', settings: '/settings', staff: '/staff',
   territories: '/hq/tenants', invoices: '/hq/invoices',
+  scorecard: '/hq/scorecard', hqAlerts: '/hq/alerts',
 };
 
 function tabFromPath(pathname: string, role: ConsoleRole): Tab {
@@ -182,6 +188,8 @@ export function App() {
                 </Routes>
               )}
               {tab === 'invoices' && <Invoices />}
+              {tab === 'scorecard' && <Scorecard />}
+              {tab === 'hqAlerts' && <Alerts />}
               {tab === 'merchants' && <Merchants />}
               {tab === 'royalty' && <Royalty />}
               {tab === 'stores' && <Stores />}

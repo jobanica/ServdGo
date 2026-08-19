@@ -18,7 +18,7 @@ export type ConsoleRole = StaffRole | 'franchisor';
 export type AdminSection =
   | 'dashboard' | 'analytics' | 'stores' | 'ridersActive' | 'riders'
   | 'orders' | 'history' | 'settlements' | 'royalty' | 'merchants' | 'broadcast'
-  | 'areas' | 'users' | 'settings' | 'staff' | 'territories' | 'invoices';
+  | 'areas' | 'users' | 'settings' | 'staff' | 'territories' | 'invoices' | 'scorecard' | 'hqAlerts';
 
 export const STAFF_ROLES: StaffRole[] = ['admin', 'manager', 'dispatcher', 'support'];
 
@@ -32,7 +32,7 @@ export const ROLE_LABEL: Record<ConsoleRole, string> = {
 const ALL: AdminSection[] = [
   'dashboard', 'analytics', 'stores', 'ridersActive', 'riders',
   'orders', 'history', 'settlements', 'royalty', 'merchants', 'broadcast', 'areas',
-  'users', 'settings', 'staff', 'territories', 'invoices',
+  'users', 'settings', 'staff', 'territories', 'invoices', 'scorecard', 'hqAlerts',
 ];
 
 /** Sections each role may open. Settings, staff and the royalty owed are the
@@ -42,7 +42,7 @@ const ACCESS: Record<ConsoleRole, AdminSection[]> = {
   manager: ['dashboard', 'analytics', 'stores', 'ridersActive', 'riders', 'orders', 'history', 'settlements', 'merchants', 'broadcast', 'areas', 'users'],
   dispatcher: ['dashboard', 'ridersActive', 'riders', 'orders', 'history'],
   support: ['dashboard', 'orders', 'history', 'broadcast'],
-  franchisor: ['territories', 'invoices'],
+  franchisor: ['territories', 'invoices', 'scorecard', 'hqAlerts'],
 };
 
 /** True when a role may open a section. */
