@@ -74,17 +74,22 @@ they are done.
 > undo. Link to the new project and check `supabase projects list` before any
 > push.
 >
-> Table below is Easy Buy's, kept only so the mapping is obvious. Replace each
-> row as the ServdGo equivalent is stood up.
+> The migrations have been applied to the ServdGo project and the three apps are
+> deployed. The warning stands for anything you run from here: check
+> `supabase projects list` before a push.
 
 ## Live URLs
 
-| App | Easy Buy today | ServdGo |
+| App | ServdGo (live) | Easy Buy (untouched) |
 |---|---|---|
-| Customer web | https://ebd-customer.vercel.app | https://servdgo.vercel.app |
-| Rider app | https://ebd-rider.vercel.app | not deployed yet |
-| Admin dashboard | https://ebd-admin.vercel.app | not deployed yet |
-| Backend | Supabase `difvleyqqixettmbkkno` | Supabase `odlbrbzcqxormqiheeqi` (ServdGo) |
+| Customer web | https://servdgo.vercel.app | https://ebd-customer.vercel.app |
+| Rider app | https://servdgo-rider.vercel.app | https://ebd-rider.vercel.app |
+| Admin / franchise console | https://servdgo-admin.vercel.app | https://ebd-admin.vercel.app |
+| Backend | Supabase `odlbrbzcqxormqiheeqi` | Supabase `difvleyqqixettmbkkno` |
+
+All three build from the `Claude` branch of `jobanica/ServdGo`, each a separate
+Vercel project rooted at its own `apps/<app>` directory, and each carrying
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` for the ServdGo project.
 
 Each app is a static Vite SPA on Vercel, talking to its hosted Supabase project
 over the REST/Realtime API with the public **anon** key. Row Level Security

@@ -1,5 +1,10 @@
 # Connecting ServdGo to Supabase and Vercel
 
+**This is done.** The ServdGo Supabase project carries all 88 migrations and the
+three apps are deployed — see the Live URLs in [DEPLOYMENT.md](../DEPLOYMENT.md).
+Kept as the runbook for standing up another environment, or for redoing any of
+it from scratch.
+
 The order matters: the database first, then the three frontends that read it.
 
 ## 1. The database
