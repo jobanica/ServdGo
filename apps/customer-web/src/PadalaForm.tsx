@@ -182,7 +182,7 @@ export function PadalaForm() {
   if (createdId) {
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-green/15 text-2xl">✓</div>
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-orange/15 text-2xl">✓</div>
         <h2 className="text-lg font-bold">Padala request sent</h2>
         <p className="mt-1 text-sm text-black/60">
           {createdId === 'preview-only'
@@ -191,7 +191,7 @@ export function PadalaForm() {
         </p>
         <p className="mt-2 font-mono text-xs text-black/40">{createdId}</p>
         <button onClick={() => { setForm(initial); setPickup(null); setDropoff(null); setArea(null); setCreatedId(null); }}
-          className="mt-5 rounded-lg border border-brand-purple px-4 py-2 text-sm font-medium text-brand-purple hover:bg-brand-purple/5">
+          className="mt-5 rounded-lg border border-brand-charcoal px-4 py-2 text-sm font-medium text-brand-charcoal hover:bg-brand-charcoal/5">
           Send another
         </button>
       </div>
@@ -280,7 +280,7 @@ export function PadalaForm() {
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button type="submit" disabled={submitting || !form.pay || !pickup || !dropoff || !form.receiverName.trim() || !form.dropoffAddress.trim() || !form.pickupAddress.trim() || (areaRequired && !area)}
-        className="w-full rounded-lg bg-brand-green py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-60">
+        className="w-full rounded-lg bg-brand-orange py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-60">
         {submitting ? 'Sending…' : areaRequired && !area ? 'Choose your delivery area' : !pickup || !dropoff ? 'Pin pickup and drop-off' : !form.pay ? 'Choose a payment method' : 'Request a rider'}
       </button>
     </form>

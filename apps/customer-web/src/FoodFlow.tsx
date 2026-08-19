@@ -385,14 +385,14 @@ export function FoodFlow() {
   if (createdId) {
     return (
       <div className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-green/15 text-2xl">✓</div>
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-orange/15 text-2xl">✓</div>
         <h2 className="text-lg font-bold">Order placed</h2>
         <p className="mt-1 text-sm text-black/60">
           {createdId === 'preview-only' ? 'Preview only — connect Supabase to notify riders.' : 'Riders have been notified.'}
         </p>
         <p className="mt-2 font-mono text-xs text-black/40">{createdId}</p>
         <button onClick={() => { setCart([]); setCreatedId(null); setOpenStoreId(null); setDropoff(null); setContact(''); setCustName(''); setNote(''); setCutlery(false); setGift(false); setRecipientName(''); setAddressText(''); setRecipientContact(''); setPay(null); setCartOpen(false); }}
-          className="mt-5 rounded-lg border border-brand-purple px-4 py-2 text-sm font-medium text-brand-purple hover:bg-brand-purple/5">
+          className="mt-5 rounded-lg border border-brand-charcoal px-4 py-2 text-sm font-medium text-brand-charcoal hover:bg-brand-charcoal/5">
           Order again
         </button>
       </div>
@@ -418,9 +418,9 @@ export function FoodFlow() {
       ) : (
         <section className="space-y-4">
           {/* Promo hero */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-green to-brand-purple p-5 text-white shadow-md">
-            <div className="absolute -right-6 -top-8 h-32 w-32 rounded-full bg-brand-yellow/30 blur-2xl" />
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">ServdGo</p>
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-orange to-[#c4451f] p-5 text-white shadow-md">
+            <div className="absolute -right-6 -top-8 h-32 w-32 rounded-full bg-white/25 blur-2xl" />
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/80">ServdGo</p>
             <h2 className="mt-1 max-w-[15rem] text-2xl font-black leading-tight">Your favorite local spots, delivered</h2>
             <p className="mt-1 text-sm text-white/85">Food, Pabili &amp; Padala — one rider, one order.</p>
           </div>
@@ -437,7 +437,7 @@ export function FoodFlow() {
           </div>
 
           {cart.length > 0 && (
-            <p className="rounded-xl bg-brand-green/10 px-3 py-2 text-xs text-green-800">
+            <p className="rounded-xl bg-brand-orange/10 px-3 py-2 text-xs text-green-800">
               Pick another store to add to your order — one rider will buy from all of them.
             </p>
           )}
@@ -468,13 +468,13 @@ export function FoodFlow() {
                   {s.logo_url ? (
                     <img src={s.logo_url} alt="" className={`h-full w-full object-cover ${open ? '' : 'grayscale'}`} />
                   ) : (
-                    <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-green/15 to-brand-purple/15 text-5xl ${open ? '' : 'grayscale'}`}>
+                    <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-orange/15 to-brand-orange/5 text-5xl ${open ? '' : 'grayscale'}`}>
                       {cuisineEmoji(s.category)}
                     </div>
                   )}
                   {!open && <div className="absolute inset-0 bg-white/50" />}
                   {open ? (
-                    <span className="absolute left-3 top-3 rounded-full bg-brand-green px-2.5 py-1 text-[11px] font-bold text-white shadow">● Open now</span>
+                    <span className="absolute left-3 top-3 rounded-full bg-brand-orange px-2.5 py-1 text-[11px] font-bold text-white shadow">● Open now</span>
                   ) : (
                     <span className="absolute left-3 top-3 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-bold text-white shadow">
                       {!isOpenNow(null, null, s.open_days) ? 'Closed today'
@@ -495,7 +495,7 @@ export function FoodFlow() {
                     </span>
                     {s.address && <span className="block truncate text-xs text-black/40">📍 {s.address}</span>}
                   </span>
-                  <span className={open ? 'text-brand-purple' : 'text-black/25'}>→</span>
+                  <span className={open ? 'text-brand-charcoal' : 'text-black/25'}>→</span>
                 </div>
               </button>
             ); })}
@@ -533,7 +533,7 @@ export function FoodFlow() {
       {cartOpen && cart.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 sm:p-4"
           onClick={() => setCartOpen(false)}>
-          <div className="flex h-full w-full max-w-xl flex-col overflow-hidden bg-[#f4f5f2] shadow-2xl sm:h-auto sm:max-h-[calc(100vh-2rem)] sm:rounded-2xl"
+          <div className="flex h-full w-full max-w-xl flex-col overflow-hidden bg-[#f7f5f3] shadow-2xl sm:h-auto sm:max-h-[calc(100vh-2rem)] sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}>
           <header className="flex items-center justify-between border-b border-black/10 bg-white px-4 py-3">
             <h3 className="font-bold">Your cart {storeCount > 1 && <span className="text-xs font-normal text-black/50">· {storeCount} stores</span>}</h3>
@@ -546,7 +546,7 @@ export function FoodFlow() {
             <div className="mb-3 space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5">
               {cartByStore.map((grp) => (
                 <div key={grp.name}>
-                  {storeCount > 1 && <p className="mb-1 text-xs font-semibold text-brand-purple">🏪 {grp.name}</p>}
+                  {storeCount > 1 && <p className="mb-1 text-xs font-semibold text-brand-charcoal">🏪 {grp.name}</p>}
                   <ul className="divide-y divide-black/5">
                     {grp.lines.map((l) => (
                       <li key={lineKey(l)} className="flex items-center justify-between py-2 text-sm">
@@ -564,14 +564,14 @@ export function FoodFlow() {
               ))}
               {canAddStore ? (
                 <button onClick={() => { setCartOpen(false); setOpenStoreId(null); window.scrollTo({ top: 0 }); }}
-                  className="w-full rounded-lg border border-dashed border-brand-purple/50 py-2.5 text-sm font-semibold text-brand-purple hover:bg-brand-purple/5">
+                  className="w-full rounded-lg border border-dashed border-brand-charcoal/50 py-2.5 text-sm font-semibold text-brand-charcoal hover:bg-brand-charcoal/5">
                   ＋ Add items from another store
                 </button>
               ) : (
                 <p className="text-center text-xs text-black/40">Up to {MAX_STORES_PER_ORDER} stores per order.</p>
               )}
               {storeCount > 1 && (
-                <p className="rounded-lg bg-brand-purple/5 px-3 py-2 text-xs text-brand-purple">
+                <p className="rounded-lg bg-brand-charcoal/5 px-3 py-2 text-xs text-brand-charcoal">
                   One rider will buy from all {storeCount} stores. The delivery fee is charged for the farthest store only.
                 </p>
               )}
@@ -608,18 +608,18 @@ export function FoodFlow() {
                 <label className="mb-1 block text-sm font-medium">Your name <span className="text-red-500">*</span></label>
                 <input value={custName} onChange={(e) => setCustName(e.target.value)}
                   placeholder="Juan Dela Cruz"
-                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green" />
+                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange" />
                 <p className="mt-1 text-xs text-black/40">So the rider knows who to hand the order to.</p>
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium">Your mobile number <span className="text-red-500">*</span></label>
                 <input value={contact} onChange={(e) => setContact(e.target.value)}
                   inputMode="tel" placeholder="0917 123 4567"
-                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green" />
+                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange" />
                 <p className="mt-1 text-xs text-black/40">So the rider can reach you.</p>
               </div>
               <label className="flex items-center gap-2 text-sm font-medium">
-                <input type="checkbox" checked={gift} onChange={(e) => setGift(e.target.checked)} className="h-4 w-4 accent-[#6DBE22]" />
+                <input type="checkbox" checked={gift} onChange={(e) => setGift(e.target.checked)} className="h-4 w-4 accent-[#E8552F]" />
                 🎁 Deliver to someone else
               </label>
               {gift && (
@@ -630,7 +630,7 @@ export function FoodFlow() {
                     </label>
                     <input value={recipientName} onChange={(e) => setRecipientName(e.target.value)}
                       placeholder="Juan Dela Cruz"
-                      className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green" />
+                      className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange" />
                     <p className="mt-1 text-xs text-black/45">
                       Full name, so your rider can ask for them if the call isn&apos;t answered.
                     </p>
@@ -639,7 +639,7 @@ export function FoodFlow() {
                     <label className="mb-1 block text-sm font-medium">Recipient mobile number</label>
                     <input value={recipientContact} onChange={(e) => setRecipientContact(e.target.value)}
                       inputMode="tel" placeholder="0917 123 4567"
-                      className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green" />
+                      className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange" />
                   </div>
                   {/* Pin the recipient's location. Under distance pricing the top map
                       already captures this drop-off, so only add one here otherwise. */}
@@ -657,14 +657,14 @@ export function FoodFlow() {
                 </div>
               )}
               <label className="flex items-center gap-2 text-sm font-medium">
-                <input type="checkbox" checked={cutlery} onChange={(e) => setCutlery(e.target.checked)} className="h-4 w-4 accent-[#6DBE22]" />
+                <input type="checkbox" checked={cutlery} onChange={(e) => setCutlery(e.target.checked)} className="h-4 w-4 accent-[#E8552F]" />
                 🍴 Include cutlery
               </label>
               <div>
                 <label className="mb-1 block text-sm font-medium">Note to the rider <span className="font-normal text-black/40">(optional)</span></label>
                 <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2}
                   placeholder="e.g. Extra spicy, leave at the gate, call when outside…"
-                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green" />
+                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange" />
               </div>
             </div>
 
@@ -695,7 +695,7 @@ export function FoodFlow() {
             <NoRidersNotice availability={riders} />
             {error && <p className="mb-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
             <button onClick={checkout} disabled={placing || needsDropoff || needsAddress || custName.trim().length < 2 || !contact.trim() || !pay || (areaRequired && !area)}
-              className="w-full rounded-xl bg-brand-green py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-50">
+              className="w-full rounded-xl bg-brand-orange py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-50">
               {placing ? 'Placing your order…'
                 : areaRequired && !area ? 'Choose your delivery area'
                 : needsDropoff ? 'Pin your delivery location'
@@ -715,10 +715,10 @@ export function FoodFlow() {
       {/* Floating cart button (sits above the bottom tab bar) */}
       {cart.length > 0 && !cartOpen && !customizingItem && (
         <button onClick={() => setCartOpen(true)}
-          className="fixed bottom-24 right-5 z-40 flex items-center gap-2 rounded-full bg-brand-green px-4 py-3 text-white shadow-lg ring-2 ring-white transition hover:brightness-95">
+          className="fixed bottom-24 right-5 z-40 flex items-center gap-2 rounded-full bg-brand-orange px-4 py-3 text-white shadow-lg ring-2 ring-white transition hover:brightness-95">
           <span className="relative">
             <CartIcon />
-            <span className="absolute -right-2 -top-2 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-purple px-1 text-[11px] font-bold">
+            <span className="absolute -right-2 -top-2 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-charcoal px-1 text-[11px] font-bold">
               {cartCount}
             </span>
           </span>
@@ -748,7 +748,7 @@ function StoreDetail({ store, fees, menuLoading, menuItems, menuCat, setMenuCat,
         <div className="h-44 w-full overflow-hidden">
           {store.logo_url
             ? <img src={store.logo_url} alt="" className="h-full w-full object-cover" />
-            : <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-green to-brand-purple text-6xl">{cuisineEmoji(store.category)}</div>}
+            : <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-orange to-[#c4451f] text-6xl">{cuisineEmoji(store.category)}</div>}
         </div>
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
           <button onClick={onBack} aria-label="Back"
@@ -764,7 +764,7 @@ function StoreDetail({ store, fees, menuLoading, menuItems, menuCat, setMenuCat,
               <h2 className="truncate text-xl font-black">{store.name}</h2>
               <p className="text-sm text-black/50">
                 {store.category || 'Restaurant'} · {isOpenNow(store.opens_at, store.closes_at, store.open_days)
-                  ? <span className="font-semibold text-brand-green">Open now</span>
+                  ? <span className="font-semibold text-brand-orange">Open now</span>
                   : <span className="font-semibold text-black/50">Closed</span>}
               </p>
               {(store.opens_at || store.closes_at || (store.open_days && store.open_days.length < 7)) && (
@@ -774,7 +774,7 @@ function StoreDetail({ store, fees, menuLoading, menuItems, menuCat, setMenuCat,
                 store.lat != null && store.lng != null ? (
                   <a href={`https://www.google.com/maps/search/?api=1&query=${store.lat},${store.lng}`}
                     target="_blank" rel="noreferrer"
-                    className="mt-0.5 block text-xs text-brand-purple underline">📍 {store.address}</a>
+                    className="mt-0.5 block text-xs text-brand-charcoal underline">📍 {store.address}</a>
                 ) : <p className="mt-0.5 text-xs text-black/40">📍 {store.address}</p>
               )}
             </div>
@@ -813,7 +813,7 @@ function StoreDetail({ store, fees, menuLoading, menuItems, menuCat, setMenuCat,
               <button
                 onClick={() => (it.groups.length === 0 ? onAdd(it) : onCustomize(it.id))}
                 aria-label={it.groups.length === 0 ? `Add ${it.name}` : `Customize ${it.name}`}
-                className="absolute -bottom-3 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-lg font-bold text-white shadow-md ring-2 ring-white transition hover:brightness-95">
+                className="absolute -bottom-3 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-brand-orange text-lg font-bold text-white shadow-md ring-2 ring-white transition hover:brightness-95">
                 +
               </button>
             </div>
@@ -851,7 +851,7 @@ function CartIcon() {
 function BikeIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-brand-green">
+      strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-brand-orange">
       <circle cx="5.5" cy="17.5" r="3.5" /><circle cx="18.5" cy="17.5" r="3.5" />
       <path d="M15 17.5 12 8h3l1.5 4.5M12 8 9.5 17.5M9 8h3" />
     </svg>
@@ -873,9 +873,9 @@ function CuisineChip({ emoji, label, active, onClick }: { emoji: string; label: 
   return (
     <button onClick={onClick} className="flex shrink-0 flex-col items-center gap-1.5">
       <span className={`flex h-14 w-14 items-center justify-center rounded-2xl text-2xl shadow-sm ring-1 transition ${
-        active ? 'bg-brand-green text-white ring-brand-green' : 'bg-white ring-black/5'
+        active ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white ring-black/5'
       }`}>{emoji}</span>
-      <span className={`max-w-[4.5rem] truncate text-[11px] font-semibold ${active ? 'text-brand-green' : 'text-black/60'}`}>{label}</span>
+      <span className={`max-w-[4.5rem] truncate text-[11px] font-semibold ${active ? 'text-brand-orange' : 'text-black/60'}`}>{label}</span>
     </button>
   );
 }
@@ -884,7 +884,7 @@ function CatTab({ active, onClick, children }: { active: boolean; onClick: () =>
   return (
     <button onClick={onClick}
       className={`shrink-0 whitespace-nowrap border-b-2 px-1 pb-2 text-sm font-semibold transition ${
-        active ? 'border-brand-green text-brand-ink' : 'border-transparent text-black/40 hover:text-black/70'
+        active ? 'border-brand-orange text-brand-ink' : 'border-transparent text-black/40 hover:text-black/70'
       }`}>
       {children}
     </button>
@@ -924,7 +924,7 @@ function Customizer({ item, onAdd }: { item: MenuItem; onAdd: (options: CartOpti
               return (
                 <button key={c.name} type="button" onClick={() => pick(g, c.name)}
                   className={`rounded-full px-3 py-1.5 text-xs font-medium ring-1 transition ${
-                    on ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'
+                    on ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'
                   }`}>
                   {c.name}{c.priceDelta !== 0 && <span className={on ? 'opacity-80' : 'text-black/40'}> {c.priceDelta > 0 ? '+' : ''}{peso(c.priceDelta)}</span>}
                 </button>
@@ -935,7 +935,7 @@ function Customizer({ item, onAdd }: { item: MenuItem; onAdd: (options: CartOpti
         </div>
       ))}
       <button onClick={() => onAdd(chosen)} disabled={missing}
-        className="mt-1 w-full rounded-xl bg-brand-green py-3 text-sm font-semibold text-white disabled:opacity-50">
+        className="mt-1 w-full rounded-xl bg-brand-orange py-3 text-sm font-semibold text-white disabled:opacity-50">
         {missing ? 'Choose required options' : `Add to cart · ${peso(total)}`}
       </button>
     </div>

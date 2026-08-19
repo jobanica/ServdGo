@@ -71,7 +71,7 @@ export function RefusalSummary({ onNavigate }: { onNavigate: (tab: string) => vo
 
   return (
     <Card title="Declines &amp; transfers · last 7 days"
-      action={<button onClick={() => onNavigate('ridersActive')} className="text-sm font-medium text-brand-purple">Full history →</button>}>
+      action={<button onClick={() => onNavigate('ridersActive')} className="text-sm font-medium text-brand-charcoal">Full history →</button>}>
       {error && <ErrorNote msg={error} />}
       {tally.length === 0 ? (
         <p className="py-2 text-sm text-black/50">No requests turned down in the last 7 days.</p>

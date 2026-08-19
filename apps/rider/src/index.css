@@ -1,14 +1,16 @@
 @import 'tailwindcss';
 
-/* ServdGo brand tokens (sampled from the logo — see docs/branding.md). */
+/* ServdGo brand tokens — see docs/branding.md.
+   orange + charcoal are the logo; brand-yellow is the warning tint,
+   paired with Tailwind yellow-800/900 text, not a brand colour. */
 @theme {
-  --color-brand-green: #6dbe22;
-  --color-brand-purple: #5e2d91;
+  --color-brand-orange: #e8552f;
+  --color-brand-charcoal: #23262b;
   --color-brand-yellow: #f5e400;
   --color-brand-ink: #1e1e1e;
 }
 
 body {
-  background: #f6f7f4;
+  background: #f8f6f4;
   color: var(--color-brand-ink);
 }

@@ -40,16 +40,16 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: string) => void })
   return (
     <div className="space-y-5">
       {/* Branded promo / status banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-green to-[#4e9e15] p-6 text-white shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-orange to-[#c4451f] p-6 text-white shadow-sm">
         <div className="relative z-10 max-w-md">
           <p className="text-sm font-medium opacity-90">ServdGo</p>
           <h2 className="mt-1 text-2xl font-extrabold leading-tight">
-            Pabili • Padala <span className="text-brand-yellow">delivered fast</span>
+            Pabili • Padala <span className="text-brand-charcoal">delivered fast</span>
           </h2>
           <p className="mt-1 text-sm opacity-90">Monitor stores, riders, orders and settlements in one place.</p>
         </div>
         <div className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/10" />
-        <div className="pointer-events-none absolute -bottom-10 right-16 h-28 w-28 rounded-full bg-brand-yellow/20" />
+        <div className="pointer-events-none absolute -bottom-10 right-16 h-28 w-28 rounded-full bg-white/10" />
       </div>
 
       <PriceReportsAlert onNavigate={onNavigate} />
@@ -67,7 +67,7 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: string) => void })
 
       <div className="grid gap-5 lg:grid-cols-2">
         <OnDuty onNavigate={onNavigate} onCount={setOnline} />
-        <Card title="Live orders" action={<button onClick={() => onNavigate('orders')} className="text-sm font-medium text-brand-purple">View all →</button>}>
+        <Card title="Live orders" action={<button onClick={() => onNavigate('orders')} className="text-sm font-medium text-brand-charcoal">View all →</button>}>
           <LiveOrders embedded />
         </Card>
       </div>
@@ -78,8 +78,8 @@ export function Dashboard({ onNavigate }: { onNavigate: (tab: string) => void })
 }
 
 const tints: Record<string, string> = {
-  green: 'bg-brand-green/15 text-green-700',
-  purple: 'bg-brand-purple/15 text-brand-purple',
+  green: 'bg-brand-orange/15 text-green-700',
+  purple: 'bg-brand-charcoal/15 text-brand-charcoal',
   yellow: 'bg-brand-yellow/30 text-yellow-700',
 };
 
@@ -87,7 +87,7 @@ function Stat({ label, value, sub, icon, tint, onClick }:
   { label: string; value: string; sub?: string; icon: React.ReactNode; tint: string; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      className="flex items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm ring-1 ring-black/5 transition hover:ring-brand-green/40">
+      className="flex items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm ring-1 ring-black/5 transition hover:ring-brand-orange/40">
       <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${tints[tint]}`}>{icon}</span>
       <span>
         <span className="block text-xl font-bold text-brand-ink">{value}</span>

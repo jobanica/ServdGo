@@ -53,9 +53,9 @@ export function App() {
   const [open, setOpen] = useState(false); // mobile sidebar
 
   return (
-    <div className="min-h-screen bg-[#f4f5f2] text-brand-ink">
+    <div className="min-h-screen bg-[#f7f5f3] text-brand-ink">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 bg-brand-green text-white">
+      <header className="sticky top-0 z-30 bg-brand-orange text-white">
         <div className="flex items-center gap-3 px-4 py-3">
           <button onClick={() => setOpen((o) => !o)} className="rounded-lg p-1.5 hover:bg-white/15 lg:hidden">
             <IconMenu />
@@ -70,7 +70,7 @@ export function App() {
               className="w-full bg-transparent text-sm text-white placeholder-white/70 outline-none" />
           </div>
           <div className="ml-auto flex items-center gap-2 rounded-xl bg-white/15 py-1 pl-1 pr-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-purple text-xs font-bold">SG</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-charcoal text-xs font-bold">SG</span>
             <span className="hidden text-sm font-semibold sm:inline">{ROLE_LABEL[role]}</span>
             {isSupabaseConfigured && supabase && (
               <button onClick={() => void signOut(supabase!)}
@@ -94,7 +94,7 @@ export function App() {
                   <li key={key}>
                     <button onClick={() => { setTab(key); setOpen(false); }}
                       className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-                        active ? 'bg-brand-green text-white shadow-sm' : 'text-black/60 hover:bg-black/[0.04]'
+                        active ? 'bg-brand-orange text-white shadow-sm' : 'text-black/60 hover:bg-black/[0.04]'
                       }`}>
                       <Icon />
                       {label}

@@ -19,7 +19,7 @@ const SAMPLE: AppSettings = {
   service_center_lat: null, service_center_lng: null, service_radius_km: 0,
 };
 
-const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 export function Settings() {
   const [s, setS] = useState<AppSettings | null>(null);
@@ -209,8 +209,8 @@ export function Settings() {
         </p>
 
         {/* Mark-up is configured per store; only the split lives here. */}
-        <div className="mt-4 rounded-xl bg-brand-purple/[0.04] p-3 ring-1 ring-brand-purple/20">
-          <p className="text-sm font-semibold text-brand-purple">Price mark-up — your share</p>
+        <div className="mt-4 rounded-xl bg-brand-charcoal/[0.04] p-3 ring-1 ring-brand-charcoal/20">
+          <p className="text-sm font-semibold text-brand-charcoal">Price mark-up — your share</p>
           <p className="mt-0.5 text-xs text-black/50">
             The mark-up itself is set per store (and per item) under Stores &amp; menus. This is how much
             of it you keep: the rider collects the whole mark-up at the door and owes back this share
@@ -229,7 +229,7 @@ export function Settings() {
             </span>
           </div>
         </div>
-        <p className="mt-4 rounded-lg bg-brand-green/10 px-3 py-2 text-sm text-green-800">
+        <p className="mt-4 rounded-lg bg-brand-orange/10 px-3 py-2 text-sm text-green-800">
           Example: ₱{s.default_delivery_fee} delivery + {peso(s.per_store_fee)}×2 added stores →
           commission <span className="font-bold">{peso(example)}</span>
         </p>
@@ -285,13 +285,13 @@ export function Settings() {
           </Field>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg bg-brand-purple/[0.06] px-3 py-2">
+        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg bg-brand-charcoal/[0.06] px-3 py-2">
           <span className="text-sm text-black/60">Preview a</span>
           <input type="number" min={0} step={0.5} value={previewKm}
             onChange={(e) => setPreviewKm(Number(e.target.value))}
-            className="w-20 rounded-lg border border-black/10 bg-white px-2 py-1 text-sm outline-none focus:border-brand-green" />
+            className="w-20 rounded-lg border border-black/10 bg-white px-2 py-1 text-sm outline-none focus:border-brand-orange" />
           <span className="text-sm text-black/60">km delivery →</span>
-          <span className="text-sm font-bold text-brand-purple">
+          <span className="text-sm font-bold text-brand-charcoal">
             {peso(distanceDeliveryFee(previewKm, {
               baseFare: s.delivery_base_fare, baseKm: s.delivery_base_km, perKm: s.delivery_per_km,
             }))}
@@ -320,7 +320,7 @@ export function Settings() {
       {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
       <div className="flex items-center gap-3">
         <button onClick={save} disabled={saving || !supabase}
-          className="rounded-lg bg-brand-green px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+          className="rounded-lg bg-brand-orange px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
           {saving ? 'Saving…' : 'Save settings'}
         </button>
         {saved && <span className="text-sm text-green-700">✓ Saved</span>}
@@ -355,7 +355,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
   return (
     <button onClick={() => onChange(!on)}
-      className={`relative h-6 w-11 rounded-full transition ${on ? 'bg-brand-green' : 'bg-black/20'}`}>
+      className={`relative h-6 w-11 rounded-full transition ${on ? 'bg-brand-orange' : 'bg-black/20'}`}>
       <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition ${on ? 'left-[22px]' : 'left-0.5'}`} />
     </button>
   );

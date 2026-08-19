@@ -1,40 +1,40 @@
 /**
  * Customer welcome / landing screen — brand-first splash shown before the app.
- * Uses the EBD logo and brand palette (green hero with a subtle sunburst).
+ * Uses the ServdGo logo and brand palette (orange hero with a subtle sunburst).
  */
 export function Welcome({ onOrder, onTrack }: { onOrder: () => void; onTrack: () => void }) {
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-brand-green text-white">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-brand-orange text-white">
       {/* Sunburst rays + radial glow behind the content */}
       <div className="pointer-events-none absolute inset-0"
-        style={{ background: 'radial-gradient(circle at 50% 34%, #85d13c 0%, #6DBE22 55%, #57a51b 100%)' }} />
+        style={{ background: 'radial-gradient(circle at 50% 34%, #f2825e 0%, #E8552F 55%, #c4451f 100%)' }} />
       <div className="pointer-events-none absolute inset-0 opacity-[0.14]"
         style={{ background: 'repeating-conic-gradient(from 0deg at 50% 34%, #ffffff 0deg 7deg, transparent 7deg 15deg)' }} />
 
       <div className="relative mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-8 pt-10">
         {/* Top pill */}
         <div className="flex justify-center">
-          <span className="rounded-full bg-white px-4 py-1.5 text-sm font-extrabold text-brand-green shadow-sm">
+          <span className="rounded-full bg-white px-4 py-1.5 text-sm font-extrabold text-brand-orange shadow-sm">
             🛵 Food • Pabili • Padala
           </span>
         </div>
 
         {/* Headline */}
         <h1 className="mt-6 text-center text-5xl font-black leading-[1.05] tracking-tight drop-shadow-sm">
-          Welcome to<br /><span className="text-brand-yellow">ServdGo</span>
+          Welcome to<br />SERVD<span className="text-brand-charcoal">GO</span>
         </h1>
 
         {/* Logo medallion */}
         <div className="flex flex-1 items-center justify-center py-6">
           <div className="flex h-52 w-52 items-center justify-center rounded-full bg-white/95 p-4 shadow-2xl ring-8 ring-white/20">
-            <img src="/icons/pwa-512x512.png" alt="ServdGo" className="h-full w-full object-contain" />
+            <img src="/icons/mark-512.png" alt="ServdGo" className="h-full w-full object-contain" />
           </div>
         </div>
 
         {/* CTAs */}
         <div className="space-y-3">
           <button onClick={onOrder}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 text-base font-extrabold text-brand-green shadow-lg transition active:scale-[.99]">
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-4 text-base font-extrabold text-brand-orange shadow-lg transition active:scale-[.99]">
             🛒 Order now
           </button>
           <button onClick={onTrack}

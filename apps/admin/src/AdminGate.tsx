@@ -80,13 +80,13 @@ function SignIn() {
           <>
             <p className="text-sm text-black/70">If an account exists for <b>{email}</b>, a password-reset link is on its way. Open it on this device to set a new password.</p>
             <button onClick={() => { setMode('signin'); setSent(false); }}
-              className="mt-4 w-full rounded-lg border border-brand-purple py-2.5 text-sm font-medium text-brand-purple">Back to sign in</button>
+              className="mt-4 w-full rounded-lg border border-brand-charcoal py-2.5 text-sm font-medium text-brand-charcoal">Back to sign in</button>
           </>
         ) : (
           <form onSubmit={submit} className="space-y-3">
             <p className="text-sm text-black/60">Enter your email and we'll send a reset link.</p>
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className={inp} />
-            <button disabled={busy} className="w-full rounded-lg bg-brand-green py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+            <button disabled={busy} className="w-full rounded-lg bg-brand-orange py-2.5 text-sm font-semibold text-white disabled:opacity-60">
               {busy ? 'Sending…' : 'Send reset link'}
             </button>
             {error && <p className="text-sm text-red-600">{error}</p>}
@@ -104,11 +104,11 @@ function SignIn() {
           placeholder="Email" className={inp} />
         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
           placeholder="Password" className={inp} />
-        <button disabled={busy} className="w-full rounded-lg bg-brand-green py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+        <button disabled={busy} className="w-full rounded-lg bg-brand-orange py-2.5 text-sm font-semibold text-white disabled:opacity-60">
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <button type="button" onClick={() => { setMode('forgot'); setError(null); }} className="w-full text-sm text-brand-purple">Forgot password?</button>
+        <button type="button" onClick={() => { setMode('forgot'); setError(null); }} className="w-full text-sm text-brand-charcoal">Forgot password?</button>
       </form>
     </Shell>
   );
@@ -134,7 +134,7 @@ function SetNewPassword({ onDone }: { onDone: () => void }) {
         <p className="text-sm text-black/70">Set a new password for your account.</p>
         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
           placeholder="New password (min 6 chars)" className={inp} autoComplete="new-password" />
-        <button disabled={busy} className="w-full rounded-lg bg-brand-green py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+        <button disabled={busy} className="w-full rounded-lg bg-brand-orange py-2.5 text-sm font-semibold text-white disabled:opacity-60">
           {busy ? 'Saving…' : 'Save new password'}
         </button>
         {error && <p className="text-sm text-red-600">{error}</p>}
@@ -148,21 +148,21 @@ function NotAuthorized() {
     <Shell>
       <p className="text-sm text-black/60">This account is not an admin. Ask the operator to grant access, then sign in again.</p>
       <button onClick={() => void signOut(supabase!)}
-        className="mt-4 w-full rounded-lg border border-brand-purple py-2.5 text-sm font-medium text-brand-purple">
+        className="mt-4 w-full rounded-lg border border-brand-charcoal py-2.5 text-sm font-medium text-brand-charcoal">
         Sign out
       </button>
     </Shell>
   );
 }
 
-const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 function Shell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f4f5f2] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#f7f5f3] p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-        <div className="mb-4 flex items-center gap-2 font-extrabold text-lg text-brand-green">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-green text-white"><IconScooter /></span>
+        <div className="mb-4 flex items-center gap-2 font-extrabold text-lg text-brand-orange">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-orange text-white"><IconScooter /></span>
           ServdGo Admin
         </div>
         {children}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>ServdGo mark</title>
+  <defs>
+    <!-- The speed arrow reads as passing in front of the pin: cut its silhouette,
+         dilated by a stroke, out of the pin so a clean gap separates the two. -->
+    <mask id="arrow-gap">
+      <rect width="512" height="512" fill="#fff"/>
+      <g fill="#000" stroke="#000" stroke-width="17" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="52" y="296" width="190" height="32" rx="16"/>
+        <path d="M222 276 L318 312 L222 348 Z"/>
+      </g>
+    </mask>
+  </defs>
+
+  <g fill="#E8552F">
+    <!-- Pin: tangent lines from the tip to a circle of r=120 at (312,200). -->
+    <path mask="url(#arrow-gap)"
+          d="M209.9 264.9 A120 120 0 1 1 414.1 264.9 L312 440 Z"/>
+
+    <!-- Speed lines. -->
+    <rect x="88" y="182" width="150" height="30" rx="15"/>
+    <rect x="60" y="239" width="172" height="30" rx="15"/>
+    <rect x="52" y="296" width="190" height="32" rx="16"/>
+    <path d="M222 276 L318 312 L222 348 Z"/>
+  </g>
+
+  <!-- Plate: the white disc the fork sits on. -->
+  <circle cx="312" cy="194" r="84" fill="#fff"/>
+
+  <g fill="#E8552F">
+    <!-- Fork: three tines over a bowl and a long shank. -->
+    <rect x="282" y="134" width="12" height="64" rx="6"/>
+    <rect x="306" y="134" width="12" height="64" rx="6"/>
+    <rect x="330" y="134" width="12" height="64" rx="6"/>
+    <path d="M282 190 h60 v8 a30 30 0 0 1 -30 30 a30 30 0 0 1 -30 -30 Z"/>
+    <rect x="304" y="220" width="16" height="50" rx="8"/>
+  </g>
+</svg>

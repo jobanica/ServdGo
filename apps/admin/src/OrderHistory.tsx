@@ -31,12 +31,12 @@ const STATUSES: (OrderStatus | 'all')[] = ['all', 'pending', 'accepted', 'prepar
 const PAGE = 20;
 
 const serviceChip: Record<string, string> = {
-  food: 'bg-brand-green/15 text-green-800',
-  pabili: 'bg-brand-purple/15 text-brand-purple',
+  food: 'bg-brand-orange/15 text-green-800',
+  pabili: 'bg-brand-charcoal/15 text-brand-charcoal',
   padala: 'bg-brand-yellow/30 text-yellow-800',
 };
 const statusChip = (s: string) =>
-  s === 'delivered' ? 'bg-brand-green/15 text-green-800'
+  s === 'delivered' ? 'bg-brand-orange/15 text-green-800'
   : s === 'cancelled' ? 'bg-red-100 text-red-700'
   : 'bg-black/5 text-black/60';
 
@@ -92,17 +92,17 @@ export function OrderHistory() {
             {SERVICES.map((s) => (
               <button key={s} onClick={() => { setService(s); setPage(0); }}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium capitalize ring-1 transition ${
-                  service === s ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'
+                  service === s ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'
                 }`}>{s}</button>
             ))}
           </div>
           <select value={status} onChange={(e) => { setStatus(e.target.value as OrderStatus | 'all'); setPage(0); }}
-            className="rounded-lg border border-black/10 px-3 py-1.5 text-sm capitalize outline-none focus:border-brand-green">
+            className="rounded-lg border border-black/10 px-3 py-1.5 text-sm capitalize outline-none focus:border-brand-orange">
             {STATUSES.map((s) => <option key={s} value={s}>{s === 'all' ? 'All statuses' : s.replaceAll('_', ' ')}</option>)}
           </select>
           <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }}
             placeholder="Search customer #"
-            className="min-w-[10rem] flex-1 rounded-lg border border-black/10 px-3 py-1.5 text-sm outline-none focus:border-brand-green" />
+            className="min-w-[10rem] flex-1 rounded-lg border border-black/10 px-3 py-1.5 text-sm outline-none focus:border-brand-orange" />
         </div>
       </Card>
 
@@ -176,7 +176,7 @@ function OrderDetailModal({ id, onClose }: { id: string; onClose: () => void }) 
       <div onClick={(e) => e.stopPropagation()} className="max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="font-bold">Order detail</h3>
-          <button onClick={onClose} className="text-sm text-brand-purple">Close</button>
+          <button onClick={onClose} className="text-sm text-brand-charcoal">Close</button>
         </div>
         {error && <ErrorNote msg={error} />}
         {!detail ? <Muted>Loading…</Muted> : (

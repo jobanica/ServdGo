@@ -14,9 +14,9 @@ const pinIcon = (bg: string, emoji: string) =>
   });
 
 const ICONS = {
-  pickup: pinIcon('#5e2d91', '🏪'),
+  pickup: pinIcon('#23262b', '🏪'),
   dropoff: pinIcon('#1e1e1e', '📍'),
-  rider: pinIcon('#6dbe22', '🛵'),
+  rider: pinIcon('#e8552f', '🛵'),
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -72,7 +72,7 @@ export function TrackingMap({
     L.marker([dropoff.lat, dropoff.lng], { icon: ICONS.dropoff, title: 'Drop-off' }).addTo(map);
     routeRef.current = L.polyline(
       [[pickup.lat, pickup.lng], [dropoff.lat, dropoff.lng]],
-      { color: '#6dbe22', weight: 4, opacity: 0.85 },
+      { color: '#e8552f', weight: 4, opacity: 0.85 },
     ).addTo(map);
     riderRef.current = L.marker([rider.lat, rider.lng], { icon: ICONS.rider, title: 'Rider', zIndexOffset: 1000 }).addTo(map);
 
@@ -100,16 +100,16 @@ export function TrackingMap({
     <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-black/5">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="font-bold">Tracking your rider</h2>
-        {onClose && <button onClick={onClose} className="text-sm text-brand-purple">Close</button>}
+        {onClose && <button onClick={onClose} className="text-sm text-brand-charcoal">Close</button>}
       </div>
 
-      <div ref={elRef} className="h-72 w-full overflow-hidden rounded-lg" style={{ background: '#eef3ea' }} />
+      <div ref={elRef} className="h-72 w-full overflow-hidden rounded-lg" style={{ background: '#f5f1ee' }} />
 
       <div className="mt-3 flex items-center justify-between">
         <span className="text-sm text-black/60">
           {statusText ?? (live ? 'Live' : 'Simulated')} · {Math.round(progress * 100)}% of the way
         </span>
-        <span className="rounded-lg bg-brand-green/15 px-3 py-1 text-sm font-semibold text-green-800">
+        <span className="rounded-lg bg-brand-orange/15 px-3 py-1 text-sm font-semibold text-green-800">
           {arrived ? 'Arriving now' : `ETA ~${Math.max(1, Math.round(etaMin))} min`}
         </span>
       </div>
@@ -117,7 +117,7 @@ export function TrackingMap({
       {courier?.name && (
         <div className="mt-3 flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2.5">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-green/15 text-lg">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-orange/15 text-lg">
               {courier.photo_url ? <img src={courier.photo_url} alt="" className="h-full w-full object-cover" /> : '🛵'}
             </span>
             <div className="min-w-0">
@@ -127,7 +127,7 @@ export function TrackingMap({
           </div>
           {courier.mobile_number && (
             <a href={`tel:${courier.mobile_number}`} aria-label="Call rider"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-green text-white">📞</a>
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-orange text-white">📞</a>
           )}
         </div>
       )}

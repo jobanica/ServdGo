@@ -25,8 +25,8 @@ const SAMPLE: OrderRow[] = [
 ];
 
 const serviceColor: Record<string, string> = {
-  food: 'bg-brand-green/15 text-green-800',
-  pabili: 'bg-brand-purple/15 text-brand-purple',
+  food: 'bg-brand-orange/15 text-green-800',
+  pabili: 'bg-brand-charcoal/15 text-brand-charcoal',
   padala: 'bg-brand-yellow/30 text-yellow-800',
 };
 

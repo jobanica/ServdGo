@@ -49,9 +49,9 @@ const teardrop = (fill: string, cls: string) => L.divIcon({
 });
 
 /** Where the rider buys — purple, matching the store pins on the tracking map. */
-const storePin = teardrop('#5E2D91', 'ebd-store-pin');
+const storePin = teardrop('#23262B', 'ebd-store-pin');
 /** Where it lands — brand green. */
-const dropPin = teardrop('#6DBE22', 'ebd-drop-pin');
+const dropPin = teardrop('#E8552F', 'ebd-drop-pin');
 
 export interface LatLngValue { lat: number; lng: number }
 
@@ -72,7 +72,7 @@ export function InAppBrowserNotice() {
       </p>
       <div className="mt-2 flex flex-wrap gap-2">
         <button type="button" onClick={openInChrome}
-          className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-bold text-white">
+          className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-bold text-white">
           Open in Chrome
         </button>
         <button type="button"
@@ -227,17 +227,17 @@ export function LocationPicker({
     <div>
       <InAppBrowserNotice />
       <div className="mb-2 flex items-center justify-between">
-        <span className={`text-sm font-medium ${isStore ? 'text-brand-purple' : ''}`}>{heading}</span>
+        <span className={`text-sm font-medium ${isStore ? 'text-brand-charcoal' : ''}`}>{heading}</span>
         {!isStore && (
           <button type="button" onClick={() => void useMyLocation()}
-            className="rounded-lg bg-brand-purple px-3 py-1.5 text-xs font-medium text-white disabled:opacity-60"
+            className="rounded-lg bg-brand-charcoal px-3 py-1.5 text-xs font-medium text-white disabled:opacity-60"
             disabled={locating}>
             {locating ? 'Locating…' : '📍 Use my location'}
           </button>
         )}
       </div>
       <div ref={elRef} style={{ height }}
-        className={`w-full overflow-hidden rounded-lg ring-1 ${isStore ? 'ring-2 ring-brand-purple/40' : 'ring-black/10'}`} />
+        className={`w-full overflow-hidden rounded-lg ring-1 ${isStore ? 'ring-2 ring-brand-charcoal/40' : 'ring-black/10'}`} />
       {geoNote && (
         <p className="mt-1.5 rounded-lg bg-brand-yellow/25 px-3 py-2 text-xs text-yellow-900">{geoNote}</p>
       )}
@@ -253,7 +253,7 @@ export function LocationPicker({
         </p>
         {value && (
           <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-            isStore ? 'bg-brand-purple/10 text-brand-purple' : 'bg-brand-green/15 text-green-800'}`}>
+            isStore ? 'bg-brand-charcoal/10 text-brand-charcoal' : 'bg-brand-orange/15 text-green-800'}`}>
             📍 pin set
           </span>
         )}

@@ -146,12 +146,12 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
   const firstName = ((profile?.name ?? riderName) ?? '').trim().split(/\s+/)[0] || 'Rider';
 
   return (
-    <div className="min-h-screen bg-[#f6f7f4] pb-24">
+    <div className="min-h-screen bg-[#f8f6f4] pb-24">
       {/* Top bar */}
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-lg items-center justify-between px-5 py-3.5">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-green/15 text-lg">
+            <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-brand-orange/15 text-lg">
               {profile?.photo_url ? <img src={profile.photo_url} alt="" className="h-full w-full object-cover" /> : '🛵'}
             </span>
             <div className="leading-tight">
@@ -164,7 +164,7 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
             className="relative flex h-10 w-10 items-center justify-center rounded-full bg-black/[0.04]">
             <BellIcon />
             {online && pool.length > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-purple px-1 text-[10px] font-bold text-white">
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-charcoal px-1 text-[10px] font-bold text-white">
                 {pool.length}
               </span>
             )}
@@ -308,7 +308,7 @@ function Dashboard({ online, onlineBusy, onToggleOnline, pool, active, owed, loc
           <RequestCard order={pool[0]!} riderPos={riderPos} queuePos={1}
             onAccept={() => onAccept(pool[0]!.id)} />
           {pool.length > 1 && (
-            <button onClick={() => onGo('requests')} className="mt-2 w-full text-center text-xs font-semibold text-brand-purple">
+            <button onClick={() => onGo('requests')} className="mt-2 w-full text-center text-xs font-semibold text-brand-charcoal">
               {pool.length - 1} more waiting behind this one →
             </button>
           )}
@@ -325,7 +325,7 @@ function Dashboard({ online, onlineBusy, onToggleOnline, pool, active, owed, loc
 function StatCard({ label, value, hint, tint, icon, onClick }: {
   label: string; value: string; hint: string; tint: 'green' | 'purple'; icon: React.ReactNode; onClick: () => void;
 }) {
-  const tintCls = tint === 'green' ? 'bg-brand-green/15 text-green-800' : 'bg-brand-purple/15 text-brand-purple';
+  const tintCls = tint === 'green' ? 'bg-brand-orange/15 text-green-800' : 'bg-brand-charcoal/15 text-brand-charcoal';
   return (
     <button onClick={onClick} className="rounded-2xl bg-white p-4 text-left shadow-sm ring-1 ring-black/5 transition hover:shadow-md">
       <div className="flex items-center justify-between">
@@ -350,8 +350,8 @@ function riderEarn(o: RiderOrder): number {
 }
 
 const serviceTint: Record<string, string> = {
-  food: 'bg-brand-green/15 text-green-800',
-  pabili: 'bg-brand-purple/15 text-brand-purple',
+  food: 'bg-brand-orange/15 text-green-800',
+  pabili: 'bg-brand-charcoal/15 text-brand-charcoal',
   padala: 'bg-brand-yellow/30 text-yellow-800',
 };
 
@@ -403,7 +403,7 @@ function ItemActions({ item, data, onChange }: {
             className="w-24 shrink-0 rounded-lg border border-black/10 px-2 py-1.5 text-sm" />
           <button disabled={busy || !valid}
             onClick={() => void run(() => data.correctItemPrice(item.id!, next))}
-            className="flex-1 rounded-lg bg-brand-green py-1.5 text-xs font-bold text-white disabled:opacity-50">
+            className="flex-1 rounded-lg bg-brand-orange py-1.5 text-xs font-bold text-white disabled:opacity-50">
             {busy ? 'Saving…' : 'Correct the bill'}
           </button>
           <button onClick={() => setMode('idle')} className="rounded-lg border border-black/15 px-2 text-xs text-black/60">Cancel</button>
@@ -445,7 +445,7 @@ function ItemActions({ item, data, onChange }: {
         <div className="mt-1.5 flex gap-1.5">
           <button disabled={busy || !name.trim() || !(Number(price) >= 0)}
             onClick={() => void run(() => data.proposeReplacement(item.id!, name.trim(), Math.max(1, Number(qty) || 1), Number(price) || 0))}
-            className="flex-1 rounded-lg bg-brand-purple py-1.5 text-xs font-bold text-white disabled:opacity-50">
+            className="flex-1 rounded-lg bg-brand-charcoal py-1.5 text-xs font-bold text-white disabled:opacity-50">
             {busy ? 'Sending…' : 'Ask the customer'}
           </button>
           <button onClick={() => setMode('idle')} className="rounded-lg border border-black/15 px-2 text-xs text-black/60">Cancel</button>
@@ -462,11 +462,11 @@ function ItemActions({ item, data, onChange }: {
         Sold out
       </button>
       <button disabled={busy} onClick={() => { setPrice(String(item.unitPrice)); setMode('price'); }}
-        className="rounded-lg border border-brand-green/50 px-2 py-1 text-[11px] font-medium text-green-700 disabled:opacity-50">
+        className="rounded-lg border border-brand-orange/50 px-2 py-1 text-[11px] font-medium text-green-700 disabled:opacity-50">
         💲 Price differs
       </button>
       <button disabled={busy} onClick={() => { setName(''); setPrice(''); setQty(String(item.qty)); setMode('suggest'); }}
-        className="rounded-lg border border-brand-purple/40 px-2 py-1 text-[11px] font-medium text-brand-purple disabled:opacity-50">
+        className="rounded-lg border border-brand-charcoal/40 px-2 py-1 text-[11px] font-medium text-brand-charcoal disabled:opacity-50">
         🔁 Suggest another
       </button>
       {err && <span className="text-[11px] text-red-600">{err}</span>}
@@ -484,7 +484,7 @@ function CounterTotal({ items }: { items: RiderOrder['items'] }) {
       <span className="text-xs font-semibold text-black/60">
         Pay this store{dropped && <span className="ml-1 font-normal text-black/40">(sold-out excluded)</span>}
       </span>
-      <span className="text-sm font-black text-brand-purple">{peso(due)}</span>
+      <span className="text-sm font-black text-brand-charcoal">{peso(due)}</span>
     </div>
   );
 }
@@ -511,7 +511,7 @@ function StoreGroups({ order, data, onChange }: {
               <span className="font-medium">{it.qty}×</span> {it.name}
             </span>
             {gone && <span className="ml-1.5 text-[11px] font-medium text-red-500">sold out</span>}
-            {waiting && <span className="ml-1.5 text-[11px] font-medium text-brand-purple">awaiting customer</span>}
+            {waiting && <span className="ml-1.5 text-[11px] font-medium text-brand-charcoal">awaiting customer</span>}
             {it.notes && <span className="block text-xs text-black/45">— {it.notes}</span>}
           </span>
           {it.unitPrice > 0 && (
@@ -520,7 +520,7 @@ function StoreGroups({ order, data, onChange }: {
               {/* Part of that price is ours, not the shop's — say what to hand
                   over at the counter so the rider doesn't overpay. */}
               {it.markup > 0 && !gone && !waiting && (
-                <span className="block text-[11px] text-brand-purple">
+                <span className="block text-[11px] text-brand-charcoal">
                   pay {peso((it.unitPrice - it.markup) * it.qty)}
                 </span>
               )}
@@ -554,18 +554,18 @@ function StoreGroups({ order, data, onChange }: {
       {order.stores.map((s, i) => {
         const items = (s.id && byStore.get(s.id)) || [];
         return (
-          <div key={s.id ?? i} className="rounded-xl bg-brand-purple/[0.06] p-3">
+          <div key={s.id ?? i} className="rounded-xl bg-brand-charcoal/[0.06] p-3">
             <div className="flex items-center justify-between gap-2">
               <p className="min-w-0 truncate text-sm font-bold">{s.name ?? 'Store'}</p>
               <span className="flex shrink-0 items-center gap-2">
                 {s.contact
                   ? <a href={`tel:${s.contact}`} aria-label={`Call ${s.name ?? 'store'}`}
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-brand-purple"><PhoneIcon /> {s.contact}</a>
+                      className="inline-flex items-center gap-1 text-sm font-semibold text-brand-charcoal"><PhoneIcon /> {s.contact}</a>
                   : <span className="text-[11px] text-black/40">No number</span>}
                 {s.lat != null && s.lng != null && (
                   <a href={directionsTo({ lat: s.lat, lng: s.lng })} target="_blank" rel="noreferrer"
                     aria-label={`Navigate to ${s.name ?? 'store'}`}
-                    className="rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-purple">
+                    className="rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-charcoal">
                     🧭 Go
                   </a>
                 )}
@@ -585,7 +585,7 @@ function StoreGroups({ order, data, onChange }: {
         const items = byBuyStore.get(i) ?? [];
         if (items.length === 0) return null;
         return (
-          <div key={`buy-${i}`} className="rounded-xl bg-brand-purple/[0.06] p-3">
+          <div key={`buy-${i}`} className="rounded-xl bg-brand-charcoal/[0.06] p-3">
             <div className="flex items-center justify-between gap-2">
               <p className="min-w-0 truncate text-sm font-bold">
                 <span className="mr-1.5 text-black/40">{i + 1}.</span>🛒 {st.name}
@@ -593,7 +593,7 @@ function StoreGroups({ order, data, onChange }: {
               {st.lat != null && st.lng != null && (
                 <a href={directionsTo({ lat: st.lat, lng: st.lng })} target="_blank" rel="noreferrer"
                   aria-label={`Navigate to ${st.name}`}
-                  className="shrink-0 rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-purple">
+                  className="shrink-0 rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-charcoal">
                   🧭 Go
                 </a>
               )}
@@ -657,14 +657,14 @@ function distanceToPickup(order: RiderOrder, from: LatLng | null): number | null
 function CustomerLine({ name, contact }: { name: string | null; contact: string }) {
   return (
     <div className="mt-1 flex items-center gap-2">
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-purple/10 text-xs font-bold text-brand-purple">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-charcoal/10 text-xs font-bold text-brand-charcoal">
         {(name?.trim()[0] ?? '👤').toUpperCase()}
       </span>
       <span className="min-w-0">
         {name?.trim()
           ? <span className="block truncate text-sm font-semibold text-brand-ink">{name.trim()}</span>
           : <span className="block text-xs text-black/40">Name not given</span>}
-        <a href={`tel:${contact}`} className="inline-flex items-center gap-1 text-xs text-brand-purple">
+        <a href={`tel:${contact}`} className="inline-flex items-center gap-1 text-xs text-brand-charcoal">
           <PhoneIcon /> {contact}
         </a>
       </span>
@@ -688,7 +688,7 @@ function StoreRoute({ order, stops, away, open, onToggle }: {
 }) {
   const first = stops[0]!;
   return (
-    <div className="mt-2 rounded-xl bg-brand-green/[0.07] p-2.5">
+    <div className="mt-2 rounded-xl bg-brand-orange/[0.07] p-2.5">
       <div className="flex items-center justify-between gap-2">
         <span className="min-w-0">
           <span className="block truncate text-xs font-semibold text-green-900">
@@ -704,7 +704,7 @@ function StoreRoute({ order, stops, away, open, onToggle }: {
             {open ? 'Hide map' : 'Map'}
           </button>
           <a href={directionsTo(first)} target="_blank" rel="noreferrer"
-            className="rounded-lg bg-brand-green px-2 py-1 text-[11px] font-bold text-white">
+            className="rounded-lg bg-brand-orange px-2 py-1 text-[11px] font-bold text-white">
             🧭 Navigate
           </a>
         </span>
@@ -736,7 +736,7 @@ function StoreRoute({ order, stops, away, open, onToggle }: {
 /** Explains the queue once, above the pool, instead of on every locked card. */
 function QueueNote({ waiting }: { waiting: number }) {
   return (
-    <p className="rounded-2xl bg-brand-purple/[0.07] px-4 py-3 text-xs text-brand-purple">
+    <p className="rounded-2xl bg-brand-charcoal/[0.07] px-4 py-3 text-xs text-brand-charcoal">
       <span className="font-bold">First come, first served.</span> The request at the top is the one
       to take — {waiting} waiting right now. Leave it and it stays there for whoever takes it first.
     </p>
@@ -791,7 +791,7 @@ function RequestCard({ order, riderPos, queuePos = 1, locked = false, onAccept }
           <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${serviceTint[order.service_type] ?? 'bg-black/5'}`}>
             {order.service_type}
           </span>
-          <span className="rounded-full bg-brand-green/15 px-2 py-0.5 text-[11px] font-bold text-green-800">
+          <span className="rounded-full bg-brand-orange/15 px-2 py-0.5 text-[11px] font-bold text-green-800">
             #{queuePos} · yours to answer
           </span>
         </span>
@@ -819,7 +819,7 @@ function RequestCard({ order, riderPos, queuePos = 1, locked = false, onAccept }
       </div>
       <div className="border-t border-black/5 p-3">
         <button onClick={onAccept}
-          className="w-full rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white hover:brightness-95">
+          className="w-full rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white hover:brightness-95">
           Accept
         </button>
       </div>
@@ -894,7 +894,7 @@ function PaymentProof({ order, data, onChange }:
   }
 
   return (
-    <div className={`mt-3 rounded-xl p-3 ring-1 ${paid ? 'bg-green-50 ring-green-200' : 'bg-brand-purple/[0.06] ring-brand-purple/20'}`}>
+    <div className={`mt-3 rounded-xl p-3 ring-1 ${paid ? 'bg-green-50 ring-green-200' : 'bg-brand-charcoal/[0.06] ring-brand-charcoal/20'}`}>
       <div className="flex items-center justify-between">
         <p className="text-[11px] font-bold uppercase tracking-wide text-black/45">Customer payment</p>
         {amount != null && <span className="text-sm font-bold">{peso(amount)}</span>}
@@ -910,7 +910,7 @@ function PaymentProof({ order, data, onChange }:
             {order.paymentReference && (
               <p className="truncate text-xs text-black/50">Ref: {order.paymentReference}</p>
             )}
-            <p className="text-[11px] text-brand-purple">Tap to view full size</p>
+            <p className="text-[11px] text-brand-charcoal">Tap to view full size</p>
           </div>
         </a>
       ) : (
@@ -927,7 +927,7 @@ function PaymentProof({ order, data, onChange }:
         </p>
       ) : (
         <button onClick={confirm} disabled={busy}
-          className="mt-2 w-full rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white disabled:opacity-50">
+          className="mt-2 w-full rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white disabled:opacity-50">
           {busy ? 'Saving…' : uploaded ? '✓ Receipt checks out — mark paid' : '✓ Customer showed receipt — mark paid'}
         </button>
       )}
@@ -994,7 +994,7 @@ function AddonRequests({ order, data, onChange }:
           </p>
           <div className="mt-2 flex gap-2">
             <button onClick={() => void respond(a.id, true)} disabled={busy === a.id}
-              className="flex-1 rounded-lg bg-brand-green py-2 text-sm font-bold text-white disabled:opacity-50">
+              className="flex-1 rounded-lg bg-brand-orange py-2 text-sm font-bold text-white disabled:opacity-50">
               {busy === a.id ? '…' : 'Accept the stop'}
             </button>
             <button onClick={() => void respond(a.id, false)} disabled={busy === a.id}
@@ -1064,7 +1064,7 @@ function BuyStores({ order, data, onChange }: {
   }
 
   return (
-    <div className="mt-3 rounded-xl bg-brand-purple/[0.06] p-3">
+    <div className="mt-3 rounded-xl bg-brand-charcoal/[0.06] p-3">
       <p className="mb-1.5 text-xs font-semibold text-black/60">
         🛒 Buy from {order.buyStores.length} store{order.buyStores.length === 1 ? '' : 's'}
       </p>
@@ -1082,20 +1082,20 @@ function BuyStores({ order, data, onChange }: {
                 <a href={here ? directionsTo(here)
                       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(st.name)}`}
                   target="_blank" rel="noreferrer"
-                  className="shrink-0 rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-purple">
+                  className="shrink-0 rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-charcoal">
                   🧭 Go
                 </a>
               </div>
 
               {canFix && editing !== i && (
                 <button type="button" onClick={() => open(i)}
-                  className="mt-1 rounded-lg border border-brand-purple/40 px-2 py-1 text-[11px] font-medium text-brand-purple">
+                  className="mt-1 rounded-lg border border-brand-charcoal/40 px-2 py-1 text-[11px] font-medium text-brand-charcoal">
                   {here == null ? '📍 Set the pin' : '📍 Shop isn\'t here? Fix the pin'}
                 </button>
               )}
 
               {editing === i && (
-                <div className="mt-1.5 rounded-xl bg-white/70 p-2.5 ring-1 ring-brand-purple/20">
+                <div className="mt-1.5 rounded-xl bg-white/70 p-2.5 ring-1 ring-brand-charcoal/20">
                   <p className="mb-1.5 text-[11px] text-black/55">
                     {i === 0
                       ? 'Drag the pin onto the real shop, or tap “I’m here”. The delivery fee is worked out from this pin, so it will be re-priced and the customer told in the chat.'
@@ -1114,7 +1114,7 @@ function BuyStores({ order, data, onChange }: {
                       Cancel
                     </button>
                     <button type="button" onClick={() => void save(i)} disabled={busy || !pin}
-                      className="flex-1 rounded-lg bg-brand-purple py-1.5 text-[11px] font-bold text-white disabled:opacity-50">
+                      className="flex-1 rounded-lg bg-brand-charcoal py-1.5 text-[11px] font-bold text-white disabled:opacity-50">
                       {busy ? 'Saving…' : 'Move the pin'}
                     </button>
                   </div>
@@ -1125,7 +1125,7 @@ function BuyStores({ order, data, onChange }: {
         })}
       </ol>
       {done && (
-        <p className="mt-1.5 rounded-lg bg-brand-green/10 px-2.5 py-1.5 text-[11px] font-medium text-green-800">
+        <p className="mt-1.5 rounded-lg bg-brand-orange/10 px-2.5 py-1.5 text-[11px] font-medium text-green-800">
           ✓ {done}
         </p>
       )}
@@ -1147,7 +1147,7 @@ function AddressLine({ label, address, icon }: { label: string; address: string;
       </span>
       <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
         target="_blank" rel="noreferrer" aria-label="Search this address on Maps"
-        className="shrink-0 rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-purple">
+        className="shrink-0 rounded-lg border border-black/10 px-2 py-1 text-[11px] font-medium text-brand-charcoal">
         Search
       </a>
     </div>
@@ -1199,21 +1199,21 @@ function FixDropoffPin({ order, data, onChange }: {
   }
 
   if (done && !open) {
-    return <p className="mt-2 rounded-lg bg-brand-green/10 px-3 py-2 text-xs font-medium text-green-800">✓ {done}</p>;
+    return <p className="mt-2 rounded-lg bg-brand-orange/10 px-3 py-2 text-xs font-medium text-green-800">✓ {done}</p>;
   }
 
   if (!open) {
     return (
       <button type="button" onClick={() => { setPin(current); setOpen(true); }}
-        className="mt-2 w-full rounded-lg border border-brand-purple/40 py-2 text-xs font-semibold text-brand-purple">
+        className="mt-2 w-full rounded-lg border border-brand-charcoal/40 py-2 text-xs font-semibold text-brand-charcoal">
         📍 Wrong drop-off pin? Fix it
       </button>
     );
   }
 
   return (
-    <div className="mt-2 rounded-xl bg-brand-purple/[0.06] p-3 ring-1 ring-brand-purple/20">
-      <p className="text-sm font-bold text-brand-purple">Put the pin where they actually are</p>
+    <div className="mt-2 rounded-xl bg-brand-charcoal/[0.06] p-3 ring-1 ring-brand-charcoal/20">
+      <p className="text-sm font-bold text-brand-charcoal">Put the pin where they actually are</p>
       <p className="mb-2 mt-0.5 text-[11px] text-black/55">
         The delivery fee is worked out by distance, so moving the pin re-prices it. The customer sees
         the change in the chat.
@@ -1232,7 +1232,7 @@ function FixDropoffPin({ order, data, onChange }: {
           Cancel
         </button>
         <button type="button" onClick={() => void save()} disabled={busy || !pin}
-          className="flex-1 rounded-lg bg-brand-purple py-2 text-xs font-bold text-white disabled:opacity-50">
+          className="flex-1 rounded-lg bg-brand-charcoal py-2 text-xs font-bold text-white disabled:opacity-50">
           {busy ? 'Saving…' : 'Move the pin'}
         </button>
       </div>
@@ -1283,9 +1283,9 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
       {/* Status banner */}
-      <div className="flex items-center justify-between bg-brand-green/10 px-4 py-2.5">
+      <div className="flex items-center justify-between bg-brand-orange/10 px-4 py-2.5">
         <span className="flex items-center gap-1.5 text-sm font-bold text-green-800">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-brand-green" />
+          <span className="h-2 w-2 animate-pulse rounded-full bg-brand-orange" />
           {order.status.replaceAll('_', ' ').replace(/^\w/, (c) => c.toUpperCase())}
         </span>
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${serviceTint[order.service_type] ?? 'bg-black/5'}`}>
@@ -1309,7 +1309,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
                   own pin, which is why this reads the stops rather than pickup_lat. */}
               {stops[0] && (
                 <a href={directionsTo(stops[0])} target="_blank" rel="noreferrer"
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white">
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white">
                   🧭 {order.service_type === 'padala' ? 'To pickup' : 'To store'}
                   {storeAway != null && <span className="font-medium opacity-80">· {formatDistance(storeAway)}</span>}
                 </a>
@@ -1317,7 +1317,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
               {order.deliveryLat != null && order.deliveryLng != null && (
                 <a href={`https://www.google.com/maps/dir/?api=1&destination=${order.deliveryLat},${order.deliveryLng}`}
                   target="_blank" rel="noreferrer"
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-purple py-2.5 text-sm font-bold text-white">
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand-charcoal py-2.5 text-sm font-bold text-white">
                   🧭 To drop-off
                 </a>
               )}
@@ -1365,9 +1365,9 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
               </div>
               <div className="flex gap-2">
                 <a href={`tel:${order.recipientContact}`} aria-label="Call recipient"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-white"><PhoneIcon /></a>
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-orange text-white"><PhoneIcon /></a>
                 <a href={`sms:${order.recipientContact}`} aria-label="Message recipient"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-purple text-white"><ChatIcon /></a>
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-charcoal text-white"><ChatIcon /></a>
               </div>
             </div>
             <div className="mt-2 flex items-center justify-between rounded-xl bg-black/[0.03] px-3 py-2">
@@ -1376,7 +1376,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
                 <p className="truncate text-sm font-medium">{order.customerName || order.customer_contact}</p>
               </div>
               <a href={`tel:${order.customer_contact}`} aria-label="Call sender"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-purple text-white"><PhoneIcon /></a>
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-charcoal text-white"><PhoneIcon /></a>
             </div>
           </>
         ) : (
@@ -1388,9 +1388,9 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
             </div>
             <div className="flex gap-2">
               <a href={`tel:${order.customer_contact}`} aria-label="Call customer"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-white"><PhoneIcon /></a>
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-orange text-white"><PhoneIcon /></a>
               <a href={`sms:${order.customer_contact}`} aria-label="Message customer"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-purple text-white"><ChatIcon /></a>
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-charcoal text-white"><ChatIcon /></a>
             </div>
           </div>
         )}
@@ -1410,7 +1410,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
         <div className="mt-2">
           <ChatButton orderId={order.id} role="rider"
             title={`Chat with ${order.recipientContact ? 'sender' : 'customer'}`}
-            className="relative w-full rounded-xl bg-brand-purple py-2.5 text-sm font-bold text-white" />
+            className="relative w-full rounded-xl bg-brand-charcoal py-2.5 text-sm font-bold text-white" />
         </div>
         {order.notes && (
           <p className="mt-2 rounded-lg bg-brand-yellow/20 px-2.5 py-1.5 text-xs text-yellow-900">📝 {order.notes}</p>
@@ -1426,7 +1426,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
         {note && <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">⚠️ {note}</p>}
 
         {order.payment_status !== 'paid' && order.status === 'on_the_way' && (
-          <div className={`mt-3 flex flex-col items-center rounded-xl p-3 ${isRiderQr ? 'bg-brand-purple/[0.06] ring-1 ring-brand-purple/20' : 'bg-black/[0.02]'}`}>
+          <div className={`mt-3 flex flex-col items-center rounded-xl p-3 ${isRiderQr ? 'bg-brand-charcoal/[0.06] ring-1 ring-brand-charcoal/20' : 'bg-black/[0.02]'}`}>
             <p className="mb-2 text-xs font-medium text-black/60">
               {isRiderQr
                 ? <>Customer pays by GCash — let them scan to send <span className="font-bold text-brand-ink">{qrAmount != null ? peso(qrAmount) : ''}</span></>
@@ -1446,7 +1446,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
 
         {canAnnounceArrival && (
           order.arrivedAt ? (
-            <p className="mt-3 rounded-xl bg-brand-green/10 px-3 py-2 text-center text-xs font-medium text-green-800">
+            <p className="mt-3 rounded-xl bg-brand-orange/10 px-3 py-2 text-center text-xs font-medium text-green-800">
               ✅ Customer alerted that you're outside ·{' '}
               {new Date(order.arrivedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
             </p>
@@ -1466,7 +1466,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
                 ? <span className="text-green-700">✓ Paid by GCash to you — no cash to collect</span>
                 : <span className="text-green-700">✓ Paid online{collect ? ` · collect ${peso(collect)} goods` : ' · nothing to collect'}</span>
               : isRiderQr
-                ? <span className="text-brand-purple">GCash to rider{qrAmount != null ? ` · ${peso(qrAmount)}` : ''} — no cash to collect</span>
+                ? <span className="text-brand-charcoal">GCash to rider{qrAmount != null ? ` · ${peso(qrAmount)}` : ''} — no cash to collect</span>
                 : collect == null
                   ? <span className="text-black/50">
                       Collect: save the receipt total first
@@ -1481,7 +1481,7 @@ function DeliveryCard({ order, data, onChange, payoutNumber, riderPos }:
           {next && (
             <button disabled={next === 'delivered' && needsActual}
               onClick={async () => { await data.advance(order, next); await onChange(); }}
-              className="rounded-xl bg-brand-green px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">
+              className="rounded-xl bg-brand-orange px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">
               {STATUS_ACTION[next]}
             </button>
           )}
@@ -1650,7 +1650,7 @@ function EarningsView({ live, data, ledger, owed, overdue, onSettle }:
 
       <EarningsBoard data={data} />
 
-      <div className="rounded-2xl bg-gradient-to-br from-brand-green to-brand-purple p-5 text-white shadow-md">
+      <div className="rounded-2xl bg-gradient-to-br from-brand-orange to-[#c4451f] p-5 text-white shadow-md">
         <p className="text-xs uppercase tracking-wide text-white/80">
           {owed < 0 ? 'The operator owes you' : 'Owed to operator'}
         </p>
@@ -1677,7 +1677,7 @@ function EarningsView({ live, data, ledger, owed, overdue, onSettle }:
             : 'Settle your commission before the end of the day — any unsettled balance locks your account at midnight until it\'s paid.'}
         </p>
         {owed > 0 && (
-          <button onClick={() => setPayOpen(true)} className="mt-3 w-full rounded-xl bg-white py-2.5 text-sm font-bold text-brand-purple">
+          <button onClick={() => setPayOpen(true)} className="mt-3 w-full rounded-xl bg-white py-2.5 text-sm font-bold text-brand-charcoal">
             Settle {peso(owed)} now
           </button>
         )}
@@ -1710,8 +1710,8 @@ function EarningsView({ live, data, ledger, owed, overdue, onSettle }:
                     {e.amount < 0 ? `− ${peso(-e.amount)}` : peso(e.amount)}
                   </span>
                   <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                    e.amount < 0 ? 'bg-brand-green/15 text-green-800'
-                      : e.settled ? 'bg-brand-green/15 text-green-800'
+                    e.amount < 0 ? 'bg-brand-orange/15 text-green-800'
+                      : e.settled ? 'bg-brand-orange/15 text-green-800'
                       : 'bg-brand-yellow/30 text-yellow-800'}`}>
                     {e.amount < 0 ? 'Credit' : e.settled ? 'Settled' : 'Unsettled'}
                   </span>
@@ -1766,8 +1766,8 @@ function SettleModal({ amount, settings, live, onClose, onSubmit }: {
           <p className="text-sm text-black/60">Send your commission to the operator, then submit your proof of payment.</p>
 
           {/* Operator GCash / QR */}
-          <div className="rounded-2xl bg-brand-purple/[0.06] p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-purple">Pay via GCash / Maya</p>
+          <div className="rounded-2xl bg-brand-charcoal/[0.06] p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-charcoal">Pay via GCash / Maya</p>
             {num ? (
               <>
                 <div className="mt-2 flex items-center justify-between gap-2">
@@ -1775,7 +1775,7 @@ function SettleModal({ amount, settings, live, onClose, onSubmit }: {
                     <p className="truncate text-lg font-black text-brand-ink">{num}</p>
                     {settings?.settlement_gcash_name && <p className="text-sm text-black/55">{settings.settlement_gcash_name}</p>}
                   </div>
-                  <button onClick={copyNum} className="shrink-0 rounded-lg bg-brand-purple px-3 py-1.5 text-xs font-bold text-white">
+                  <button onClick={copyNum} className="shrink-0 rounded-lg bg-brand-charcoal px-3 py-1.5 text-xs font-bold text-white">
                     {copied ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
@@ -1797,7 +1797,7 @@ function SettleModal({ amount, settings, live, onClose, onSubmit }: {
             <label className="mb-1 block text-sm font-medium">Reference number <span className="font-normal text-black/40">(optional)</span></label>
             <input value={reference} onChange={(e) => setReference(e.target.value)}
               placeholder="GCash reference #"
-              className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-green" />
+              className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-orange" />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Receipt / screenshot <span className="font-normal text-red-500">*required</span></label>
@@ -1817,7 +1817,7 @@ function SettleModal({ amount, settings, live, onClose, onSubmit }: {
           {err && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{err}</p>}
 
           <button onClick={submit} disabled={submitting || uploading || (live && !receiptUrl)}
-            className="w-full rounded-xl bg-brand-green py-3 font-bold text-white disabled:opacity-50">
+            className="w-full rounded-xl bg-brand-orange py-3 font-bold text-white disabled:opacity-50">
             {submitting ? 'Submitting…' : `I’ve paid ${peso(amount)} — submit`}
           </button>
           <p className="text-center text-xs text-black/40">
@@ -1840,7 +1840,7 @@ function SettingsCard({ title, children }: { title: string; children: React.Reac
   );
 }
 
-const settingsInp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+const settingsInp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 function SettingsView({ live, online, busy, onToggleOnline, profile, onProfileSaved }: {
   live: boolean; online: boolean; busy: boolean; onToggleOnline: () => void;
@@ -1866,13 +1866,13 @@ function SettingsView({ live, online, busy, onToggleOnline, profile, onProfileSa
           {SUPPORT_PHONE && (
             <>
               <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`}
-                className="flex-1 rounded-xl bg-brand-green py-2.5 text-center text-sm font-bold text-white">Call operator</a>
+                className="flex-1 rounded-xl bg-brand-orange py-2.5 text-center text-sm font-bold text-white">Call operator</a>
               <a href={`sms:${SUPPORT_PHONE.replace(/\s/g, '')}`}
-                className="flex-1 rounded-xl bg-brand-purple py-2.5 text-center text-sm font-bold text-white">Message</a>
+                className="flex-1 rounded-xl bg-brand-charcoal py-2.5 text-center text-sm font-bold text-white">Message</a>
             </>
           )}
           <a href={`mailto:${SUPPORT_EMAIL}`}
-            className="flex-1 rounded-xl bg-brand-purple py-2.5 text-center text-sm font-bold text-white">Email operator</a>
+            className="flex-1 rounded-xl bg-brand-charcoal py-2.5 text-center text-sm font-bold text-white">Email operator</a>
         </div>
       </SettingsCard>
 
@@ -1881,11 +1881,11 @@ function SettingsView({ live, online, busy, onToggleOnline, profile, onProfileSa
           <div className="flex justify-between"><span className="text-black/55">App version</span><span className="font-medium">{APP_VERSION}</span></div>
           <div className="flex justify-between">
             <span className="text-black/55">Connection</span>
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${live ? 'bg-brand-green/15 text-green-800' : 'bg-brand-yellow/30 text-yellow-800'}`}>{live ? 'Live' : 'Preview mode'}</span>
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${live ? 'bg-brand-orange/15 text-green-800' : 'bg-brand-yellow/30 text-yellow-800'}`}>{live ? 'Live' : 'Preview mode'}</span>
           </div>
           <div className="flex gap-3 pt-1">
-            <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="text-brand-purple">Privacy Policy</a>
-            <a href={TERMS_URL} target="_blank" rel="noreferrer" className="text-brand-purple">Terms</a>
+            <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="text-brand-charcoal">Privacy Policy</a>
+            <a href={TERMS_URL} target="_blank" rel="noreferrer" className="text-brand-charcoal">Terms</a>
           </div>
         </div>
       </SettingsCard>
@@ -1949,7 +1949,7 @@ function ProfileSection({ profile, onSaved }: { profile: RiderProfile; onSaved: 
   return (
     <SettingsCard title="Profile">
       <div className="mb-3 flex items-center gap-3">
-        <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-brand-green/15 text-2xl">
+        <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-brand-orange/15 text-2xl">
           {profile.photo_url ? <img src={profile.photo_url} alt="" className="h-full w-full object-cover" /> : '🛵'}
         </span>
         <label className="cursor-pointer rounded-lg border border-black/10 px-3 py-1.5 text-xs font-semibold text-black/70 hover:bg-black/[0.03]">
@@ -1964,7 +1964,7 @@ function ProfileSection({ profile, onSaved }: { profile: RiderProfile; onSaved: 
         <input className={settingsInp} placeholder="Vehicle (e.g. motorcycle)" value={vehicle} onChange={(e) => { setVehicle(e.target.value); setSaved(false); }} />
       </div>
       <button onClick={save} disabled={busy || !dirty || !name.trim() || !mobile.trim()}
-        className="mt-3 w-full rounded-lg bg-brand-green py-2.5 text-sm font-bold text-white disabled:opacity-50">
+        className="mt-3 w-full rounded-lg bg-brand-orange py-2.5 text-sm font-bold text-white disabled:opacity-50">
         {busy ? 'Saving…' : saved ? '✓ Saved' : 'Save profile'}
       </button>
       {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
@@ -1989,7 +1989,7 @@ function PayoutSection({ profile, onSaved }: { profile: RiderProfile; onSaved: (
       <input className={settingsInp} placeholder="GCash / Maya number" inputMode="tel"
         value={num} onChange={(e) => { setNum(e.target.value); setSaved(false); }} />
       <button onClick={save} disabled={busy || !dirty}
-        className="mt-3 w-full rounded-lg bg-brand-green py-2.5 text-sm font-bold text-white disabled:opacity-50">
+        className="mt-3 w-full rounded-lg bg-brand-orange py-2.5 text-sm font-bold text-white disabled:opacity-50">
         {busy ? 'Saving…' : saved ? '✓ Saved' : 'Save payout number'}
       </button>
       {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
@@ -2070,7 +2070,7 @@ function SoundSection() {
         <Switch on={!muted} onChange={() => { const next = !muted; setMuted(next); setAlertMuted(next); }} />
       </label>
       <button type="button" onClick={() => playNewOrderAlert()}
-        className="mt-3 w-full rounded-xl border border-brand-purple/40 py-2 text-sm font-semibold text-brand-purple">
+        className="mt-3 w-full rounded-xl border border-brand-charcoal/40 py-2 text-sm font-semibold text-brand-charcoal">
         🔔 Play it now
       </button>
       <p className="mt-2 text-xs text-black/45">
@@ -2093,7 +2093,7 @@ function LocationSection() {
     navigator.geolocation?.getCurrentPosition(() => setState('granted'), () => setState('denied'));
   }
   const label = state === 'granted' ? 'Allowed' : state === 'denied' ? 'Blocked' : state === 'prompt' ? 'Not set' : '—';
-  const tint = state === 'granted' ? 'bg-brand-green/15 text-green-800'
+  const tint = state === 'granted' ? 'bg-brand-orange/15 text-green-800'
     : state === 'denied' ? 'bg-red-100 text-red-700' : 'bg-brand-yellow/30 text-yellow-800';
   return (
     <SettingsCard title="Location">
@@ -2105,7 +2105,7 @@ function LocationSection() {
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${tint}`}>{label}</span>
       </div>
       {state !== 'granted' && (
-        <button onClick={enable} className="mt-3 w-full rounded-lg bg-brand-purple py-2.5 text-sm font-bold text-white">
+        <button onClick={enable} className="mt-3 w-full rounded-lg bg-brand-charcoal py-2.5 text-sm font-bold text-white">
           Enable location
         </button>
       )}
@@ -2116,7 +2116,7 @@ function LocationSection() {
 function Switch({ on, onChange, disabled = false }: { on: boolean; onChange: () => void; disabled?: boolean }) {
   return (
     <button onClick={onChange} disabled={disabled} aria-pressed={on}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-60 ${on ? 'bg-brand-green' : 'bg-black/20'}`}>
+      className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-60 ${on ? 'bg-brand-orange' : 'bg-black/20'}`}>
       <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${on ? 'left-[1.375rem]' : 'left-0.5'}`} />
     </button>
   );
@@ -2130,7 +2130,7 @@ function OnlineToggle({ online, busy, onToggle }: { online: boolean; busy: boole
   return (
     <button onClick={onToggle} disabled={busy} aria-pressed={online}
       className={`flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-left shadow-sm ring-1 transition disabled:opacity-70 ${
-        online ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-brand-ink ring-black/10'
+        online ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-brand-ink ring-black/10'
       }`}>
       <span className="flex items-center gap-2.5">
         <span className={`h-2.5 w-2.5 rounded-full ${online ? 'bg-white' : 'bg-black/30'}`} />
@@ -2149,8 +2149,8 @@ function LockCard({ overdue, onSettle, compact = false }: { overdue: number; onS
       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-2xl">🔒</div>
       <h2 className="text-lg font-bold">Account locked</h2>
       <p className="mt-1 text-sm text-black/60">Settle yesterday's commission balance to accept new orders.</p>
-      <p className="my-4 text-3xl font-black text-brand-purple">{peso(overdue)}</p>
-      <button onClick={onSettle} className="w-full rounded-xl bg-brand-green py-3 font-semibold text-white">
+      <p className="my-4 text-3xl font-black text-brand-charcoal">{peso(overdue)}</p>
+      <button onClick={onSettle} className="w-full rounded-xl bg-brand-orange py-3 font-semibold text-white">
         {compact ? 'Go to settlement' : `Settle ${peso(overdue)} to continue`}
       </button>
     </div>
@@ -2164,7 +2164,7 @@ function OfflineCard({ onGoOnline, busy }: { onGoOnline: () => void; busy: boole
       <h2 className="text-lg font-bold">You're offline</h2>
       <p className="mt-1 text-sm text-black/60">Go online to see the order pool and accept deliveries.</p>
       <button onClick={onGoOnline} disabled={busy}
-        className="mt-4 w-full rounded-xl bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-4 w-full rounded-xl bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Saving…' : 'Go online'}
       </button>
     </div>
@@ -2201,12 +2201,12 @@ function NavBtn({ active, onClick, label, icon, badge = 0 }:
   return (
     <button onClick={onClick}
       className={`relative flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-semibold transition ${
-        active ? 'text-brand-green' : 'text-black/45 hover:text-black/70'
+        active ? 'text-brand-orange' : 'text-black/45 hover:text-black/70'
       }`}>
-      <span className={`relative flex h-7 w-7 items-center justify-center rounded-full transition ${active ? 'bg-brand-green/15' : ''}`}>
+      <span className={`relative flex h-7 w-7 items-center justify-center rounded-full transition ${active ? 'bg-brand-orange/15' : ''}`}>
         {icon}
         {badge > 0 && (
-          <span className="absolute -right-1.5 -top-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-brand-purple px-1 text-[9px] font-bold text-white">
+          <span className="absolute -right-1.5 -top-1 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-brand-charcoal px-1 text-[9px] font-bold text-white">
             {badge}
           </span>
         )}
@@ -2319,7 +2319,7 @@ function PabiliCalculator({ order, data, onChange, onNote }: {
           </span>
         </span>
         <button onClick={() => { setRows([{ label: 'Current total', amount: String(saved ?? '') }]); setOpen(true); }}
-          className="shrink-0 rounded-lg bg-brand-purple px-3 py-2 text-sm font-semibold text-white">
+          className="shrink-0 rounded-lg bg-brand-charcoal px-3 py-2 text-sm font-semibold text-white">
           ✏️ Edit / add items
         </button>
       </div>
@@ -2336,7 +2336,7 @@ function PabiliCalculator({ order, data, onChange, onNote }: {
           <div key={i}>
             {/* One heading per store, where the list moves on to the next shop. */}
             {r.store && r.store !== rows[i - 1]?.store && (
-              <p className="mb-1 mt-2 text-[11px] font-bold text-brand-purple">🛒 {r.store}</p>
+              <p className="mb-1 mt-2 text-[11px] font-bold text-brand-charcoal">🛒 {r.store}</p>
             )}
             <div className="flex gap-2">
             <input value={r.label} onChange={(e) => setRow(i, { label: e.target.value })}
@@ -2380,7 +2380,7 @@ function PabiliCalculator({ order, data, onChange, onNote }: {
               <img src={receiptUrl} alt="Store receipt" className="h-16 w-16 rounded-lg object-cover ring-1 ring-black/10" />
             </a>
             <span className="text-sm font-medium text-green-700">✓ Attached</span>
-            <label className="cursor-pointer text-xs text-brand-purple underline">
+            <label className="cursor-pointer text-xs text-brand-charcoal underline">
               Replace
               <input type="file" accept="image/*" capture="environment" className="hidden"
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) void pickReceipt(f); e.target.value = ''; }} />
@@ -2398,7 +2398,7 @@ function PabiliCalculator({ order, data, onChange, onNote }: {
 
       <div className="mt-2 flex gap-2">
         <button onClick={save} disabled={busy || total <= 0 || uploading}
-          className="flex-1 rounded-lg bg-brand-purple py-2.5 text-sm font-bold text-white disabled:opacity-50">
+          className="flex-1 rounded-lg bg-brand-charcoal py-2.5 text-sm font-bold text-white disabled:opacity-50">
           {busy ? 'Saving…' : `Save ${peso(total)} as goods total`}
         </button>
         {saved != null && (
@@ -2431,9 +2431,9 @@ function PreviousRider({ name, contact, reason, hadGoods }: {
       {contact && (
         <span className="flex shrink-0 gap-2">
           <a href={`tel:${contact}`} aria-label="Call previous rider"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-green text-white"><PhoneIcon /></a>
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-orange text-white"><PhoneIcon /></a>
           <a href={`sms:${contact}`} aria-label="Message previous rider"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-purple text-white"><ChatIcon /></a>
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-charcoal text-white"><ChatIcon /></a>
         </span>
       )}
     </div>

@@ -10,7 +10,7 @@ const pinIcon = L.divIcon({
   className: 'ebd-pin',
   html:
     '<svg width="30" height="42" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">' +
-    '<path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 27 15 27s15-16.5 15-27C30 6.7 23.3 0 15 0z" fill="#5E2D91"/>' +
+    '<path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 27 15 27s15-16.5 15-27C30 6.7 23.3 0 15 0z" fill="#23262B"/>' +
     '<circle cx="15" cy="15" r="6" fill="#fff"/></svg>',
   iconSize: [30, 42],
   iconAnchor: [15, 42],
@@ -125,9 +125,9 @@ export function MapPicker({
       <form onSubmit={search} className="mb-2 flex gap-2">
         <input value={query} onChange={(e) => setQuery(e.target.value)}
           placeholder="Search address or landmark"
-          className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-green" />
+          className="flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-orange" />
         <button type="submit" disabled={searching}
-          className="rounded-lg bg-brand-purple px-3 py-2 text-sm font-medium text-white disabled:opacity-60">
+          className="rounded-lg bg-brand-charcoal px-3 py-2 text-sm font-medium text-white disabled:opacity-60">
           {searching ? '…' : 'Find'}
         </button>
         <button type="button" onClick={useMyLocation}

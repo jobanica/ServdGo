@@ -20,11 +20,11 @@ import { AddToOrder } from './AddToOrder.tsx';
 import { OrderDetails } from './OrderDetails.tsx';
 import { errMessage } from '@servdgo/shared';
 
-const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 const serviceTint: Record<string, string> = {
-  food: 'bg-brand-green/15 text-green-800',
-  pabili: 'bg-brand-purple/15 text-brand-purple',
+  food: 'bg-brand-orange/15 text-green-800',
+  pabili: 'bg-brand-charcoal/15 text-brand-charcoal',
   padala: 'bg-brand-yellow/30 text-yellow-800',
 };
 
@@ -129,7 +129,7 @@ export function Account() {
                       </span>
                       {o.goods_receipt_url && (
                         <a href={o.goods_receipt_url} target="_blank" rel="noreferrer"
-                          className="shrink-0 font-medium text-brand-purple underline">🧾 Receipt</a>
+                          className="shrink-0 font-medium text-brand-charcoal underline">🧾 Receipt</a>
                       )}
                     </div>
                   )}
@@ -162,19 +162,19 @@ export function Account() {
         <div className="flex gap-2">
           {SUPPORT_PHONE && (
             <>
-              <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="flex-1 rounded-xl bg-brand-green py-2.5 text-center text-sm font-bold text-white">Call</a>
-              <a href={`sms:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="flex-1 rounded-xl bg-brand-purple py-2.5 text-center text-sm font-bold text-white">Message</a>
+              <a href={`tel:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="flex-1 rounded-xl bg-brand-orange py-2.5 text-center text-sm font-bold text-white">Call</a>
+              <a href={`sms:${SUPPORT_PHONE.replace(/\s/g, '')}`} className="flex-1 rounded-xl bg-brand-charcoal py-2.5 text-center text-sm font-bold text-white">Message</a>
             </>
           )}
-          <a href={`mailto:${SUPPORT_EMAIL}`} className="flex-1 rounded-xl bg-brand-purple py-2.5 text-center text-sm font-bold text-white">Email us</a>
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="flex-1 rounded-xl bg-brand-charcoal py-2.5 text-center text-sm font-bold text-white">Email us</a>
         </div>
       </Card>
 
       <Card title="About">
         <div className="flex justify-between text-sm"><span className="text-black/55">App version</span><span className="font-medium">{APP_VERSION}</span></div>
         <div className="mt-2 flex gap-3 text-sm">
-          <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="text-brand-purple">Privacy Policy</a>
-          <a href={TERMS_URL} target="_blank" rel="noreferrer" className="text-brand-purple">Terms</a>
+          <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="text-brand-charcoal">Privacy Policy</a>
+          <a href={TERMS_URL} target="_blank" rel="noreferrer" className="text-brand-charcoal">Terms</a>
         </div>
       </Card>
 
@@ -214,7 +214,7 @@ function ProfileSection({ customer, ensureContact, onSaved }: {
         <input className={inp} placeholder="Mobile number" inputMode="tel" value={mobile} onChange={(e) => { setMobile(e.target.value); setSaved(false); }} />
       </div>
       <button onClick={save} disabled={busy}
-        className="mt-3 w-full rounded-lg bg-brand-green py-2.5 text-sm font-bold text-white disabled:opacity-50">
+        className="mt-3 w-full rounded-lg bg-brand-orange py-2.5 text-sm font-bold text-white disabled:opacity-50">
         {busy ? 'Saving…' : saved ? '✓ Saved' : 'Save profile'}
       </button>
       {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
@@ -258,12 +258,12 @@ function AddressesSection({ customerId, addresses, onChange }: {
             <div className="min-w-0">
               <p className="text-sm font-medium">
                 {a.label || 'Address'}
-                {a.is_default && <span className="ml-2 rounded-full bg-brand-green/15 px-2 py-0.5 text-[10px] font-semibold text-green-800">Default</span>}
+                {a.is_default && <span className="ml-2 rounded-full bg-brand-orange/15 px-2 py-0.5 text-[10px] font-semibold text-green-800">Default</span>}
               </p>
               <p className="truncate text-xs text-black/50">{a.address}</p>
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1">
-              {!a.is_default && <button onClick={() => makeDef(a.id)} className="text-[11px] font-medium text-brand-purple">Set default</button>}
+              {!a.is_default && <button onClick={() => makeDef(a.id)} className="text-[11px] font-medium text-brand-charcoal">Set default</button>}
               <button onClick={() => remove(a.id)} className="text-[11px] font-medium text-red-600">Delete</button>
             </div>
           </li>
@@ -277,18 +277,18 @@ function AddressesSection({ customerId, addresses, onChange }: {
           <div className="mb-2"><AreaPicker value={area} onChange={setArea} onRequired={() => {}} /></div>
           <LocationPicker value={pin} onChange={setPin} height={180} />
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={makeDefault} onChange={(e) => setMakeDefault(e.target.checked)} className="h-4 w-4 accent-[#6DBE22]" />
+            <input type="checkbox" checked={makeDefault} onChange={(e) => setMakeDefault(e.target.checked)} className="h-4 w-4 accent-[#E8552F]" />
             Set as default
           </label>
           <div className="flex gap-2">
             <button onClick={() => setAdding(false)} className="flex-1 rounded-lg border border-black/10 py-2 text-sm font-semibold text-black/60">Cancel</button>
-            <button onClick={add} disabled={busy || !text.trim()} className="flex-1 rounded-lg bg-brand-green py-2 text-sm font-bold text-white disabled:opacity-50">
+            <button onClick={add} disabled={busy || !text.trim()} className="flex-1 rounded-lg bg-brand-orange py-2 text-sm font-bold text-white disabled:opacity-50">
               {busy ? 'Saving…' : 'Save address'}
             </button>
           </div>
         </div>
       ) : (
-        <button onClick={() => setAdding(true)} className="mt-3 w-full rounded-lg border border-dashed border-brand-purple/50 py-2.5 text-sm font-semibold text-brand-purple hover:bg-brand-purple/5">
+        <button onClick={() => setAdding(true)} className="mt-3 w-full rounded-lg border border-dashed border-brand-charcoal/50 py-2.5 text-sm font-semibold text-brand-charcoal hover:bg-brand-charcoal/5">
           ＋ Add an address
         </button>
       )}

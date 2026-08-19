@@ -52,10 +52,10 @@ export function App() {
   return (
     <div className="min-h-screen pb-24">
       {/* App bar */}
-      <header className="sticky top-0 z-30 bg-brand-green text-white shadow-sm">
+      <header className="sticky top-0 z-30 bg-brand-orange text-white shadow-sm">
         <div className="mx-auto flex max-w-xl items-center justify-between gap-3 px-5 py-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-lg font-black">E</span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-lg font-black">S</span>
             <div className="leading-tight">
               <h1 className="text-base font-extrabold tracking-tight">ServdGo</h1>
               <p className="text-[11px] opacity-90">Food • Pabili • Padala</p>
@@ -133,9 +133,9 @@ function TabButton({ label, icon, active, onClick, disabled = false }:
       title={disabled ? 'Temporarily unavailable' : undefined}
       className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-semibold transition ${
         disabled ? 'cursor-not-allowed text-black/20'
-          : active ? 'text-brand-green' : 'text-black/45 hover:text-black/70'
+          : active ? 'text-brand-orange' : 'text-black/45 hover:text-black/70'
       }`}>
-      <span className={`flex h-7 w-7 items-center justify-center rounded-full transition ${active && !disabled ? 'bg-brand-green/15' : ''}`}>
+      <span className={`flex h-7 w-7 items-center justify-center rounded-full transition ${active && !disabled ? 'bg-brand-orange/15' : ''}`}>
         {icon}
       </span>
       {label}

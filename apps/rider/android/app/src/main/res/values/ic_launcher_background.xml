@@ -2,5 +2,5 @@
 <resources>
     <!-- Brand purple, so the adaptive icon's background matches the artwork
          (the customer app takes the green half of the palette). -->
-    <color name="ic_launcher_background">#5E2D91</color>
+    <color name="ic_launcher_background">#23262B</color>
 </resources>

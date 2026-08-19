@@ -7,7 +7,7 @@ import { supabase } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Toggle } from './ui.tsx';
 import { errMessage } from '@servdgo/shared';
 
-const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 const SAMPLE: ServiceArea[] = [
   { id: '1', province: 'Laguna', city: 'Santa Cruz', barangay: 'Poblacion I', is_active: true },
@@ -95,7 +95,7 @@ export function ServiceAreas() {
           </label>
           <div className="flex items-end">
             <button disabled={busy || !supabase}
-              className="w-full rounded-lg bg-brand-green py-2 text-sm font-semibold text-white disabled:opacity-50">
+              className="w-full rounded-lg bg-brand-orange py-2 text-sm font-semibold text-white disabled:opacity-50">
               {busy ? 'Adding…' : 'Add barangay'}
             </button>
           </div>

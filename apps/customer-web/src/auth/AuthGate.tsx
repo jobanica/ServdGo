@@ -63,13 +63,13 @@ function SetNewPassword({ onDone }: { onDone: () => void }) {
 
   return (
     <Shell title="Set a new password">
-      {target && <p className="mb-2 rounded-lg bg-brand-green/10 px-3 py-2 text-sm">for <b>{target}</b></p>}
+      {target && <p className="mb-2 rounded-lg bg-brand-orange/10 px-3 py-2 text-sm">for <b>{target}</b></p>}
       <label className="mb-1 block text-sm font-medium text-black/70">New password</label>
       <input className={inputCls} type="password" value={password} onChange={(e) => setPassword(e.target.value)}
         placeholder="At least 6 characters" autoComplete="new-password"
         onKeyDown={(e) => { if (e.key === 'Enter' && !busy) void save(); }} />
       <button onClick={save} disabled={busy}
-        className="mt-4 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-4 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Saving…' : 'Save new password'}
       </button>
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -84,17 +84,17 @@ function SetNewPassword({ onDone }: { onDone: () => void }) {
  */
 function Shell({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f4f6f3]">
+    <div className="flex min-h-screen flex-col bg-[#f8f5f3]">
       {/* Hero */}
-      <header className="relative overflow-hidden bg-brand-green pb-20 pt-10 text-white">
+      <header className="relative overflow-hidden bg-brand-orange pb-20 pt-10 text-white">
         <div className="pointer-events-none absolute inset-0"
-          style={{ background: 'radial-gradient(120% 90% at 50% -10%, #86d33e 0%, #6DBE22 45%, #4d9417 100%)' }} />
+          style={{ background: 'radial-gradient(120% 90% at 50% -10%, #f2825e 0%, #E8552F 45%, #b03c1a 100%)' }} />
         <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/10" />
         <div className="pointer-events-none absolute -left-20 top-24 h-48 w-48 rounded-full bg-black/5" />
 
         <div className="relative mx-auto w-full max-w-md px-6 text-center">
           <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white/95 p-2 shadow-lg ring-4 ring-white/20">
-            <img src="/icons/pwa-512x512.png" alt="ServdGo" className="h-full w-full object-contain" />
+            <img src="/icons/mark-512.png" alt="ServdGo" className="h-full w-full object-contain" />
           </span>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight">ServdGo</h1>
           <p className="mt-1.5 text-sm text-white/85">
@@ -179,7 +179,7 @@ function EmailSignIn() {
           <>
             <p className="text-sm text-black/60">If an account exists for <b>{email.trim()}</b>, we've sent a reset link. Open it on this device to set a new password.</p>
             <button onClick={() => { setMode('signin'); setSent(false); }}
-              className="mt-4 w-full rounded-lg border border-brand-purple py-2.5 text-sm font-medium text-brand-purple">Back to sign in</button>
+              className="mt-4 w-full rounded-lg border border-brand-charcoal py-2.5 text-sm font-medium text-brand-charcoal">Back to sign in</button>
           </>
         ) : (
           <>
@@ -188,7 +188,7 @@ function EmailSignIn() {
               placeholder="you@email.com" inputMode="email" autoCapitalize="none" autoComplete="email"
               onKeyDown={(e) => { if (e.key === 'Enter' && valid && !busy) void submit(); }} />
             <button onClick={submit} disabled={busy || !valid}
-              className="mt-4 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+              className="mt-4 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
               {busy ? 'Sending…' : 'Send reset link'}
             </button>
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -211,15 +211,15 @@ function EmailSignIn() {
         onKeyDown={(e) => { if (e.key === 'Enter' && valid && !busy) void submit(); }} />
       <label className="mt-3 flex items-center gap-2 text-sm text-black/70">
         <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)}
-          className="h-4 w-4 accent-[#6DBE22]" />
+          className="h-4 w-4 accent-[#E8552F]" />
         Remember me on this device
       </label>
       <button onClick={submit} disabled={busy || !valid}
-        className="mt-3 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-3 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Please wait…' : mode === 'signup' ? 'Create account' : 'Sign in'}
       </button>
       {mode === 'signin' && (
-        <button onClick={() => { setMode('forgot'); setError(null); }} className="mt-3 w-full text-sm text-brand-purple">Forgot password?</button>
+        <button onClick={() => { setMode('forgot'); setError(null); }} className="mt-3 w-full text-sm text-brand-charcoal">Forgot password?</button>
       )}
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
       <button onClick={() => { setMode(mode === 'signup' ? 'signin' : 'signup'); setError(null); }}
@@ -273,7 +273,7 @@ function PhoneSetup() {
       <label className="mb-1 mt-3 block text-sm font-medium text-black/70">Mobile number <span className="text-red-500">*</span></label>
       <input className={inputCls} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0917 123 4567" inputMode="tel" />
       <button onClick={save} disabled={busy || name.trim().length < 2 || phone.trim().length < 7}
-        className="mt-4 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-4 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Saving…' : 'Save & continue'}
       </button>
       <button onClick={() => void signOut()} className="mt-2 w-full text-sm text-black/50">Sign out</button>

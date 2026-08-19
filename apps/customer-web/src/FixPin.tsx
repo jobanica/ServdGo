@@ -49,7 +49,7 @@ export function FixPin({ orderId, serviceType, onDone }: {
   if (!open) {
     return (
       <button onClick={() => setOpen(true)}
-        className="rounded-lg border border-brand-purple/40 px-2.5 py-1 text-xs font-medium text-brand-purple">
+        className="rounded-lg border border-brand-charcoal/40 px-2.5 py-1 text-xs font-medium text-brand-charcoal">
         📍 Fix map pin
       </button>
     );
@@ -79,7 +79,7 @@ export function FixPin({ orderId, serviceType, onDone }: {
       </p>
 
       {err && <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">{err}</p>}
-      {done && <p className="mt-2 rounded-lg bg-brand-green/15 px-3 py-2 text-xs text-green-800">✓ Pin updated — your rider has been told.</p>}
+      {done && <p className="mt-2 rounded-lg bg-brand-orange/15 px-3 py-2 text-xs text-green-800">✓ Pin updated — your rider has been told.</p>}
 
       <div className="mt-2 flex gap-2">
         <button onClick={() => { setOpen(false); setPin(null); setErr(null); }}
@@ -87,7 +87,7 @@ export function FixPin({ orderId, serviceType, onDone }: {
           Cancel
         </button>
         <button onClick={() => void save()} disabled={busy || !pin}
-          className="flex-1 rounded-lg bg-brand-green py-2 text-xs font-bold text-white disabled:opacity-50">
+          className="flex-1 rounded-lg bg-brand-orange py-2 text-xs font-bold text-white disabled:opacity-50">
           {busy ? 'Saving…' : 'Save new pin'}
         </button>
       </div>

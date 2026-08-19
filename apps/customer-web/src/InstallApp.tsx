@@ -109,7 +109,7 @@ export function InstallApp() {
           <div className="mt-2.5 flex gap-2">
             {isAndroid() && (
               <button onClick={openInChrome}
-                className="flex-1 rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white">
+                className="flex-1 rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white">
                 Open in Chrome
               </button>
             )}
@@ -121,17 +121,17 @@ export function InstallApp() {
           </div>
         ) : evt ? (
           <button onClick={() => void install()}
-            className="mt-2.5 w-full rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white">
+            className="mt-2.5 w-full rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white">
             Install app
           </button>
         ) : (
           <>
             <button onClick={() => setIosHelp((v) => !v)}
-              className="mt-2.5 w-full rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white">
+              className="mt-2.5 w-full rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white">
               {iosHelp ? 'Hide the steps' : 'Show me how'}
             </button>
             {iosHelp && (
-              <ol className="mt-2 space-y-1 rounded-xl bg-brand-green/[0.06] p-3 text-xs text-black/70">
+              <ol className="mt-2 space-y-1 rounded-xl bg-brand-orange/[0.06] p-3 text-xs text-black/70">
                 <li>1. Tap the <b>Share</b> button at the bottom of Safari — the square with an arrow going up.</li>
                 <li>2. Scroll down and tap <b>Add to Home Screen</b>.</li>
                 <li>3. Tap <b>Add</b>. The ServdGo icon appears with your other apps.</li>

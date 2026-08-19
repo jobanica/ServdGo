@@ -50,7 +50,7 @@ function DayPicker({ value, onChange }: { value: number[]; onChange: (days: numb
         return (
           <button key={d} type="button" onClick={() => toggle(d)}
             className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 transition ${
-              on ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/50 ring-black/15'
+              on ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/50 ring-black/15'
             }`}>
             {WEEKDAYS[d]}
           </button>
@@ -202,7 +202,7 @@ export function Stores() {
           <p className="mb-1.5 text-sm font-medium text-black/70">Store location</p>
           <MapPicker value={pin} onChange={setPin} />
         </div>
-        <button className="mt-3 rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white" disabled={!supabase}>
+        <button className="mt-3 rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-white" disabled={!supabase}>
           Add store
         </button>
         {!supabase && <span className="ml-3 text-xs text-black/40">Connect Supabase to add stores.</span>}
@@ -223,7 +223,7 @@ export function Stores() {
                   <span className="font-medium">{s.name}</span>
                   <span className="ml-2 text-xs text-black/40">{s.category ?? '—'}</span>
                   <span className={`ml-2 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                    s.lat != null && s.lng != null ? 'bg-brand-green/15 text-green-800' : 'bg-brand-yellow/30 text-yellow-800'
+                    s.lat != null && s.lng != null ? 'bg-brand-orange/15 text-green-800' : 'bg-brand-yellow/30 text-yellow-800'
                   }`}>
                     {s.lat != null && s.lng != null ? '📍 Pinned' : 'No location'}
                   </span>
@@ -327,7 +327,7 @@ function StoreDetailsEditor({ store, onSaved }: { store: StoreRow; onSaved: () =
       <div className="mb-2 flex items-center justify-between">
         <h4 className="text-sm font-semibold">Store details</h4>
         <button onClick={save} disabled={!supabase || !name.trim() || !dirty || saving}
-          className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+          className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
           {saving ? 'Saving…' : dirty ? 'Save details' : saved ? '✓ Saved' : 'Saved'}
         </button>
       </div>
@@ -381,7 +381,7 @@ function LocationEditor({ store, onSaved }: { store: StoreRow; onSaved: () => vo
       <div className="mb-2 flex items-center justify-between">
         <h4 className="text-sm font-semibold">Store location</h4>
         <button onClick={save} disabled={!supabase || !pin || !dirty || saving}
-          className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+          className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
           {saving ? 'Saving…' : dirty ? 'Save location' : saved ? '✓ Saved' : 'Saved'}
         </button>
       </div>
@@ -453,7 +453,7 @@ function MenuEditor({ storeId }: { storeId: string }) {
         <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-black/40">Categories</p>
         <div className="mb-2 flex flex-wrap gap-2">
           {cats.map((c) => (
-            <span key={c.id} className="inline-flex items-center gap-1 rounded-full bg-brand-green/15 px-2.5 py-1 text-xs font-medium text-green-800">
+            <span key={c.id} className="inline-flex items-center gap-1 rounded-full bg-brand-orange/15 px-2.5 py-1 text-xs font-medium text-green-800">
               {c.title}
               <button onClick={() => removeCategory(c.id)} title="Delete category"
                 className="text-green-800/60 hover:text-red-600">×</button>
@@ -464,7 +464,7 @@ function MenuEditor({ storeId }: { storeId: string }) {
         <form onSubmit={addCategory} className="flex gap-2">
           <input className={inp + ' flex-1'} placeholder="New category (e.g. Rice Meals, Drinks)"
             value={catTitle} onChange={(e) => setCatTitle(e.target.value)} />
-          <button className="rounded-lg bg-brand-green px-3 py-2 text-sm font-medium text-white">Add category</button>
+          <button className="rounded-lg bg-brand-orange px-3 py-2 text-sm font-medium text-white">Add category</button>
         </form>
       </div>
 
@@ -486,7 +486,7 @@ function MenuEditor({ storeId }: { storeId: string }) {
                           <span className={`block truncate ${it.is_available ? '' : 'text-black/40'}`}>
                             {it.name} · ₱{Number(it.price).toFixed(2)}
                             {Number(it.markup ?? 0) > 0 && (
-                              <span className="text-brand-purple"> → ₱{Number(it.customer_price ?? it.price).toFixed(2)}</span>
+                              <span className="text-brand-charcoal"> → ₱{Number(it.customer_price ?? it.price).toFixed(2)}</span>
                             )}
                           </span>
                           {!it.is_available && <span className="text-[11px] font-semibold text-red-600">SOLD OUT</span>}
@@ -499,7 +499,7 @@ function MenuEditor({ storeId }: { storeId: string }) {
                       </span>
                       <span className="flex shrink-0 items-center gap-2">
                         <button onClick={() => setEditingId(editingId === it.id ? null : it.id)}
-                          className="rounded-lg px-2.5 py-1 text-xs font-medium text-brand-purple ring-1 ring-brand-purple/40 hover:bg-brand-purple/5">
+                          className="rounded-lg px-2.5 py-1 text-xs font-medium text-brand-charcoal ring-1 ring-brand-charcoal/40 hover:bg-brand-charcoal/5">
                           {editingId === it.id ? 'Close' : 'Edit'}
                         </button>
                         <button onClick={async () => { if (supabase) { await setMenuItemAvailability(supabase, it.id, !it.is_available); await load(); } }}
@@ -540,7 +540,7 @@ function MenuEditor({ storeId }: { storeId: string }) {
           <option value="">No category</option>
           {cats.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
         </select>
-        <button className="rounded-lg bg-brand-purple px-3 py-2 text-sm font-medium text-white">Add item</button>
+        <button className="rounded-lg bg-brand-charcoal px-3 py-2 text-sm font-medium text-white">Add item</button>
       </form>
     </div>
   );
@@ -630,7 +630,7 @@ function ItemEditor({ item, groups, options, cats, onSaved, sources }:
       </div>
       <div className="flex items-center gap-3">
         <button onClick={saveMeta} disabled={saving || !supabase}
-          className="rounded-lg bg-brand-green px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50">
+          className="rounded-lg bg-brand-orange px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50">
           {saving ? 'Saving…' : saved ? '✓ Saved' : 'Save'}
         </button>
         <button onClick={removeItem}
@@ -645,21 +645,21 @@ function ItemEditor({ item, groups, options, cats, onSaved, sources }:
         <div className="mb-2 flex items-center justify-between">
           <p className="text-xs font-semibold text-black/60">Customizations</p>
           <button onClick={() => setShowNewGroup((v) => !v)}
-            className="rounded-lg px-2.5 py-1 text-xs font-medium text-brand-purple ring-1 ring-brand-purple/40 hover:bg-brand-purple/5">
+            className="rounded-lg px-2.5 py-1 text-xs font-medium text-brand-charcoal ring-1 ring-brand-charcoal/40 hover:bg-brand-charcoal/5">
             ＋ Add customization
           </button>
         </div>
 
         {/* Reuse add-ons from another dish, then just edit prices. */}
         {sources.length > 0 && (
-          <div className="mb-2 flex flex-wrap items-center gap-2 rounded-lg bg-brand-green/[0.06] p-2.5">
+          <div className="mb-2 flex flex-wrap items-center gap-2 rounded-lg bg-brand-orange/[0.06] p-2.5">
             <span className="text-xs font-medium text-black/60">Copy add-ons from</span>
             <select className={inp + ' min-w-[10rem] flex-1'} value={copyFrom} onChange={(e) => { setCopyFrom(e.target.value); setCopyMsg(null); }}>
               <option value="">Choose a dish…</option>
               {sources.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
             <button onClick={copyAddons} disabled={!copyFrom || copyBusy}
-              className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+              className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
               {copyBusy ? 'Copying…' : 'Copy'}
             </button>
           </div>
@@ -674,7 +674,7 @@ function ItemEditor({ item, groups, options, cats, onSaved, sources }:
               <label className="flex items-center gap-1.5"><input type="checkbox" checked={gRequired} onChange={(e) => setGRequired(e.target.checked)} /> Required</label>
               <label className="flex items-center gap-1.5"><input type="checkbox" checked={gMulti} onChange={(e) => setGMulti(e.target.checked)} /> Allow multiple choices</label>
             </div>
-            <button className="rounded-lg bg-brand-purple px-3 py-1.5 text-xs font-semibold text-white">Create</button>
+            <button className="rounded-lg bg-brand-charcoal px-3 py-1.5 text-xs font-semibold text-white">Create</button>
           </form>
         )}
 
@@ -728,10 +728,10 @@ function OptionGroupEditor({ group, base, options, onChanged }:
       </div>
       <div className="mb-2 flex flex-wrap gap-2">
         {options.map((o) => (
-          <span key={o.id} className="inline-flex items-center gap-1 rounded-full bg-brand-purple/10 px-2.5 py-1 text-xs text-brand-purple">
+          <span key={o.id} className="inline-flex items-center gap-1 rounded-full bg-brand-charcoal/10 px-2.5 py-1 text-xs text-brand-charcoal">
             {o.option_name}
             {Number(o.price_delta) !== 0 && <span className="text-black/40">{Number(o.price_delta) > 0 ? '+' : ''}₱{Number(o.price_delta)}</span>}
-            <button onClick={() => removeOption(o.id)} title="Remove" className="text-brand-purple/60 hover:text-red-600">×</button>
+            <button onClick={() => removeOption(o.id)} title="Remove" className="text-brand-charcoal/60 hover:text-red-600">×</button>
           </span>
         ))}
         {options.length === 0 && <span className="text-xs text-black/40">No choices yet.</span>}
@@ -739,7 +739,7 @@ function OptionGroupEditor({ group, base, options, onChanged }:
       <form onSubmit={addOption} className="flex flex-wrap gap-2">
         <input className={inp + ' w-36'} placeholder="Choice (e.g. Large, Hot)" value={optName} onChange={(e) => setOptName(e.target.value)} />
         <input className={inp + ' w-24'} type="number" placeholder="Extra ₱" value={optExtra} onChange={(e) => setOptExtra(e.target.value)} />
-        <button className="rounded-lg bg-brand-purple/80 px-3 py-2 text-xs font-medium text-white">Add choice</button>
+        <button className="rounded-lg bg-brand-charcoal/80 px-3 py-2 text-xs font-medium text-white">Add choice</button>
       </form>
       {err && <p className="mt-1 text-xs text-red-600">{err}</p>}
       {base >= 0 && options.length > 0 && Number(options[0]!.price_delta) !== 0 && (
@@ -768,7 +768,7 @@ function ImageUpload({ url, onUpload, rounded = 'rounded-lg', size = 'h-14 w-14'
       <div className={`flex ${size} shrink-0 items-center justify-center overflow-hidden ${rounded} bg-black/[0.04] ring-1 ring-black/10`}>
         {url ? <img src={url} alt="" className="h-full w-full object-cover" /> : <span className="text-lg text-black/25">🖼️</span>}
       </div>
-      <label className="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium text-brand-purple ring-1 ring-brand-purple/40 hover:bg-brand-purple/5">
+      <label className="cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium text-brand-charcoal ring-1 ring-brand-charcoal/40 hover:bg-brand-charcoal/5">
         {busy ? 'Uploading…' : url ? 'Change' : 'Upload'}
         <input type="file" accept="image/*" className="hidden" onChange={pick} disabled={busy || !supabase} />
       </label>
@@ -777,7 +777,7 @@ function ImageUpload({ url, onUpload, rounded = 'rounded-lg', size = 'h-14 w-14'
   );
 }
 
-const inp = 'rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green';
+const inp = 'rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange';
 const Muted = ({ children }: { children: React.ReactNode }) =>
   <p className="rounded-xl bg-white p-6 text-sm text-black/50 shadow-sm ring-1 ring-black/5">{children}</p>;
 const ErrorNote = ({ msg }: { msg: string }) =>
@@ -828,7 +828,7 @@ function CopyMenuPanel({ store, stores }: { store: StoreRow; stores: StoreRow[] 
               Replace the target's existing menu
             </label>
             <button onClick={copy} disabled={busy || !target}
-              className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+              className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
               {busy ? 'Copying…' : 'Copy menu'}
             </button>
           </div>

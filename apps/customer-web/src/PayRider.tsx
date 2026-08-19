@@ -85,7 +85,7 @@ export function PayRider({ orderId }: { orderId: string }) {
           )}
           {info.payment_receipt_url && (
             <a href={info.payment_receipt_url} target="_blank" rel="noreferrer"
-              className="mt-2 inline-block text-xs font-medium text-brand-purple underline">View your receipt</a>
+              className="mt-2 inline-block text-xs font-medium text-brand-charcoal underline">View your receipt</a>
           )}
         </div>
       ) : (
@@ -107,7 +107,7 @@ export function PayRider({ orderId }: { orderId: string }) {
             )}
             {info.goods_receipt_url && (
               <a href={info.goods_receipt_url} target="_blank" rel="noreferrer"
-                className="block pt-1 font-medium text-brand-purple underline">🧾 View the store receipt</a>
+                className="block pt-1 font-medium text-brand-charcoal underline">🧾 View the store receipt</a>
             )}
             {!info.goods_is_final && (
               <p className="pt-1 text-[11px] text-black/45">
@@ -116,13 +116,13 @@ export function PayRider({ orderId }: { orderId: string }) {
               </p>
             )}
           </div>
-          <div className="mt-1 rounded-lg bg-brand-purple/[0.06] px-3 py-2">
+          <div className="mt-1 rounded-lg bg-brand-charcoal/[0.06] px-3 py-2">
             <p className="text-sm font-bold text-brand-ink">{payNumber}</p>
             <p className="text-xs text-black/55">{payName}</p>
           </div>
 
           <button onClick={() => setShowQr((v) => !v)}
-            className="mt-2 rounded-lg bg-brand-purple px-3 py-1.5 text-xs font-semibold text-white">
+            className="mt-2 rounded-lg bg-brand-charcoal px-3 py-1.5 text-xs font-semibold text-white">
             {showQr ? 'Hide QR' : '📱 Show payment QR'}
           </button>
           {showQr && (
@@ -136,9 +136,9 @@ export function PayRider({ orderId }: { orderId: string }) {
           <div className="mt-1 flex gap-2">
             <input value={reference} onChange={(e) => { setReference(e.target.value); setSavedRef(false); }}
               placeholder="GCash reference #"
-              className="min-w-0 flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-green" />
+              className="min-w-0 flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-orange" />
             <button onClick={saveRef} disabled={!reference.trim()}
-              className="shrink-0 rounded-lg border border-brand-purple px-3 text-xs font-medium text-brand-purple disabled:opacity-50">
+              className="shrink-0 rounded-lg border border-brand-charcoal px-3 text-xs font-medium text-brand-charcoal disabled:opacity-50">
               {savedRef ? 'Saved' : 'Save'}
             </button>
           </div>
@@ -148,7 +148,7 @@ export function PayRider({ orderId }: { orderId: string }) {
             <div className="mt-1 flex items-center gap-3">
               <img src={receiptUrl} alt="Receipt" className="h-20 w-20 rounded-lg object-cover ring-1 ring-black/10" />
               <span className="text-sm font-medium text-green-700">✓ Uploaded</span>
-              <label className="cursor-pointer text-xs text-brand-purple underline">
+              <label className="cursor-pointer text-xs text-brand-charcoal underline">
                 Replace
                 <input type="file" accept="image/*" className="hidden"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ''; }} />

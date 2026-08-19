@@ -24,10 +24,10 @@ export function ChatButton({ orderId, role, title, className }: {
   return (
     <>
       <button onClick={() => { setOpen(true); setUnread(0); }}
-        className={className ?? 'relative w-full rounded-xl bg-brand-purple py-3 text-sm font-bold text-white shadow-sm'}>
+        className={className ?? 'relative w-full rounded-xl bg-brand-charcoal py-3 text-sm font-bold text-white shadow-sm'}>
         💬 {title}
         {unread > 0 && (
-          <span className="ml-2 inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-white px-1.5 text-xs font-bold text-brand-purple">
+          <span className="ml-2 inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-white px-1.5 text-xs font-bold text-brand-charcoal">
             {unread}
           </span>
         )}
@@ -86,7 +86,7 @@ export function Chat({ orderId, role, title, onClose }: {
       <div className="flex h-[75vh] w-full max-w-md flex-col rounded-t-2xl bg-white sm:rounded-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-black/5 px-4 py-3">
           <h3 className="font-bold">{title}</h3>
-          <button onClick={onClose} className="text-sm text-brand-purple">Close</button>
+          <button onClick={onClose} className="text-sm text-brand-charcoal">Close</button>
         </div>
         <div className="flex-1 space-y-2 overflow-y-auto p-4">
           {msgs.length === 0 && <p className="mt-6 text-center text-sm text-black/40">No messages yet. Say hi 👋</p>}
@@ -94,7 +94,7 @@ export function Chat({ orderId, role, title, onClose }: {
             const mine = m.sender_role === role;
             return (
               <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
-                <span className={`max-w-[78%] overflow-hidden rounded-2xl text-sm ${mine ? 'bg-brand-green text-white' : 'bg-black/[0.06] text-black'}`}>
+                <span className={`max-w-[78%] overflow-hidden rounded-2xl text-sm ${mine ? 'bg-brand-orange text-white' : 'bg-black/[0.06] text-black'}`}>
                   {m.image_url && (
                     <a href={m.image_url} target="_blank" rel="noreferrer" className="block">
                       <img src={m.image_url} alt="Shared photo" className="max-h-64 w-full object-cover" />
@@ -124,9 +124,9 @@ export function Chat({ orderId, role, title, onClose }: {
           <input value={text} onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') void send(); }}
             placeholder="Message…"
-            className="min-w-0 flex-1 rounded-full border border-black/10 px-4 py-2 text-sm outline-none focus:border-brand-green" />
+            className="min-w-0 flex-1 rounded-full border border-black/10 px-4 py-2 text-sm outline-none focus:border-brand-orange" />
           <button onClick={send} disabled={busy || !text.trim()}
-            className="shrink-0 rounded-full bg-brand-green px-4 text-sm font-semibold text-white disabled:opacity-50">Send</button>
+            className="shrink-0 rounded-full bg-brand-orange px-4 text-sm font-semibold text-white disabled:opacity-50">Send</button>
         </div>
       </div>
     </div>

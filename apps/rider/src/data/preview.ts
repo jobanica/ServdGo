@@ -54,9 +54,9 @@ function rebill(o: RiderOrder): RiderOrder {
 const RECEIPT_PLACEHOLDER =
   'data:image/svg+xml;utf8,' + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120">'
-    + '<rect width="120" height="120" fill="#f1eaff"/>'
-    + '<text x="60" y="52" font-family="sans-serif" font-size="13" fill="#5b3fa8" text-anchor="middle">GCash</text>'
-    + '<text x="60" y="74" font-family="sans-serif" font-size="11" fill="#5b3fa8" text-anchor="middle">receipt</text>'
+    + '<rect width="120" height="120" fill="#fdece4"/>'
+    + '<text x="60" y="52" font-family="sans-serif" font-size="13" fill="#3a3f47" text-anchor="middle">GCash</text>'
+    + '<text x="60" y="74" font-family="sans-serif" font-size="11" fill="#3a3f47" text-anchor="middle">receipt</text>'
     + '</svg>',
   );
 

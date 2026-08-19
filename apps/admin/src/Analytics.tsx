@@ -8,9 +8,9 @@ import { Card, Muted, ErrorNote, Th, Td, peso } from './ui.tsx';
 
 // Validated categorical palette (dataviz six-checks, light surface): fixed order.
 const SERVICE_COLOR: Record<ServiceType, string> = {
-  food: '#4A9415', pabili: '#7A4FB0', padala: '#C88A00',
+  food: '#C4451F', pabili: '#5B6270', padala: '#C88A00',
 };
-const TREND = '#4A9415';
+const TREND = '#C4451F';
 
 const RANGES = [7, 14, 30];
 const today = manilaDay();
@@ -74,7 +74,7 @@ export function Analytics() {
 
   const chip = (on: boolean) =>
     `rounded-lg px-3 py-1.5 text-xs font-medium ring-1 transition ${
-      on ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'}`;
+      on ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'}`;
 
   const controls = (
     <div className="space-y-2">
@@ -137,7 +137,7 @@ export function Analytics() {
 
 function Tile({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: boolean }) {
   return (
-    <div className={`rounded-2xl p-4 shadow-sm ring-1 ${accent ? 'bg-brand-green text-white ring-brand-green' : 'bg-white ring-black/5'}`}>
+    <div className={`rounded-2xl p-4 shadow-sm ring-1 ${accent ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white ring-black/5'}`}>
       <div className="text-2xl font-extrabold">{value}</div>
       <div className={`text-xs ${accent ? 'text-white/85' : 'text-black/50'}`}>{label}</div>
       {sub && <div className={`mt-0.5 text-[11px] ${accent ? 'text-white/75' : 'text-black/40'}`}>{sub}</div>}
@@ -240,7 +240,7 @@ function DailyTrend({ daily, rangeDays }: { daily: DayPoint[]; rangeDays: number
 
   const chip = (on: boolean) =>
     `rounded-lg px-3 py-1.5 text-xs font-medium ring-1 transition ${
-      on ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'}`;
+      on ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'}`;
 
   return (
     <Card
@@ -360,7 +360,7 @@ function RiderBars({ riders }: { riders: { name: string; delivered: number; comm
         <div key={i} className="flex items-center gap-3">
           <span className="w-28 truncate text-sm text-black/70">{r.name}</span>
           <div className="relative h-5 flex-1 rounded bg-black/[0.04]">
-            <div className="absolute inset-y-0 left-0 rounded bg-brand-green" style={{ width: `${(r.commission / max) * 100}%` }} />
+            <div className="absolute inset-y-0 left-0 rounded bg-brand-orange" style={{ width: `${(r.commission / max) * 100}%` }} />
           </div>
           <span className="w-20 text-right text-sm font-semibold tabular-nums">{peso(r.commission)}</span>
           <span className="w-16 text-right text-xs text-black/40">{r.delivered} trips</span>

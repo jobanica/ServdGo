@@ -109,14 +109,14 @@ export function AddressChooser({ addresses, loaded, value, onChoose, onCustom, c
           return (
             <button key={a.id} type="button" onClick={() => onChoose(a)}
               className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition ${
-                on ? 'border-brand-green bg-brand-green/[0.07] ring-1 ring-brand-green'
-                   : 'border-black/10 bg-white hover:border-brand-green/40'}`}>
+                on ? 'border-brand-orange bg-brand-orange/[0.07] ring-1 ring-brand-orange'
+                   : 'border-black/10 bg-white hover:border-brand-orange/40'}`}>
               <span className="text-lg leading-none">{addressIcon(a.label)}</span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-brand-ink">{addressTitle(a)}</span>
                   {a.is_default && (
-                    <span className="rounded-full bg-brand-green/15 px-2 py-0.5 text-[10px] font-semibold text-green-800">Default</span>
+                    <span className="rounded-full bg-brand-orange/15 px-2 py-0.5 text-[10px] font-semibold text-green-800">Default</span>
                   )}
                   {a.lat == null && (
                     <span className="rounded-full bg-brand-yellow/30 px-2 py-0.5 text-[10px] font-semibold text-yellow-800">No pin</span>
@@ -130,15 +130,15 @@ export function AddressChooser({ addresses, loaded, value, onChoose, onCustom, c
                 <span className="mt-0.5 block text-xs text-black/50">{a.address}</span>
               </span>
               <span className={`mt-0.5 h-4 w-4 shrink-0 rounded-full border-2 ${
-                on ? 'border-brand-green bg-brand-green' : 'border-black/20'}`} />
+                on ? 'border-brand-orange bg-brand-orange' : 'border-black/20'}`} />
             </button>
           );
         })}
 
         <button type="button" onClick={onCustom}
           className={`w-full rounded-xl border border-dashed p-3 text-sm font-semibold transition ${
-            value === null ? 'border-brand-purple bg-brand-purple/[0.06] text-brand-purple'
-                           : 'border-black/15 text-black/55 hover:border-brand-purple/50'}`}>
+            value === null ? 'border-brand-charcoal bg-brand-charcoal/[0.06] text-brand-charcoal'
+                           : 'border-black/15 text-black/55 hover:border-brand-charcoal/50'}`}>
           📍 Deliver somewhere else
         </button>
       </div>
@@ -197,7 +197,7 @@ export function SaveAddressPrompt({ pin, text, area, contactName, contactPhone, 
   }
 
   return (
-    <div className="rounded-2xl bg-brand-green/[0.08] p-4 ring-1 ring-brand-green/30">
+    <div className="rounded-2xl bg-brand-orange/[0.08] p-4 ring-1 ring-brand-orange/30">
       <p className="text-sm font-bold text-green-900">📍 Save this address?</p>
       <p className="mt-1 text-sm text-green-900/75">
         We can keep it for next time, so you won't have to pin it again.
@@ -208,7 +208,7 @@ export function SaveAddressPrompt({ pin, text, area, contactName, contactPhone, 
         {[...free, nextAddressLabel(addresses)].map((l) => (
           <button key={l} type="button" onClick={() => setLabel(l)}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold ring-1 transition ${
-              label === l ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'}`}>
+              label === l ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'}`}>
             {addressIcon(l)} {l}
           </button>
         ))}
@@ -225,7 +225,7 @@ export function SaveAddressPrompt({ pin, text, area, contactName, contactPhone, 
           No thanks
         </button>
         <button type="button" onClick={() => void save()} disabled={busy || !customerId}
-          className="flex-1 rounded-xl bg-brand-green py-2.5 text-sm font-bold text-white disabled:opacity-60">
+          className="flex-1 rounded-xl bg-brand-orange py-2.5 text-sm font-bold text-white disabled:opacity-60">
           {busy ? 'Saving…' : 'Save address'}
         </button>
       </div>
@@ -281,7 +281,7 @@ export function FirstAddressForm({ customerId, onSaved, defaultName = '', defaul
           {['Home', 'Office'].map((l) => (
             <button key={l} type="button" onClick={() => setLabel(l)}
               className={`rounded-lg px-3 py-1.5 text-xs font-semibold ring-1 transition ${
-                label === l ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'}`}>
+                label === l ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'}`}>
               {addressIcon(l)} {l}
             </button>
           ))}
@@ -323,7 +323,7 @@ export function FirstAddressForm({ customerId, onSaved, defaultName = '', defaul
       {err && <p className="text-xs text-red-600">{err}</p>}
 
       <button type="button" onClick={() => void save()} disabled={busy || !ready}
-        className="w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Saving…'
           : !pin ? 'Pin your address on the map'
           : areaRequired && !area ? 'Choose your area'

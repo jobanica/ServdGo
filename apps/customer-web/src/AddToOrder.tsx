@@ -109,7 +109,7 @@ export function AddToOrder({ orderId, status, onAdded }: {
   if (!open) {
     return (
       <button onClick={() => setOpen(true)}
-        className="rounded-lg border border-brand-green/50 px-2.5 py-1 text-xs font-semibold text-green-700">
+        className="rounded-lg border border-brand-orange/50 px-2.5 py-1 text-xs font-semibold text-green-700">
         ➕ Add more items
       </button>
     );
@@ -122,7 +122,7 @@ export function AddToOrder({ orderId, status, onAdded }: {
   const otherStores = others.filter((s) => !onOrder.has(s.id));
 
   return (
-    <div className="mt-2 w-full rounded-xl bg-brand-green/[0.05] p-3 ring-1 ring-brand-green/25">
+    <div className="mt-2 w-full rounded-xl bg-brand-orange/[0.05] p-3 ring-1 ring-brand-orange/25">
       <p className="text-sm font-bold text-green-900">Add to this order</p>
       <p className="mt-0.5 text-xs text-green-900/70">
         Your rider is told straight away. If the kitchen has run out they'll mark it and you won't be charged.
@@ -133,13 +133,13 @@ export function AddToOrder({ orderId, status, onAdded }: {
           ⏳ Waiting on your rider for {pending.map((a) => a.store_name || 'an extra stop').join(', ')}.
         </p>
       )}
-      {sent && <p className="mt-2 rounded-lg bg-brand-green/15 px-3 py-2 text-xs font-medium text-green-800">✓ {sent}</p>}
+      {sent && <p className="mt-2 rounded-lg bg-brand-orange/15 px-3 py-2 text-xs font-medium text-green-800">✓ {sent}</p>}
 
       <div className="mt-2 flex flex-wrap gap-2">
         {stores.map((s) => (
           <button key={s.storeId} onClick={() => { setStoreId(s.storeId); setSent(null); }}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold ring-1 transition ${
-              storeId === s.storeId ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'}`}>
+              storeId === s.storeId ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'}`}>
             {s.storeName}
           </button>
         ))}
@@ -187,11 +187,11 @@ export function AddToOrder({ orderId, status, onAdded }: {
                 <span className="w-5 text-center text-sm font-semibold">{basket[i.id] ?? 0}</span>
                 <button onClick={() => setBasket((b) => ({ ...b, [i.id]: (b[i.id] ?? 0) + 1 }))}
                   aria-label={`One more ${i.name}`}
-                  className="h-7 w-7 rounded-lg bg-brand-green text-sm font-bold text-white">＋</button>
+                  className="h-7 w-7 rounded-lg bg-brand-orange text-sm font-bold text-white">＋</button>
               </span>
             ) : (
               <button onClick={() => void add(i)} disabled={busy === i.id}
-                className="shrink-0 rounded-lg bg-brand-green px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
+                className="shrink-0 rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
                 {busy === i.id ? 'Adding…' : added.includes(i.id) ? '✓ Added — add again' : 'Add'}
               </button>
             )}
@@ -207,7 +207,7 @@ export function AddToOrder({ orderId, status, onAdded }: {
             is charged if they can't.
           </p>
           <button onClick={() => void askForStop()} disabled={busy === 'stop' || basketCount === 0}
-            className="mt-2 w-full rounded-lg bg-brand-purple py-2.5 text-sm font-bold text-white disabled:opacity-50">
+            className="mt-2 w-full rounded-lg bg-brand-charcoal py-2.5 text-sm font-bold text-white disabled:opacity-50">
             {busy === 'stop' ? 'Sending…'
               : basketCount === 0 ? 'Choose what to buy there'
               : `Ask my rider to add this stop · ${basketCount} item${basketCount === 1 ? '' : 's'} · ${peso(basketTotal)}`}

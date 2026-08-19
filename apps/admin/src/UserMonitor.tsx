@@ -55,7 +55,7 @@ export function UserMonitor() {
         {WINDOWS.map((w) => (
           <button key={w} onClick={() => setDays(w)}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold ring-1 ${
-              days === w ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'
+              days === w ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'
             }`}>
             {w} days
           </button>
@@ -66,8 +66,8 @@ export function UserMonitor() {
       <Card title="App installs">
         <div className="grid gap-3 sm:grid-cols-4">
           <Stat label="Total installs" value={d.installs_total} tint="text-brand-ink" />
-          <Stat label="Customer app" value={d.installs_customer} tint="text-brand-green" />
-          <Stat label="Rider app" value={d.installs_rider} tint="text-brand-purple" />
+          <Stat label="Customer app" value={d.installs_customer} tint="text-brand-orange" />
+          <Stat label="Rider app" value={d.installs_rider} tint="text-brand-charcoal" />
           <Stat label={`New (${d.window_days}d)`} value={d.installs_new} tint="text-brand-ink" />
         </div>
         <p className="mt-3 text-xs text-black/40">
@@ -80,9 +80,9 @@ export function UserMonitor() {
       <Card title="Customers">
         <div className="grid gap-3 sm:grid-cols-4">
           <Stat label="Registered" value={d.customers_total} tint="text-brand-ink" />
-          <Stat label="Active" value={d.customers_active} tint="text-brand-green" />
+          <Stat label="Active" value={d.customers_active} tint="text-brand-orange" />
           <Stat label="Inactive" value={custInactive} tint="text-black/40" />
-          <Stat label={`New (${d.window_days}d)`} value={d.customers_new} tint="text-brand-purple" />
+          <Stat label={`New (${d.window_days}d)`} value={d.customers_new} tint="text-brand-charcoal" />
         </div>
         <Bar active={d.customers_active} total={d.customers_total} />
       </Card>
@@ -91,9 +91,9 @@ export function UserMonitor() {
       <Card title="Riders">
         <div className="grid gap-3 sm:grid-cols-5">
           <Stat label="Approved" value={d.riders_total} tint="text-brand-ink" />
-          <Stat label="Active" value={d.riders_active} tint="text-brand-green" />
+          <Stat label="Active" value={d.riders_active} tint="text-brand-orange" />
           <Stat label="Inactive" value={riderInactive} tint="text-black/40" />
-          <Stat label="Online now" value={d.riders_online} tint="text-brand-purple" />
+          <Stat label="Online now" value={d.riders_online} tint="text-brand-charcoal" />
           <Stat label="Suspended" value={d.riders_suspended} tint="text-red-600" />
         </div>
         <Bar active={d.riders_active} total={d.riders_total} />
@@ -124,7 +124,7 @@ function Bar({ active, total }: { active: number; total: number }) {
   return (
     <div className="mt-3">
       <div className="h-2.5 w-full overflow-hidden rounded-full bg-black/10">
-        <div className="h-full rounded-full bg-brand-green" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-brand-orange" style={{ width: `${pct}%` }} />
       </div>
       <p className="mt-1 text-xs text-black/50">{pct}% of registered accounts were active</p>
     </div>

@@ -37,7 +37,7 @@ export function useDayRange(defaultDays = 30, presets: number[] = [7, 30, 90]) {
 
   const chip = (on: boolean) =>
     `rounded-lg px-3 py-1.5 text-xs font-medium ring-1 transition ${
-      on ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'}`;
+      on ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'}`;
 
   const controls = (
     <div className="space-y-2">

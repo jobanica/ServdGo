@@ -225,7 +225,7 @@ export function PabiliForm() {
   if (createdId) {
     return (
       <div className="rounded-xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-green/15 text-2xl">✓</div>
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-orange/15 text-2xl">✓</div>
         <h2 className="text-lg font-bold">Pabili request sent</h2>
         <p className="mt-1 text-sm text-black/60">
           {createdId === 'preview-only'
@@ -234,7 +234,7 @@ export function PabiliForm() {
         </p>
         <p className="mt-2 font-mono text-xs text-black/40">{createdId}</p>
         <button onClick={() => { setForm(initial); setBuyAt(null); setDropoff(null); setArea(null); setCreatedId(null); }}
-          className="mt-5 rounded-lg border border-brand-purple px-4 py-2 text-sm font-medium text-brand-purple hover:bg-brand-purple/5">
+          className="mt-5 rounded-lg border border-brand-charcoal px-4 py-2 text-sm font-medium text-brand-charcoal hover:bg-brand-charcoal/5">
           Send another
         </button>
       </div>
@@ -252,11 +252,11 @@ export function PabiliForm() {
               <div className="flex gap-2">
                 <input type="number" min={1} value={it.qty} aria-label={`Quantity for item ${i + 1}`}
                   onChange={(e) => setItem(i, { qty: Math.max(1, Number(e.target.value) || 1) })}
-                  className="w-16 shrink-0 rounded-lg border border-black/10 bg-white px-2 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30 text-center" />
+                  className="w-16 shrink-0 rounded-lg border border-black/10 bg-white px-2 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30 text-center" />
                 <input value={it.name} aria-label={`Item ${i + 1}`}
                   onChange={(e) => setItem(i, { name: e.target.value })}
                   placeholder={i === 0 ? 'e.g. paracetamol 500mg' : 'Another item'}
-                  className="min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30" />
+                  className="min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30" />
                 <button type="button" onClick={() => removeItem(i)} aria-label={`Remove item ${i + 1}`}
                   disabled={form.items.length === 1}
                   className="shrink-0 rounded-lg border border-black/10 px-3 text-sm text-black/40 disabled:opacity-30">✕</button>
@@ -266,7 +266,7 @@ export function PabiliForm() {
                 <select aria-label={`Store for item ${i + 1}`}
                   value={it.storeIndex ?? ''}
                   onChange={(e) => setItem(i, { storeIndex: e.target.value === '' ? null : Number(e.target.value) })}
-                  className="ml-[4.5rem] rounded-lg border border-brand-purple/30 bg-brand-purple/[0.04] px-2 py-1 text-xs text-brand-purple outline-none">
+                  className="ml-[4.5rem] rounded-lg border border-brand-charcoal/30 bg-brand-charcoal/[0.04] px-2 py-1 text-xs text-brand-charcoal outline-none">
                   <option value="">🛒 Any store</option>
                   {stores.map((st, si) => (st.name.trim() ? <option key={si} value={si}>🛒 {st.name.trim()}</option> : null))}
                 </select>
@@ -275,7 +275,7 @@ export function PabiliForm() {
           ))}
         </div>
         <button type="button" onClick={addItem}
-          className="mt-2 w-full rounded-lg border border-dashed border-brand-purple/40 py-2 text-sm font-semibold text-brand-purple">
+          className="mt-2 w-full rounded-lg border border-dashed border-brand-charcoal/40 py-2 text-sm font-semibold text-brand-charcoal">
           ＋ Add more item
         </button>
         <p className="mt-1 text-xs text-black/40">
@@ -292,7 +292,7 @@ export function PabiliForm() {
               <input value={st.name} aria-label={`Store ${i + 1}`}
                 onChange={(e) => setStore(i, { name: e.target.value })}
                 placeholder={i === 0 ? 'e.g. Botica Central' : 'Another store'}
-                className="min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30" />
+                className="min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30" />
               <button type="button" onClick={() => removeStore(i)} aria-label={`Remove store ${i + 1}`}
                 disabled={stores.length === 1}
                 className="shrink-0 rounded-lg border border-black/10 px-3 text-sm text-black/40 disabled:opacity-30">✕</button>
@@ -300,7 +300,7 @@ export function PabiliForm() {
           ))}
         </div>
         <button type="button" onClick={addStore} disabled={stores.length >= MAX_STORES_PER_ORDER}
-          className="mt-2 w-full rounded-lg border border-dashed border-brand-purple/40 py-2 text-sm font-semibold text-brand-purple disabled:opacity-40">
+          className="mt-2 w-full rounded-lg border border-dashed border-brand-charcoal/40 py-2 text-sm font-semibold text-brand-charcoal disabled:opacity-40">
           {stores.length >= MAX_STORES_PER_ORDER ? `${MAX_STORES_PER_ORDER} stores is the limit for one trip` : '＋ Add another store'}
         </button>
         <p className="mt-1 text-xs text-black/40">
@@ -312,12 +312,12 @@ export function PabiliForm() {
       <AreaPicker value={area} onChange={setArea} onRequired={setAreaRequired} />
       {/* Two maps in a row look identical at a glance, so the buy pin is
           purple and framed while the drop-off stays green. */}
-      <div className="rounded-xl bg-brand-purple/[0.05] p-3 ring-1 ring-brand-purple/20">
-        <span className="mb-1 block text-sm font-bold text-brand-purple">
+      <div className="rounded-xl bg-brand-charcoal/[0.05] p-3 ring-1 ring-brand-charcoal/20">
+        <span className="mb-1 block text-sm font-bold text-brand-charcoal">
           🛒 Where to buy
           {feeCfg.model === 'per_km'
             ? <span className="text-red-600"> *</span>
-            : <span className="font-normal text-brand-purple/60"> (optional)</span>}
+            : <span className="font-normal text-brand-charcoal/60"> (optional)</span>}
         </span>
         <LocationPicker value={buyAt} onChange={setBuyAt} kind="store" label="Pin the store" />
         {feeCfg.model === 'per_km' && !buyAt ? (
@@ -393,7 +393,7 @@ export function PabiliForm() {
 
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button type="submit" disabled={submitting || !hasItems || !addressText.trim() || !form.pay || !dropoff || needsPinsForFee || (areaRequired && !area)}
-        className="w-full rounded-lg bg-brand-green py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-60">
+        className="w-full rounded-lg bg-brand-orange py-3 font-semibold text-white transition hover:brightness-95 disabled:opacity-60">
         {submitting ? 'Sending…'
           : !hasItems ? 'Add what to buy'
           : !addressText.trim() ? 'Add your complete address'

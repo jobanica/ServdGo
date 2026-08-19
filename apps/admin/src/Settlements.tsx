@@ -114,8 +114,8 @@ export function Settlements() {
                       {b.locked
                         ? <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">Locked</span>
                         : b.owed < 0
-                          ? <span className="rounded-full bg-brand-green/15 px-2 py-0.5 text-xs font-medium text-green-800">You owe them</span>
-                          : <span className="rounded-full bg-brand-green/15 px-2 py-0.5 text-xs font-medium text-green-800">Active</span>}
+                          ? <span className="rounded-full bg-brand-orange/15 px-2 py-0.5 text-xs font-medium text-green-800">You owe them</span>
+                          : <span className="rounded-full bg-brand-orange/15 px-2 py-0.5 text-xs font-medium text-green-800">Active</span>}
                     </Td>
                   </tr>
                 ))}
@@ -147,11 +147,11 @@ export function Settlements() {
                   <div className="min-w-0 text-sm">
                     <span className="font-medium">{peso(row.amount_due)}</span>
                     <span className="block text-black/50">{row.business_day} · {row.method ?? '—'}{row.reference ? ` · ref ${row.reference}` : ''}</span>
-                    {row.receipt_url && <a href={row.receipt_url} target="_blank" rel="noreferrer" className="text-xs font-medium text-brand-purple">View receipt →</a>}
+                    {row.receipt_url && <a href={row.receipt_url} target="_blank" rel="noreferrer" className="text-xs font-medium text-brand-charcoal">View receipt →</a>}
                   </div>
                 </div>
                 <button onClick={() => confirm(row)} disabled={confirmingId === row.id}
-                  className="shrink-0 rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
+                  className="shrink-0 rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50">
                   {confirmingId === row.id ? 'Marking…' : 'Mark paid'}
                 </button>
               </div>

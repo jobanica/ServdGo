@@ -52,7 +52,7 @@ export function NotificationOptIn({ show }: { show: boolean }) {
   return (
     <button
       onClick={() => { void Notification.requestPermission().then(setState); }}
-      className="w-full rounded-xl bg-brand-purple/[0.08] px-3 py-2.5 text-left text-xs font-medium text-brand-purple ring-1 ring-brand-purple/20">
+      className="w-full rounded-xl bg-brand-charcoal/[0.08] px-3 py-2.5 text-left text-xs font-medium text-brand-charcoal ring-1 ring-brand-charcoal/20">
       🔔 Turn on alerts so we can tell you the moment your rider is outside.
     </button>
   );
@@ -62,7 +62,7 @@ export function NotificationOptIn({ show }: { show: boolean }) {
 export function ArrivalBanner({ arrivedAt, riderName }: { arrivedAt: string | null; riderName?: string | null }) {
   if (!arrivedAt) return null;
   return (
-    <div className="animate-pulse-none rounded-xl bg-brand-green/15 p-4 ring-2 ring-brand-green">
+    <div className="animate-pulse-none rounded-xl bg-brand-orange/15 p-4 ring-2 ring-brand-orange">
       <p className="text-base font-extrabold text-green-800">🛵 Your rider is outside!</p>
       <p className="mt-0.5 text-sm text-green-900/80">
         {riderName || 'Your rider'} is at your address with your order — please come out when you can.

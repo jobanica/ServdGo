@@ -44,7 +44,7 @@ export function ImportMenu({ onDone }: { onDone?: () => void }) {
   return (
     <div className="space-y-4">
       <Card title="Import stores & menu from CSV"
-        action={<button onClick={() => setText(TEMPLATE)} className="text-sm font-medium text-brand-purple">Load example</button>}>
+        action={<button onClick={() => setText(TEMPLATE)} className="text-sm font-medium text-brand-charcoal">Load example</button>}>
         <p className="mb-2 text-sm text-black/60">
           Columns: <code>store, contact, section, item, price</code> —
           <code> store</code>, <code>item</code>, <code>price</code> required.
@@ -52,7 +52,7 @@ export function ImportMenu({ onDone }: { onDone?: () => void }) {
         </p>
         <textarea rows={7} value={text} onChange={(e) => setText(e.target.value)}
           placeholder="Paste CSV here…"
-          className="w-full rounded-lg border border-black/10 px-3 py-2 font-mono text-xs outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30" />
+          className="w-full rounded-lg border border-black/10 px-3 py-2 font-mono text-xs outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30" />
         <div className="mt-2 flex items-center gap-3">
           <button onClick={() => fileRef.current?.click()}
             className="rounded-lg px-3 py-1.5 text-sm ring-1 ring-black/10">Upload .csv</button>
@@ -93,11 +93,11 @@ export function ImportMenu({ onDone }: { onDone?: () => void }) {
           ) : <p className="text-sm text-black/40">No valid rows to import.</p>}
 
           {error && <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-          {result && <p className="mt-3 rounded-lg bg-brand-green/10 px-3 py-2 text-sm text-green-800">✓ {result}</p>}
+          {result && <p className="mt-3 rounded-lg bg-brand-orange/10 px-3 py-2 text-sm text-green-800">✓ {result}</p>}
 
           {groups && groups.size > 0 && (
             <button onClick={runImport} disabled={busy || !supabase}
-              className="mt-4 rounded-lg bg-brand-green px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+              className="mt-4 rounded-lg bg-brand-orange px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
               {busy ? 'Importing…' : `Import ${parsed.rows.length} items`}
             </button>
           )}

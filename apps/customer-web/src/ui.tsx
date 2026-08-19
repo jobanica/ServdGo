@@ -1,6 +1,6 @@
 export const inputCls =
   'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm ' +
-  'outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+  'outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -41,7 +41,7 @@ export function PaymentChoice({ value, onChange }:
           <button key={opt} type="button" onClick={() => onChange(opt)}
             className={`rounded-lg px-2 py-2 text-xs font-medium ring-1 transition ${
               value === opt
-                ? 'bg-brand-green text-white ring-brand-green'
+                ? 'bg-brand-orange text-white ring-brand-orange'
                 : 'bg-white text-black/60 ring-black/10'
             }`}>
             {PAY_LABELS[opt]}

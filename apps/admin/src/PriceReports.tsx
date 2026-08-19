@@ -80,7 +80,7 @@ export function PriceReports() {
                   Keep ours
                 </button>
                 <button onClick={() => void review(p, true)} disabled={busy === p.id}
-                  className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
+                  className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
                   {busy === p.id ? '…' : 'Update the menu'}
                 </button>
               </span>

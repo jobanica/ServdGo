@@ -72,7 +72,7 @@ function OrderItemsCard({ delivery, onChange }: { delivery: ActiveDelivery; onCh
           </p>
           <div className="mt-2 flex gap-2">
             <button onClick={() => void respond(it.id!, true)} disabled={busy === it.id}
-              className="flex-1 rounded-lg bg-brand-green py-2 text-sm font-bold text-white disabled:opacity-50">
+              className="flex-1 rounded-lg bg-brand-orange py-2 text-sm font-bold text-white disabled:opacity-50">
               {busy === it.id ? '…' : 'Accept'}
             </button>
             <button onClick={() => void respond(it.id!, false)} disabled={busy === it.id}
@@ -111,7 +111,7 @@ function PayOnDelivery({ delivery }: { delivery: ActiveDelivery }) {
     <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-black/5">
       <div className="mb-2 flex items-center justify-between">
         <h3 className="font-bold">💵 Pay on delivery</h3>
-        <span className="rounded-full bg-brand-green/15 px-2 py-0.5 text-[11px] font-semibold text-green-800">Cash</span>
+        <span className="rounded-full bg-brand-orange/15 px-2 py-0.5 text-[11px] font-semibold text-green-800">Cash</span>
       </div>
       <div className="space-y-1 text-sm">
         {goods > 0 && (
@@ -221,7 +221,7 @@ function AddonPanel({ delivery, storeFee }: { delivery: ActiveDelivery; storeFee
         <div className="space-y-2">
           <textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={2}
             placeholder="e.g. 1kg sugar and a loaf of bread"
-            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-green" />
+            className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-orange" />
           <div className="flex gap-2">
             <input value={store} onChange={(e) => setStore(e.target.value)} placeholder="Which store? (optional)"
               className="min-w-0 flex-1 rounded-lg border border-black/10 px-3 py-2 text-sm" />
@@ -233,7 +233,7 @@ function AddonPanel({ delivery, storeFee }: { delivery: ActiveDelivery; storeFee
           </p>
           <div className="flex gap-2">
             <button onClick={() => void submit()} disabled={busy || !desc.trim()}
-              className="flex-1 rounded-lg bg-brand-green py-2 text-sm font-bold text-white disabled:opacity-50">
+              className="flex-1 rounded-lg bg-brand-orange py-2 text-sm font-bold text-white disabled:opacity-50">
               {busy ? 'Sending…' : 'Ask my rider'}
             </button>
             <button onClick={() => { setOpen(false); setErr(null); }}
@@ -242,7 +242,7 @@ function AddonPanel({ delivery, storeFee }: { delivery: ActiveDelivery; storeFee
         </div>
       ) : (
         <button onClick={() => setOpen(true)}
-          className="w-full rounded-lg border border-dashed border-brand-purple/40 py-2.5 text-sm font-semibold text-brand-purple">
+          className="w-full rounded-lg border border-dashed border-brand-charcoal/40 py-2.5 text-sm font-semibold text-brand-charcoal">
           Ask your rider to buy from another store
         </button>
       )}
@@ -316,7 +316,7 @@ export function Track({ onClose }: { onClose: () => void }) {
       <div className="rounded-xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="font-bold">Track your delivery</h2>
-          <button onClick={onClose} className="text-sm text-brand-purple">Close</button>
+          <button onClick={onClose} className="text-sm text-brand-charcoal">Close</button>
         </div>
         {status === 'loading' ? (
           <p className="py-6 text-sm text-black/50">Checking for an active delivery…</p>
@@ -326,7 +326,7 @@ export function Track({ onClose }: { onClose: () => void }) {
           </p>
         ) : (
           <>
-            <div className="mx-auto mb-3 mt-2 flex h-12 w-12 items-center justify-center rounded-full bg-brand-green/15 text-2xl">🛵</div>
+            <div className="mx-auto mb-3 mt-2 flex h-12 w-12 items-center justify-center rounded-full bg-brand-orange/15 text-2xl">🛵</div>
             <p className="text-sm text-black/60">No delivery in progress. Live tracking appears here once a rider is on the way with your order.</p>
           </>
         )}

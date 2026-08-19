@@ -48,7 +48,7 @@ export function Broadcast() {
       <Card title="Compose broadcast">
         <textarea rows={4} value={message} onChange={(e) => setMessage(e.target.value)}
           placeholder="e.g. We're open! Order food, Pabili and Padala now."
-          className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30" />
+          className="w-full rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30" />
         <div className="mt-1 flex justify-between text-xs text-black/50">
           <span>{message.length} chars</span>
           <span>{segments} SMS segment{segments > 1 ? 's' : ''} × recipient</span>
@@ -59,7 +59,7 @@ export function Broadcast() {
           {AUDIENCES.map((a) => (
             <button key={a.key} onClick={() => setAudience(a.key)}
               className={`rounded-lg px-3 py-2 text-sm font-medium ring-1 transition ${
-                audience === a.key ? 'bg-brand-green text-white ring-brand-green' : 'bg-white text-black/60 ring-black/10'
+                audience === a.key ? 'bg-brand-orange text-white ring-brand-orange' : 'bg-white text-black/60 ring-black/10'
               }`}>
               {a.label}
             </button>
@@ -72,11 +72,11 @@ export function Broadcast() {
       </Card>
 
       {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-      {result && <p className="rounded-lg bg-brand-green/10 px-3 py-2 text-sm text-green-800">✓ {result}</p>}
+      {result && <p className="rounded-lg bg-brand-orange/10 px-3 py-2 text-sm text-green-800">✓ {result}</p>}
 
       <div className="flex items-center gap-3">
         <button onClick={send} disabled={sending || message.trim().length < 3 || !count}
-          className="rounded-lg bg-brand-green px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+          className="rounded-lg bg-brand-orange px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
           {sending ? 'Sending…' : `Send to ${count ?? 0} recipient(s)`}
         </button>
         <span className="text-xs text-black/40">Respect opt-out/consent before broadcasting to customers.</span>

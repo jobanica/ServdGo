@@ -20,8 +20,8 @@ export function onDutyFor(since: string | null): string | null {
 }
 
 const chip: Record<string, string> = {
-  on_delivery: 'bg-brand-purple/15 text-brand-purple',
-  available: 'bg-brand-green/15 text-green-800',
+  on_delivery: 'bg-brand-charcoal/15 text-brand-charcoal',
+  available: 'bg-brand-orange/15 text-green-800',
   locked: 'bg-red-100 text-red-700',
 };
 const label: Record<string, string> = {
@@ -67,7 +67,7 @@ export function OnDuty({ onNavigate, onCount }:
   return (
     <Card
       title={`On duty now${rows ? ` · ${duty.length}` : ''}`}
-      action={<button onClick={() => onNavigate('ridersActive')} className="text-sm font-medium text-brand-purple">All riders →</button>}
+      action={<button onClick={() => onNavigate('ridersActive')} className="text-sm font-medium text-brand-charcoal">All riders →</button>}
     >
       {error && <ErrorNote msg={error} />}
       {!rows ? (
@@ -82,9 +82,9 @@ export function OnDuty({ onNavigate, onCount }:
             const since = onDutyFor(r.online_since);
             return (
               <li key={r.id} className="flex items-center gap-3 py-2.5">
-                <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-green/15 text-green-700">
+                <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-orange/15 text-green-700">
                   <IconScooter />
-                  <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-brand-green" />
+                  <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-brand-orange" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-brand-ink">{r.name}</span>

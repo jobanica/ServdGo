@@ -14,7 +14,7 @@ export const ErrorNote = ({ msg }: { msg: string }) =>
 export function StatusPill({ status }: { status: RiderApplicationStatus }) {
   const cls = {
     pending: 'bg-brand-yellow/30 text-yellow-800',
-    approved: 'bg-brand-green/15 text-green-800',
+    approved: 'bg-brand-orange/15 text-green-800',
     rejected: 'bg-red-100 text-red-700',
   }[status];
   return <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${cls}`}>{status}</span>;
@@ -26,7 +26,7 @@ export function Toggle({ on, onChange, disabled = false }:
   return (
     <button type="button" onClick={() => !disabled && onChange(!on)} disabled={disabled}
       aria-pressed={on}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-50 ${on ? 'bg-brand-green' : 'bg-black/20'}`}>
+      className={`relative h-6 w-11 shrink-0 rounded-full transition disabled:opacity-50 ${on ? 'bg-brand-orange' : 'bg-black/20'}`}>
       <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${on ? 'left-[22px]' : 'left-0.5'}`} />
     </button>
   );

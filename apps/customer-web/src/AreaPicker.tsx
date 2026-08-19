@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { listServiceAreas, groupAreas, type ServiceArea, type AreaSelection } from '@servdgo/supabase';
 import { supabase } from './lib/supabase.ts';
 
-const sel = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green';
+const sel = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange';
 
 /** Great-circle distance in km. */
 export function kmBetween(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {

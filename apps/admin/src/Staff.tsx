@@ -13,13 +13,13 @@ const SAMPLE: StaffMember[] = [
 ];
 
 const roleChip: Record<StaffRole, string> = {
-  admin: 'bg-brand-purple/15 text-brand-purple',
-  manager: 'bg-brand-green/15 text-green-800',
+  admin: 'bg-brand-charcoal/15 text-brand-charcoal',
+  manager: 'bg-brand-orange/15 text-green-800',
   dispatcher: 'bg-brand-yellow/30 text-yellow-800',
   support: 'bg-black/5 text-black/60',
 };
 
-const inp = 'rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-green';
+const inp = 'rounded-lg border border-black/10 px-3 py-2 text-sm outline-none focus:border-brand-orange';
 
 export function Staff() {
   const [rows, setRows] = useState<StaffMember[]>([]);
@@ -79,7 +79,7 @@ export function Staff() {
             <select className={inp} value={role} onChange={(e) => setRole(e.target.value as StaffRole)}>
               {STAFF_ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
             </select></label>
-          <button disabled={busy} className="rounded-lg bg-brand-green px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+          <button disabled={busy} className="rounded-lg bg-brand-orange px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
             {busy ? 'Adding…' : 'Add'}
           </button>
         </form>

@@ -44,7 +44,7 @@ function DocLinks({ row }: { row: RiderRow }) {
         const path = row[col];
         return path ? (
           <button key={kind} onClick={() => void open(path)} disabled={busy === path}
-            className="rounded border border-brand-green/40 px-2 py-0.5 text-xs font-medium text-brand-green disabled:opacity-50">
+            className="rounded border border-brand-orange/40 px-2 py-0.5 text-xs font-medium text-brand-orange disabled:opacity-50">
             {busy === path ? '…' : RIDER_DOCUMENT_LABELS[kind]}
           </button>
         ) : (
@@ -100,7 +100,7 @@ export function RiderApplications() {
                   {r.application_status === 'pending' && (
                     <span className="flex gap-2">
                       <button onClick={() => decide(r.id, 'approved')}
-                        className="rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white">Approve</button>
+                        className="rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white">Approve</button>
                       <button onClick={() => decide(r.id, 'rejected')}
                         className="rounded-lg border border-red-300 px-3 py-1.5 text-xs font-medium text-red-600">Reject</button>
                     </span>

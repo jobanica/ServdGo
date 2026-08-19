@@ -34,10 +34,10 @@ export function StoreMarkup({ store, onSaved }: {
   const valid = amount.trim() !== '' && Number.isFinite(parsed) && parsed >= 0;
 
   return (
-    <div className="rounded-xl bg-brand-purple/[0.04] p-3 ring-1 ring-brand-purple/20">
+    <div className="rounded-xl bg-brand-charcoal/[0.04] p-3 ring-1 ring-brand-charcoal/20">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span>
-          <span className="text-sm font-semibold text-brand-purple">Price mark-up</span>
+          <span className="text-sm font-semibold text-brand-charcoal">Price mark-up</span>
           <span className="block text-xs text-black/50">
             Added to every item's price for the customer. The rider pays the shelf price and owes the
             mark-up back with their commission.
@@ -52,7 +52,7 @@ export function StoreMarkup({ store, onSaved }: {
           onChange={(e) => setAmount(e.target.value)}
           className="w-28 rounded-lg border border-black/10 px-2 py-1.5 text-sm" />
         <button onClick={() => valid && void save({ amount: parsed })} disabled={busy || !valid}
-          className="rounded-lg bg-brand-purple px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
+          className="rounded-lg bg-brand-charcoal px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50">
           Save amount
         </button>
         {!enabled && parsed > 0 && (
@@ -89,9 +89,9 @@ export function ItemMarkup({ item, storeAmount, onSaved }: {
   const valid = amount.trim() !== '' && Number.isFinite(parsed) && parsed >= 0;
 
   return (
-    <div className="mt-2 rounded-lg bg-brand-purple/[0.04] p-2.5 ring-1 ring-brand-purple/15">
+    <div className="mt-2 rounded-lg bg-brand-charcoal/[0.04] p-2.5 ring-1 ring-brand-charcoal/15">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-xs font-semibold text-brand-purple">
+        <span className="text-xs font-semibold text-brand-charcoal">
           Mark-up · {on ? peso2(own ? Number(item.markup_amount) : storeAmount) : 'none'}
           {on && !own && <span className="font-normal text-black/40"> (store default)</span>}
         </span>
@@ -104,7 +104,7 @@ export function ItemMarkup({ item, storeAmount, onSaved }: {
             onChange={(e) => setAmount(e.target.value)}
             className="w-40 rounded-lg border border-black/10 px-2 py-1 text-xs" />
           <button onClick={() => valid && void save({ amount: parsed })} disabled={busy || !valid}
-            className="rounded-lg bg-brand-purple px-2.5 py-1 text-[11px] font-bold text-white disabled:opacity-50">
+            className="rounded-lg bg-brand-charcoal px-2.5 py-1 text-[11px] font-bold text-white disabled:opacity-50">
             Use this amount
           </button>
           {own && (

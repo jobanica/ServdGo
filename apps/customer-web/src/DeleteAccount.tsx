@@ -38,7 +38,7 @@ export function DeleteAccount() {
       <p className="mt-1 text-sm text-black/55">
         Permanently deletes your login and personal details. Completed orders stay in the
         operator's books for tax and dispute handling, stripped of anything identifying you.{' '}
-        <a href={ACCOUNT_DELETION_URL} target="_blank" rel="noreferrer" className="text-brand-purple">
+        <a href={ACCOUNT_DELETION_URL} target="_blank" rel="noreferrer" className="text-brand-charcoal">
           What's deleted →
         </a>
       </p>

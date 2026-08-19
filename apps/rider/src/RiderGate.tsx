@@ -30,7 +30,7 @@ export function RiderGate() {
   return <LiveGate />;
 }
 
-const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30';
+const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 
 // Remember the last email used to sign in, so returning users only need their
@@ -157,11 +157,11 @@ function DocumentsGate({ rider, onChange }: { rider: RiderRec; onChange: () => P
           <div key={k} className="flex items-center justify-between gap-3 rounded-lg border border-black/10 p-3">
             <div className="min-w-0">
               <p className="text-sm font-medium">{RIDER_DOCUMENT_LABELS[k]}</p>
-              <p className={`text-xs ${paths[k] ? 'text-brand-green' : 'text-black/45'}`}>
+              <p className={`text-xs ${paths[k] ? 'text-brand-orange' : 'text-black/45'}`}>
                 {busy === k ? 'Uploading…' : paths[k] ? '✓ Uploaded — tap to replace' : 'Not uploaded yet'}
               </p>
             </div>
-            <label className="shrink-0 cursor-pointer rounded-lg bg-brand-green px-3 py-1.5 text-xs font-semibold text-white">
+            <label className="shrink-0 cursor-pointer rounded-lg bg-brand-orange px-3 py-1.5 text-xs font-semibold text-white">
               {paths[k] ? 'Replace' : 'Upload'}
               <input type="file" accept="image/*,application/pdf" className="hidden" disabled={busy !== null}
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(k, f); e.target.value = ''; }} />
@@ -184,7 +184,7 @@ function DocumentsGate({ rider, onChange }: { rider: RiderRec; onChange: () => P
 function Landing({ onStart, signedInEmail }: { onStart: (mode: 'signin' | 'signup') => void; signedInEmail?: string }) {
   const [learn, setLearn] = useState(false);
   return (
-    <div className="flex min-h-screen flex-col bg-[#f6f7f4]">
+    <div className="flex min-h-screen flex-col bg-[#f8f6f4]">
       <div className="mx-auto flex w-full max-w-sm flex-1 flex-col px-6 pt-10">
         {signedInEmail && (
           <div className="mb-4 rounded-xl bg-brand-yellow/20 px-3 py-2 text-xs text-yellow-900">
@@ -193,15 +193,15 @@ function Landing({ onStart, signedInEmail }: { onStart: (mode: 'signin' | 'signu
           </div>
         )}
         <h1 className="text-4xl font-black leading-tight tracking-tight">
-          Deliver faster,<br /><span className="text-brand-green">earn smarter</span>
+          Deliver faster,<br /><span className="text-brand-orange">earn smarter</span>
         </h1>
         <p className="mt-3 text-sm text-black/55">
           Accept orders across your town and earn on your own schedule with ServdGo.
         </p>
 
         <div className="flex flex-1 items-center justify-center py-6">
-          <div className="relative flex h-52 w-52 items-center justify-center rounded-full bg-gradient-to-br from-brand-green to-brand-purple shadow-xl">
-            <span className="absolute -right-2 -top-1 h-16 w-16 rounded-full bg-brand-yellow/40 blur-xl" />
+          <div className="relative flex h-52 w-52 items-center justify-center rounded-full bg-gradient-to-br from-brand-orange to-[#c4451f] shadow-xl">
+            <span className="absolute -right-2 -top-1 h-16 w-16 rounded-full bg-white/30 blur-xl" />
             <span className="text-[6rem] leading-none">🛵</span>
           </div>
         </div>
@@ -219,11 +219,11 @@ function Landing({ onStart, signedInEmail }: { onStart: (mode: 'signin' | 'signu
 
         <div className="space-y-3 pb-8">
           <button onClick={() => onStart('signin')}
-            className="w-full rounded-2xl bg-brand-green py-3.5 font-bold text-white shadow-sm transition hover:brightness-95">
+            className="w-full rounded-2xl bg-brand-orange py-3.5 font-bold text-white shadow-sm transition hover:brightness-95">
             Login &amp; Start Riding
           </button>
           <button onClick={() => onStart('signup')}
-            className="w-full rounded-2xl bg-brand-purple py-3.5 font-bold text-white shadow-sm transition hover:brightness-95">
+            className="w-full rounded-2xl bg-brand-charcoal py-3.5 font-bold text-white shadow-sm transition hover:brightness-95">
             Join Us Now
           </button>
           <button onClick={() => setLearn((v) => !v)}
@@ -239,7 +239,7 @@ function Landing({ onStart, signedInEmail }: { onStart: (mode: 'signin' | 'signu
 function Shell({ title, sub, children }: { title: string; sub: string; children: React.ReactNode }) {
   return (
     <div className="min-h-screen">
-      <header className="bg-brand-purple text-white">
+      <header className="bg-brand-charcoal text-white">
         <div className="mx-auto max-w-sm px-5 py-4">
           <h1 className="text-lg font-bold">ServdGo Rider</h1>
           <p className="text-xs opacity-90">{sub}</p>
@@ -295,17 +295,17 @@ function EmailSignIn({ onBack, initialMode = 'signin' }: { onBack: () => void; i
           <>
             <p className="text-sm text-black/60">If an account exists for <b>{email.trim()}</b>, we've sent a reset link. Open it on this device to set a new password.</p>
             <button onClick={() => { setMode('signin'); setSent(false); }}
-              className="mt-4 w-full rounded-lg border border-brand-purple py-2.5 text-sm font-medium text-brand-purple">Back to sign in</button>
+              className="mt-4 w-full rounded-lg border border-brand-charcoal py-2.5 text-sm font-medium text-brand-charcoal">Back to sign in</button>
           </>
         ) : (
           <>
-            <button onClick={onBack} className="mb-3 text-sm font-medium text-brand-purple">← Back</button>
+            <button onClick={onBack} className="mb-3 text-sm font-medium text-brand-charcoal">← Back</button>
             <label className="mb-1 block text-sm font-medium text-black/70">Email</label>
             <input className={inp} value={email} onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com" inputMode="email" autoCapitalize="none" autoComplete="email"
               onKeyDown={(e) => { if (e.key === 'Enter' && valid && !busy) void submit(); }} />
             <button disabled={busy || !valid} onClick={submit}
-              className="mt-4 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+              className="mt-4 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
               {busy ? 'Sending…' : 'Send reset link'}
             </button>
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -318,7 +318,7 @@ function EmailSignIn({ onBack, initialMode = 'signin' }: { onBack: () => void; i
 
   return (
     <Shell title={mode === 'signup' ? 'Create account' : 'Sign in'} sub="Rider access">
-      <button onClick={onBack} className="mb-3 text-sm font-medium text-brand-purple">← Back</button>
+      <button onClick={onBack} className="mb-3 text-sm font-medium text-brand-charcoal">← Back</button>
       <label className="mb-1 block text-sm font-medium text-black/70">Email</label>
       <input className={inp} value={email} onChange={(e) => setEmail(e.target.value)}
         placeholder="you@email.com" inputMode="email" autoCapitalize="none" autoComplete="email" />
@@ -329,15 +329,15 @@ function EmailSignIn({ onBack, initialMode = 'signin' }: { onBack: () => void; i
         onKeyDown={(e) => { if (e.key === 'Enter' && valid && !busy) void submit(); }} />
       <label className="mt-3 flex items-center gap-2 text-sm text-black/70">
         <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)}
-          className="h-4 w-4 accent-[#6DBE22]" />
+          className="h-4 w-4 accent-[#E8552F]" />
         Remember me on this device
       </label>
       <button disabled={busy || !valid} onClick={submit}
-        className="mt-3 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-3 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Please wait…' : mode === 'signup' ? 'Create account' : 'Sign in'}
       </button>
       {mode === 'signin' && (
-        <button onClick={() => { setMode('forgot'); setError(null); }} className="mt-3 w-full text-sm text-brand-purple">Forgot password?</button>
+        <button onClick={() => { setMode('forgot'); setError(null); }} className="mt-3 w-full text-sm text-brand-charcoal">Forgot password?</button>
       )}
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
       <button onClick={() => { setMode(mode === 'signup' ? 'signin' : 'signup'); setError(null); }}
@@ -368,13 +368,13 @@ function SetNewPassword({ onDone }: { onDone: () => void }) {
 
   return (
     <Shell title="Set a new password" sub="Rider access">
-      {target && <p className="mb-2 rounded-lg bg-brand-green/10 px-3 py-2 text-sm">for <b>{target}</b></p>}
+      {target && <p className="mb-2 rounded-lg bg-brand-orange/10 px-3 py-2 text-sm">for <b>{target}</b></p>}
       <label className="mb-1 block text-sm font-medium text-black/70">New password</label>
       <input className={inp} type="password" value={password} onChange={(e) => setPassword(e.target.value)}
         placeholder="At least 6 characters" autoComplete="new-password"
         onKeyDown={(e) => { if (e.key === 'Enter' && !busy) void save(); }} />
       <button disabled={busy} onClick={save}
-        className="mt-4 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-4 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Saving…' : 'Save new password'}
       </button>
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
@@ -403,7 +403,7 @@ function Onboard({ onDone }: { onDone: () => void | Promise<void> }) {
         <input className={inp} placeholder="Vehicle (e.g. motorcycle)" value={vehicle} onChange={(e) => setVehicle(e.target.value)} />
       </div>
       <button disabled={busy || !name || !mobile} onClick={apply}
-        className="mt-4 w-full rounded-lg bg-brand-green py-3 font-semibold text-white disabled:opacity-60">
+        className="mt-4 w-full rounded-lg bg-brand-orange py-3 font-semibold text-white disabled:opacity-60">
         {busy ? 'Submitting…' : 'Submit application'}
       </button>
       <button onClick={() => void signOut(supabase!)} className="mt-2 w-full text-sm text-black/50">Sign out</button>
@@ -422,7 +422,7 @@ function StatusScreen({ status }: { status: string }) {
           : 'Thanks for applying! An admin will review your application. You can accept orders once approved.'}
       </p>
       <button onClick={() => void signOut(supabase!)}
-        className="mt-4 w-full rounded-lg border border-brand-purple py-2.5 text-sm font-medium text-brand-purple">
+        className="mt-4 w-full rounded-lg border border-brand-charcoal py-2.5 text-sm font-medium text-brand-charcoal">
         Sign out
       </button>
     </Shell>

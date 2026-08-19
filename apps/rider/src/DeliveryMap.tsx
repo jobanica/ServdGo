@@ -15,11 +15,11 @@ function teardrop(fill: string) {
     iconSize: [28, 40], iconAnchor: [14, 40], popupAnchor: [0, -36],
   });
 }
-const storeIcon = teardrop('#5E2D91');   // pickup / restaurant
-const dropIcon = teardrop('#6DBE22');    // customer drop-off
+const storeIcon = teardrop('#23262B');   // pickup / restaurant
+const dropIcon = teardrop('#E8552F');    // customer drop-off
 const riderIcon = L.divIcon({
   className: 'ebd-rider',
-  html: '<div style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9999px;background:#6DBE22;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);font-size:16px">🛵</div>',
+  html: '<div style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9999px;background:#E8552F;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);font-size:16px">🛵</div>',
   iconSize: [30, 30], iconAnchor: [15, 15],
 });
 
@@ -50,7 +50,7 @@ export function DeliveryMap({ dropoff, stores, height = 200 }: {
     // Dashed route between the (first) store and the drop-off.
     if (storePts[0] && dropoff) {
       L.polyline([[storePts[0].lat, storePts[0].lng], [dropoff.lat, dropoff.lng]],
-        { color: '#5E2D91', weight: 3, dashArray: '6 6' }).addTo(map);
+        { color: '#23262B', weight: 3, dashArray: '6 6' }).addTo(map);
     }
     if (pts.length > 1) map.fitBounds(L.latLngBounds(pts).pad(0.3));
     else if (pts.length === 1) map.setView(pts[0]!, 15);

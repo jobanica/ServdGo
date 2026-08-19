@@ -9,8 +9,8 @@ import { RefusalHistory, PinCorrectionLog } from './Refusals.tsx';
 const today = new Date().toISOString().slice(0, 10);
 
 const activityChip: Record<string, string> = {
-  on_delivery: 'bg-brand-purple/15 text-brand-purple',
-  available: 'bg-brand-green/15 text-green-800',
+  on_delivery: 'bg-brand-charcoal/15 text-brand-charcoal',
+  available: 'bg-brand-orange/15 text-green-800',
   offline: 'bg-black/[0.06] text-black/50',
   locked: 'bg-red-100 text-red-700',
   suspended: 'bg-black/70 text-white',
@@ -78,8 +78,8 @@ export function Riders() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Mini label="On delivery" value={onDelivery} tint="bg-brand-purple/15 text-brand-purple" />
-        <Mini label="Online — waiting" value={available} tint="bg-brand-green/15 text-green-800" />
+        <Mini label="On delivery" value={onDelivery} tint="bg-brand-charcoal/15 text-brand-charcoal" />
+        <Mini label="Online — waiting" value={available} tint="bg-brand-orange/15 text-green-800" />
         <Mini label="Offline" value={offline} tint="bg-black/[0.06] text-black/50" />
         <Mini label="Locked" value={locked} tint="bg-red-100 text-red-700" />
       </div>
@@ -118,14 +118,14 @@ export function Riders() {
                     <span className="flex flex-wrap gap-1.5">
                       <button onClick={() => toggleLock(r)}
                         className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
-                          r.is_locked ? 'bg-brand-green text-white' : 'border border-red-300 text-red-600'
+                          r.is_locked ? 'bg-brand-orange text-white' : 'border border-red-300 text-red-600'
                         }`}>
                         {r.is_locked ? 'Unlock' : 'Lock'}
                       </button>
                       <button onClick={() => toggleSuspend(r)}
                         title={r.suspend_reason ?? undefined}
                         className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
-                          r.is_suspended ? 'bg-brand-green text-white' : 'border border-black/20 text-black/70'
+                          r.is_suspended ? 'bg-brand-orange text-white' : 'border border-black/20 text-black/70'
                         }`}>
                         {r.is_suspended ? 'Reinstate' : 'Suspend'}
                       </button>

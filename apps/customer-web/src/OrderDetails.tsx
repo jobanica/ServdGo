@@ -141,7 +141,7 @@ export function OrderDetails({ orderId }: { orderId: string }) {
             )}
             {order.goods_receipt_url && (
               <a href={order.goods_receipt_url} target="_blank" rel="noreferrer"
-                className="mt-1.5 inline-block text-xs font-medium text-brand-purple underline">
+                className="mt-1.5 inline-block text-xs font-medium text-brand-charcoal underline">
                 🧾 Store receipt
               </a>
             )}

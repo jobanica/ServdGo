@@ -84,14 +84,14 @@ export function DeliveryAddressField({ value, onChange, saved, label = 'Complete
         </span>
         {saved?.address && saved.address !== value && (
           <button type="button" onClick={useSaved}
-            className="shrink-0 text-xs font-medium text-brand-purple underline">
+            className="shrink-0 text-xs font-medium text-brand-charcoal underline">
             Use saved address
           </button>
         )}
       </div>
       <textarea rows={2} value={value} onChange={(e) => onChange(e.target.value)}
         placeholder="House/unit no., street, subdivision, landmark"
-        className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/30" />
+        className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30" />
       <p className="mt-1 text-xs text-black/40">
         Your rider sees this next to the map pin — it helps when the pin lands on the wrong house.
       </p>
