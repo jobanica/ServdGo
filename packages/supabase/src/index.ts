@@ -21,6 +21,7 @@ export * from './notifications.ts';
 export * from './territories.ts';
 export * from './lifecycle.ts';
 export * from './royalty.ts';
+export * from './billing.ts';
 export * from './merchants.ts';
 export * from './settings.ts';
 export * from './analytics.ts';
