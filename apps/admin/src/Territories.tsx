@@ -6,10 +6,11 @@
  * rather than a permission of its own.
  */
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   franchisorOverview, listOperatorSettlements, confirmRoyaltySettlement,
-  approveTerritory, suspendTerritory,
-  type FranchisorRow, type OperatorSettlement,
+  goLive, suspendTerritory, TERRITORY_PIPELINE, TERRITORY_STATUS_LABEL,
+  type FranchisorRow, type OperatorSettlement, type TerritoryStatus,
 } from '@servdgo/supabase';
 import { manilaDay, presetRange, errMessage } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
@@ -18,18 +19,24 @@ import { Card, Muted, ErrorNote, Th, Td, peso } from './ui.tsx';
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
 const STATUS_CHIP: Record<FranchisorRow['status'], string> = {
-  active: 'bg-brand-orange/15 text-brand-orange',
-  draft: 'bg-black/5 text-black/60',
+  live: 'bg-brand-orange/15 text-brand-orange',
+  approved: 'bg-brand-orange/10 text-brand-orange',
+  onboarding: 'bg-black/5 text-black/60',
+  applied: 'bg-black/5 text-black/60',
+  lead: 'bg-black/5 text-black/50',
   suspended: 'bg-brand-yellow/30 text-yellow-800',
+  terminated: 'bg-black/10 text-black/40',
 };
 
 const SAMPLE: FranchisorRow[] = [
-  { territory_id: '1', territory_name: 'Preview city', status: 'active', operator_name: 'An operator',
+  { territory_id: '1', territory_name: 'Preview city', status: 'live', operator_name: 'An operator',
     commission_rate: 0.15, orders_delivered: 42, platform_revenue: 3150, royalty_booked: 945,
     royalty_settled: 630, royalty_due: 315, royalty_overdue: 0, last_settled_at: null },
 ];
 
 export function Territories() {
+  const navigate = useNavigate();
+  const [pipeline, setPipeline] = useState<TerritoryStatus | 'all'>('all');
   const [rows, setRows] = useState<FranchisorRow[]>(isSupabaseConfigured ? [] : SAMPLE);
   const [pending, setPending] = useState<OperatorSettlement[]>([]);
   const [rate, setRate] = useState(0.3);
@@ -100,13 +107,21 @@ export function Territories() {
       {note && <p className="rounded-xl bg-brand-orange/10 px-3 py-2 text-sm text-brand-orange">{note}</p>}
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <Stat label="Cities" value={String(rows.length)} sub={`${rows.filter((r) => r.status === 'active').length} active`} />
+        <Stat label="Cities" value={String(rows.length)} sub={`${rows.filter((r) => r.status === 'live').length} live`} />
         <Stat label="Owed to you" value={peso(totalDue)} sub="across every city" />
         <Stat label="Overdue" value={peso(totalOverdue)} sub={totalOverdue > 0 ? 'past its period' : 'nothing behind'}
           alarm={totalOverdue > 0} />
       </div>
 
-      <Card title="Every city">
+      <Card title="Every city" action={
+        <select value={pipeline} onChange={(e) => setPipeline(e.target.value as TerritoryStatus | 'all')}
+          className="rounded-lg border border-black/10 bg-white px-2 py-1 text-xs">
+          <option value="all">All stages</option>
+          {TERRITORY_PIPELINE.map((s2) => (
+            <option key={s2} value={s2}>{TERRITORY_STATUS_LABEL[s2]}</option>
+          ))}
+        </select>
+      }>
         <Muted>This month for the counts; the balances are whatever is outstanding right now.</Muted>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[900px] text-sm">
@@ -115,10 +130,11 @@ export function Territories() {
               <Th>Platform revenue</Th><Th>Your share</Th><Th>Owed now</Th><Th>Overdue</Th><Th>{''}</Th>
             </tr></thead>
             <tbody>
-              {rows.map((r) => (
+              {rows.filter((r) => pipeline === 'all' || r.status === pipeline).map((r) => (
                 <tr key={r.territory_id} className="border-t border-black/5">
                   <Td>
-                    <span className="font-semibold">{r.territory_name}</span>
+                    <button onClick={() => navigate(`/hq/tenants/${r.territory_id}`)}
+                      className="font-semibold text-brand-orange hover:underline">{r.territory_name}</button>
                     <span className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${STATUS_CHIP[r.status]}`}>
                       {r.status}
                     </span>
@@ -133,7 +149,7 @@ export function Territories() {
                     {peso(Number(r.royalty_overdue))}
                   </Td>
                   <Td>
-                    {r.status === 'active' ? (
+                    {r.status === 'live' ? (
                       <button disabled={busy !== null}
                         onClick={() => act(r.territory_id, () => suspendTerritory(supabase!, r.territory_id))}
                         className="rounded-lg px-2.5 py-1 text-xs font-semibold ring-1 ring-black/10 hover:bg-black/5 disabled:opacity-50">
@@ -141,7 +157,7 @@ export function Territories() {
                       </button>
                     ) : (
                       <button disabled={busy !== null}
-                        onClick={() => act(r.territory_id, () => approveTerritory(supabase!, r.territory_id))}
+                        onClick={() => act(r.territory_id, () => goLive(supabase!, r.territory_id))}
                         className="rounded-lg bg-brand-orange px-2.5 py-1 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-50">
                         Open
                       </button>

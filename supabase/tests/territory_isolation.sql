@@ -20,8 +20,8 @@ begin;
 set local role service_role;
 insert into territories (id, name, slug, status, service_center_lat, service_center_lng, service_radius_km, commission_rate)
 values
-  ('11111111-1111-1111-1111-111111111111', 'Cebu',  'cebu',  'active', 10.3157, 123.8854, 20, 0.15),
-  ('22222222-2222-2222-2222-222222222222', 'Davao', 'davao', 'active',  7.1907, 125.4553, 20, 0.20);
+  ('11111111-1111-1111-1111-111111111111', 'Cebu',  'cebu',  'live', 10.3157, 123.8854, 20, 0.15),
+  ('22222222-2222-2222-2222-222222222222', 'Davao', 'davao', 'live',  7.1907, 125.4553, 20, 0.20);
 
 insert into auth.users (id) values
   ('a0000000-0000-0000-0000-000000000001'),  -- Cebu operator

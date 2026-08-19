@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { signOut } from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Dashboard } from './Dashboard.tsx';
@@ -15,8 +16,9 @@ import { Analytics } from './Analytics.tsx';
 import { Riders } from './Riders.tsx';
 import { Staff } from './Staff.tsx';
 import { useAdminRole } from './AdminGate.tsx';
-import { can, ROLE_LABEL, type AdminSection } from '@servdgo/shared';
+import { can, ROLE_LABEL, type AdminSection, type ConsoleRole } from '@servdgo/shared';
 import { Territories } from './Territories.tsx';
+import { TenantDetail } from './hq/TenantDetail.tsx';
 import { Royalty } from './Royalty.tsx';
 import { Merchants } from './Merchants.tsx';
 import {
@@ -54,11 +56,41 @@ const TITLES: Record<Tab, string> = {
   territories: 'Territories',
 };
 
+/**
+ * Sections are URLs, not component state.
+ *
+ * The console was a single tab variable, which is fine until a screen has
+ * something *inside* it worth linking to — a specific city, an audit search.
+ * Deriving the section from the path keeps the existing shell and makes
+ * /hq/tenants/:id a real address that survives a refresh and can be sent to
+ * somebody.
+ */
+const PATHS: Record<Tab, string> = {
+  dashboard: '/', analytics: '/analytics', stores: '/stores',
+  ridersActive: '/riders', riders: '/rider-applications', orders: '/orders',
+  history: '/history', settlements: '/settlements', royalty: '/royalty',
+  merchants: '/merchants', broadcast: '/broadcast', areas: '/areas',
+  users: '/users', settings: '/settings', staff: '/staff',
+  territories: '/hq/tenants',
+};
+
+function tabFromPath(pathname: string, role: ConsoleRole): Tab {
+  // Longest match first, so /hq/tenants/<id> still resolves to the section.
+  const hit = (Object.entries(PATHS) as [Tab, string][])
+    .filter(([, p]) => p !== '/' && pathname.startsWith(p))
+    .sort((a, b) => b[1].length - a[1].length)[0];
+  if (hit) return hit[0];
+  // The franchisor has no city and so no dashboard; open on what they do own.
+  return role === 'franchisor' ? 'territories' : 'dashboard';
+}
+
 export function App() {
   const role = useAdminRole();
   const nav = NAV.filter((n) => can(role, n.key));
-  // The franchisor has no city and so no dashboard; open on what they do own.
-  const [tab, setTab] = useState<Tab>(role === 'franchisor' ? 'territories' : 'dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tab = tabFromPath(location.pathname, role);
+  const setTab = (t: Tab) => navigate(PATHS[t]);
   const [open, setOpen] = useState(false); // mobile sidebar
 
   return (
@@ -141,7 +173,12 @@ export function App() {
             <>
               {tab === 'dashboard' && <Dashboard onNavigate={(t) => can(role, t as Tab) && setTab(t as Tab)} />}
               {tab === 'analytics' && <Analytics />}
-              {tab === 'territories' && <Territories />}
+              {tab === 'territories' && (
+                <Routes>
+                  <Route path="/hq/tenants" element={<Territories />} />
+                  <Route path="/hq/tenants/:id" element={<TenantDetail />} />
+                </Routes>
+              )}
               {tab === 'merchants' && <Merchants />}
               {tab === 'royalty' && <Royalty />}
               {tab === 'stores' && <Stores />}

@@ -11,6 +11,7 @@
  * that actually arrived.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { TerritoryStatus } from './lifecycle.ts';
 
 export type RoyaltyKind = 'royalty' | 'joining_fee' | 'adjustment';
 
@@ -46,7 +47,7 @@ export interface OperatorSettlement {
 export interface FranchisorRow {
   territory_id: string;
   territory_name: string;
-  status: 'draft' | 'active' | 'suspended';
+  status: TerritoryStatus;
   operator_name: string | null;
   commission_rate: number;
   orders_delivered: number;
@@ -190,23 +191,4 @@ export async function appointOperator(
   if (error) throw error;
 }
 
-/**
- * Franchisor only: open a city for business.
- *
- * Refuses a city with no operator, no boundary or no payout details — each of
- * those is only discoverable once real orders are running.
- */
-export async function approveTerritory(db: SupabaseClient, territoryId: string): Promise<void> {
-  const { error } = await db.rpc('approve_territory', { p_territory: territoryId });
-  if (error) throw error;
-}
 
-/** Franchisor only. Stops new orders; history and open orders are untouched. */
-export async function suspendTerritory(
-  db: SupabaseClient, territoryId: string, reason?: string,
-): Promise<void> {
-  const { error } = await db.rpc('suspend_territory', {
-    p_territory: territoryId, p_reason: reason ?? null,
-  });
-  if (error) throw error;
-}

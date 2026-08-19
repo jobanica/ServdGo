@@ -100,7 +100,7 @@ SQL
 
 count=0
 for f in "$ROOT"/supabase/migrations/*.sql; do
-  $PSQL -d servdgo -f "$f" >/dev/null
+  $PSQL -d servdgo --single-transaction -f "$f" >/dev/null
   count=$((count + 1))
 done
 echo "replayed $count migrations"

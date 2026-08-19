@@ -28,8 +28,8 @@ insert into territories (id, name, slug, status, service_center_lat, service_cen
                          service_radius_km, commission_rate, markup_operator_share,
                          settlement_gcash_number, settlement_gcash_name)
 values
-  ('11111111-1111-1111-1111-111111111111', 'Cebu',  'cebu',  'active', 10.3157, 123.8854, 20, 0.15, 0.500, '09170000001', 'Cebu Operator'),
-  ('22222222-2222-2222-2222-222222222222', 'Davao', 'davao', 'active',  7.1907, 125.4553, 20, 0.20, 1.000, '09170000002', 'Davao Operator');
+  ('11111111-1111-1111-1111-111111111111', 'Cebu',  'cebu',  'live', 10.3157, 123.8854, 20, 0.15, 0.500, '09170000001', 'Cebu Operator'),
+  ('22222222-2222-2222-2222-222222222222', 'Davao', 'davao', 'live',  7.1907, 125.4553, 20, 0.20, 1.000, '09170000002', 'Davao Operator');
 
 insert into auth.users (id) values
   ('a0000000-0000-0000-0000-000000000001'),
@@ -185,7 +185,7 @@ select pg_temp.check('the entries point at the payment that cleared them',
 reset role;
 set local role service_role;
 insert into territories (id, name, slug, status, commission_rate)
-values ('33333333-3333-3333-3333-333333333333', 'Iloilo', 'iloilo', 'draft', 0.15);
+values ('33333333-3333-3333-3333-333333333333', 'Iloilo', 'iloilo', 'lead', 0.15);
 
 reset role;
 select pg_temp.act_as('a0000000-0000-0000-0000-000000000005');
@@ -207,34 +207,46 @@ select pg_temp.check('appointing an operator binds them to the city',
   (select territory_id from profiles where id = 'a0000000-0000-0000-0000-000000000006'),
   '33333333-3333-3333-3333-333333333333'::uuid);
 
-do $$
-begin
-  begin
-    perform approve_territory('33333333-3333-3333-3333-333333333333');
-    raise exception 'FAIL a city with no boundary was opened';
-  exception when check_violation then
-    raise notice 'ok  a city with no boundary cannot be opened';
-  end;
-end $$;
-
-update territories set service_center_lat = 10.72, service_center_lng = 122.56, service_radius_km = 15
- where id = '33333333-3333-3333-3333-333333333333';
-
-do $$
-begin
-  begin
-    perform approve_territory('33333333-3333-3333-3333-333333333333');
-    raise exception 'FAIL a city with nowhere to send commission was opened';
-  exception when check_violation then
-    raise notice 'ok  a city with no payout details cannot be opened';
-  end;
-end $$;
-
-update territories set settlement_gcash_number = '09170000003', settlement_gcash_name = 'Iloilo Operator'
- where id = '33333333-3333-3333-3333-333333333333';
+-- Approving appoints; opening is the separate, checklist-gated step.
 select approve_territory('33333333-3333-3333-3333-333333333333');
+select pg_temp.check('approving moves it to approved, not to trading',
+  (select status from territories where slug = 'iloilo'), 'approved'::territory_status);
+
+do $$
+begin
+  begin
+    perform go_live('33333333-3333-3333-3333-333333333333');
+    raise exception 'FAIL a city opened with its checklist outstanding';
+  exception when check_violation then
+    raise notice 'ok  a city cannot open with its checklist outstanding';
+  end;
+end $$;
+
+-- Satisfy the items the database checks for itself...
+update territories set service_center_lat = 10.72, service_center_lng = 122.56, service_radius_km = 15,
+       settlement_gcash_number = '09170000003', settlement_gcash_name = 'Iloilo Operator'
+ where id = '33333333-3333-3333-3333-333333333333';
+insert into riders (profile_id, name, mobile_number, application_status, territory_id)
+select null, 'Iloilo rider ' || g, '0917000900' || g, 'approved', '33333333-3333-3333-3333-333333333333'
+  from generate_series(1, 3) g;
+
+do $$
+begin
+  begin
+    perform go_live('33333333-3333-3333-3333-333333333333');
+    raise exception 'FAIL a city opened without the human items ticked';
+  exception when check_violation then
+    raise notice 'ok  the automatic items alone are not enough';
+  end;
+end $$;
+
+-- ...and the ones a person has to vouch for.
+select set_checklist_item('33333333-3333-3333-3333-333333333333', 'agreement_signed', true);
+select set_checklist_item('33333333-3333-3333-3333-333333333333', 'franchise_fee_paid', true);
+select set_checklist_item('33333333-3333-3333-3333-333333333333', 'test_delivery_completed', true);
+select go_live('33333333-3333-3333-3333-333333333333');
 select pg_temp.check('a complete city opens',
-  (select status from territories where slug = 'iloilo'), 'active'::territory_status);
+  (select status from territories where slug = 'iloilo'), 'live'::territory_status);
 
 -- ---------------------------------------------------------------------------
 -- The cross-city view, and who may see it.

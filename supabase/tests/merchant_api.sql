@@ -23,9 +23,9 @@ insert into territories (id, name, slug, status, service_center_lat, service_cen
                          default_delivery_fee, delivery_base_fare, delivery_base_km, delivery_per_km,
                          convenience_fee_padala, settlement_gcash_number, settlement_gcash_name)
 values
-  ('11111111-1111-1111-1111-111111111111', 'Cebu',  'cebu',  'active', 10.3157, 123.8854, 20, 0.15,
+  ('11111111-1111-1111-1111-111111111111', 'Cebu',  'cebu',  'live', 10.3157, 123.8854, 20, 0.15,
    'per_km', 50, 50, 2, 10, 5, '09170000001', 'Cebu Operator'),
-  ('22222222-2222-2222-2222-222222222222', 'Davao', 'davao', 'active',  7.1907, 125.4553, 20, 0.20,
+  ('22222222-2222-2222-2222-222222222222', 'Davao', 'davao', 'live',  7.1907, 125.4553, 20, 0.20,
    'flat', 60, 50, 2, 10, 0, '09170000002', 'Davao Operator');
 
 insert into auth.users (id) values

@@ -7,8 +7,9 @@
  * are franchisor-only and rejected at the database if anyone else tries.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { TerritoryStatus } from './lifecycle.ts';
 
-export type TerritoryStatus = 'draft' | 'active' | 'suspended';
+export type { TerritoryStatus };
 
 export interface Territory {
   id: string;
@@ -67,7 +68,7 @@ export async function createTerritory(
     .insert({
       name: territory.name,
       slug: territory.slug,
-      status: 'draft',
+      status: 'lead',
       service_center_lat: territory.serviceCenterLat,
       service_center_lng: territory.serviceCenterLng,
       service_radius_km: territory.serviceRadiusKm,
@@ -80,16 +81,6 @@ export async function createTerritory(
   return (data as { id: string }).id;
 }
 
-/**
- * Franchisor only. Suspending stops new orders without touching history, so a
- * city can be paused and restarted rather than lost.
- */
-export async function setTerritoryStatus(
-  db: SupabaseClient, id: string, status: TerritoryStatus,
-): Promise<void> {
-  const { error } = await db.from('territories').update({ status }).eq('id', id);
-  if (error) throw error;
-}
 
 /** Franchisor only: move a city's centre or widen its radius. */
 export async function setTerritoryBoundary(
