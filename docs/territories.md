@@ -24,12 +24,11 @@ settings screen lands on the territory that operator runs, and nowhere else.
 ## The five rules, and where each is enforced
 
 1. **The royalty base is all platform revenue** — commission plus the operator's
-   share of any mark-up. Both already land in `commission_ledger` as separate
-   kinds, and it now carries `territory_id`, which is what the royalty will be
-   computed from. *(The royalty ledger itself is Phase 2 and is not built yet.)*
-2. **The royalty is booked on confirmed settlement**, never on delivery.
-   `settlements` carries its territory, so the booking has something to hang off.
-   *(Phase 2.)*
+   share of any mark-up. Both land in `commission_ledger`, whose `markup` rows
+   already hold the operator's share rather than the whole mark-up, so the base
+   is simply the ledger amount whatever its kind. Negative adjustments reduce it.
+2. **The royalty is booked on confirmed settlement**, never on delivery. See
+   [The royalty](#the-royalty) below.
 3. **Commission rates have a floor and a ceiling.**
    `platform_settings.commission_rate_min`/`_max`, enforced by the
    `trg_territory_commission_band` trigger on every insert and update. The admin
@@ -82,8 +81,69 @@ hosted project. `supabase/tests/territory_isolation.sql` stands up two cities 60
 km apart and asserts, among other things, that the Cebu operator cannot read,
 write, or claim anything in Davao.
 
+## The royalty
+
+Confirming a rider's settlement is exactly what flips
+`commission_ledger.settled` from false to true. The royalty is booked off *that
+transition*, not off the settlements row, so it holds for every path that settles
+a ledger entry — including a payment that clears several days at once, and any
+future path nobody has written yet.
+
+```
+order delivered ──▶ commission_ledger (unsettled)   nothing owed to the franchisor
+rider settles   ──▶ commission_ledger.settled = true ──▶ royalty_ledger entry
+operator pays   ──▶ operator_settlements (pending)   nothing cleared yet
+franchisor confirms ─▶ royalty_ledger.settled = true
+```
+
+| Table | What it holds |
+|---|---|
+| `royalty_ledger` | One entry per settled commission-ledger row, plus joining fees and adjustments |
+| `operator_settlements` | A city paying the franchisor for a period, pending until confirmed |
+| `platform_settings.royalty_rate` | The franchisor's share, default 0.30 |
+| `platform_settings.royalty_cycle` | `weekly` or `monthly` — what period a city is expected to settle on |
+
+Three properties worth knowing, each covered by a test:
+
+- **The rate is snapshotted onto every entry.** Changing `royalty_rate` reprices
+  what happens next and never rewrites what was already booked.
+- **Booking is idempotent.** `royalty_ledger.source_ledger_id` is unique, so a
+  settlement reversed and re-confirmed cannot book twice.
+- **Reversal is handled.** Un-confirming a settlement deletes a royalty that was
+  never paid across; if the operator has already paid it, an offsetting entry
+  cancels it and both stay on the record.
+
+The amount an operator declares is computed in the database from what is
+actually outstanding, not taken from the client. Confirming clears everything
+unsettled up to the period end, so one payment does not leave an older peso
+hanging.
+
+### Who does what
+
+| | Operator (`admin`) | Franchisor |
+|---|---|---|
+| See their own city's royalty entries | yes | every city |
+| Submit a payment | yes | — |
+| Confirm a payment arrived | no | yes |
+| Open, suspend or redraw a city | no | yes |
+| Appoint an operator | no | yes |
+| Move the rate or the commission band | no | yes |
+
+`approve_territory()` refuses a city with no operator, no boundary or no payout
+details. Each of those is only discoverable once real orders are running, which
+is exactly when it is expensive.
+
 ## What is not built yet
 
-Phase 2 — the royalty ledger, operator settlement to the franchisor, the
-franchisor's cross-city view, and operator onboarding and approval. Territory
-data is in place for all of it; none of the money side above the operator exists.
+- **The customer app is not territory-aware.** It reads fees through
+  `app_settings`, which resolves via `effective_territory_id()` — correct while
+  exactly one territory is active, and null once a second opens. Before city two
+  goes live the customer app has to resolve its territory from the delivery pin
+  (`territory_for_point`) and read that city's settings. This is a launch
+  blocker for the second city, not for the first.
+- **Store browsing is not filtered by city** (see above).
+- **Whether operators pay a joining fee on top of the 30% is still an open
+  policy question.** The ledger has a `joining_fee` kind and
+  `charge_territory_fee()` to record one, so the decision does not need code
+  when it is made.
+- **Phase 4, the Servd door** — the API for restaurants to book deliveries.

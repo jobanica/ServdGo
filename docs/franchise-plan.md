@@ -42,24 +42,29 @@ money that never reached them. It is painful to change later.
 |---|---|---|---|
 | 0 | Settle the rules of the franchise | — | Done |
 | 1 | Territory as a first-class thing | Large | **Built** — see [territories.md](./territories.md) |
-| 2 | The 30/70 split, in code | Large | Not started |
+| 2 | The 30/70 split, in code | Large | **Built** — see [territories.md](./territories.md#the-royalty) |
 | 3 | Put the brand on it | Small | Done — ServdGo naming, palette and icons |
 | 4 | The Servd door — an API for restaurants to book deliveries | Medium | Not started |
 | 5 | First city live | — | Operator's |
 
-### Phase 2 — what it still needs
+### Phase 2 — what was built
 
-- A royalty ledger booking 30% when a rider's settlement is **confirmed**
-- An operator settlement flow: how a city pays the franchisor, on what cycle,
-  with proof
-- A franchisor view in the admin app: every city's volume, revenue, what each
-  owes, who is behind
-- Operator onboarding and approval, so a new city cannot trade until activated
-- A worked example checked against a real day's numbers before it goes near a
-  live city
+- A royalty ledger booking the franchisor's share when a rider's settlement is
+  **confirmed**, with the rate snapshotted onto each entry
+- An operator settlement flow: a period, an amount computed from the ledger, a
+  method, a reference, and only the franchisor confirming it arrived
+- A franchisor console: every city's volume, revenue, what each owes and who is
+  behind, plus the rate and the commission band
+- Operator onboarding and approval — a city cannot trade until it has an
+  operator, a boundary and payout details, and only the franchisor opens it
 
-Two questions from Phase 0 are still open and both land in Phase 2, not Phase 1:
-whether operators pay a joining fee on top of the 30%, and the domain.
+**Still yours to do:** check the royalty maths against a worked example from a
+real day before it goes near a live city. `supabase/tests/royalty.sql` proves
+the rules hold; it cannot tell you the rules match the deal you are signing.
+
+Two questions from Phase 0 remain open: whether operators pay a joining fee on
+top of the share (the ledger has a `joining_fee` kind ready for one, so the
+decision needs no code), and the domain.
 
 ## Two things that will bite later
 

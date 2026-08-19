@@ -16,6 +16,8 @@ import { Riders } from './Riders.tsx';
 import { Staff } from './Staff.tsx';
 import { useAdminRole } from './AdminGate.tsx';
 import { can, ROLE_LABEL, type AdminSection } from '@servdgo/shared';
+import { Territories } from './Territories.tsx';
+import { Royalty } from './Royalty.tsx';
 import {
   IconDashboard, IconChart, IconStore, IconRiders, IconScooter, IconOrders, IconHistory, IconWallet,
   IconSettings, IconMegaphone, IconUsers, IconSearch, IconMenu,
@@ -32,24 +34,29 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'orders', label: 'Live orders', icon: IconOrders },
   { key: 'history', label: 'Order history', icon: IconHistory },
   { key: 'settlements', label: 'Settlements', icon: IconWallet },
+  { key: 'royalty', label: 'Franchise royalty', icon: IconWallet },
   { key: 'broadcast', label: 'Broadcast SMS', icon: IconMegaphone },
   { key: 'areas', label: 'Service areas', icon: IconStore },
   { key: 'users', label: 'Users & installs', icon: IconUsers },
   { key: 'staff', label: 'Staff', icon: IconUsers },
   { key: 'settings', label: 'Settings', icon: IconSettings },
+  { key: 'territories', label: 'Territories', icon: IconStore },
 ];
 
 const TITLES: Record<Tab, string> = {
   dashboard: 'Dashboard', analytics: 'Analytics', stores: 'Stores & menus',
   ridersActive: 'Riders', riders: 'Rider applications',
   orders: 'Live orders', history: 'Order history', settlements: 'Settlements',
+  royalty: 'Franchise royalty',
   broadcast: 'Broadcast SMS', areas: 'Service areas', users: 'Users & installs', staff: 'Staff', settings: 'Settings',
+  territories: 'Territories',
 };
 
 export function App() {
   const role = useAdminRole();
   const nav = NAV.filter((n) => can(role, n.key));
-  const [tab, setTab] = useState<Tab>('dashboard');
+  // The franchisor has no city and so no dashboard; open on what they do own.
+  const [tab, setTab] = useState<Tab>(role === 'franchisor' ? 'territories' : 'dashboard');
   const [open, setOpen] = useState(false); // mobile sidebar
 
   return (
@@ -113,7 +120,9 @@ export function App() {
         <main className="min-w-0 flex-1 p-4 sm:p-6">
           <div className="mb-5">
             <h1 className="text-2xl font-extrabold">{TITLES[tab]}</h1>
-            <p className="text-sm text-black/50">ServdGo — operator console</p>
+            <p className="text-sm text-black/50">
+              ServdGo — {role === 'franchisor' ? 'franchise console' : 'operator console'}
+            </p>
           </div>
 
           {!isSupabaseConfigured && (
@@ -130,6 +139,8 @@ export function App() {
             <>
               {tab === 'dashboard' && <Dashboard onNavigate={(t) => can(role, t as Tab) && setTab(t as Tab)} />}
               {tab === 'analytics' && <Analytics />}
+              {tab === 'territories' && <Territories />}
+              {tab === 'royalty' && <Royalty />}
               {tab === 'stores' && <Stores />}
               {tab === 'ridersActive' && <Riders />}
               {tab === 'riders' && <RiderApplications />}

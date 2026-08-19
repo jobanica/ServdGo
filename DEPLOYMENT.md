@@ -125,17 +125,43 @@ The migrations create one territory, `first-city`, carrying whatever settings th
 account before anyone signs in:
 
 ```sql
+-- 1. Make yourself the franchisor. Do this first: everything below is gated on it.
+update profiles set role = 'franchisor', territory_id = null where id = '<your-auth-uid>';
+
+-- 2. Name the first city and draw its boundary.
 update territories
    set name = 'Your city', slug = 'your-city',
        service_center_lat = <lat>, service_center_lng = <lng>, service_radius_km = <km>,
-       status = 'active'
+       settlement_gcash_number = '<number>', settlement_gcash_name = '<name>'
  where slug = 'first-city';
 
-update profiles set role = 'franchisor', territory_id = null where id = '<your-auth-uid>';
+-- 3. Appoint its operator (yourself, for the first city you run).
+select assign_territory_operator(
+  (select id from territories where slug = 'your-city'), '<operator-auth-uid>');
+
+-- 4. Open it. This is refused if any of the above is missing.
+select approve_territory((select id from territories where slug = 'your-city'));
 ```
 
-Run both as the service role (the SQL editor does). A territory that is not
-`active` takes no orders, and only a franchisor can change that.
+Run step 1 as the service role (the Supabase SQL editor does). Steps 3 and 4 go
+through the franchisor's own account, which is the path the console uses.
+
+A territory that is not `active` takes no orders, and only the franchisor can
+change that.
+
+### Franchise terms
+
+`platform_settings` holds what applies across every city:
+
+| Column | Default | What it does |
+|---|---|---|
+| `royalty_rate` | `0.30` | The franchisor's share of platform revenue |
+| `royalty_cycle` | `monthly` | How often a city is expected to settle |
+| `commission_rate_min` / `_max` | `0.10` / `0.25` | The band every operator's rate is held to |
+
+All four are editable from the franchisor console under **Territories → Platform
+terms**. Changing the royalty rate reprices what happens next; every entry
+already booked keeps the rate it was booked at.
 
 ## Vercel (frontends)
 

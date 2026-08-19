@@ -257,5 +257,54 @@ begin
   end;
 end $$;
 
+-- ---------------------------------------------------------------------------
+-- 12. An operator cannot promote themselves or step out of their city.
+-- ---------------------------------------------------------------------------
+reset role;
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000001');
+set local role authenticated;
+
+do $$
+begin
+  begin
+    update profiles set role = 'franchisor' where id = 'a0000000-0000-0000-0000-000000000001';
+    raise exception 'FAIL an operator made themselves franchisor';
+  exception when insufficient_privilege then
+    raise notice 'ok  an operator cannot make themselves franchisor';
+  end;
+end $$;
+
+do $$
+begin
+  begin
+    update profiles set territory_id = null where id = 'a0000000-0000-0000-0000-000000000001';
+    raise exception 'FAIL an operator blanked their own territory';
+  exception when insufficient_privilege then
+    raise notice 'ok  an operator cannot blank their own territory';
+  end;
+end $$;
+
+do $$
+begin
+  begin
+    -- Their own rider, pushed across the line into the other city.
+    update profiles set territory_id = '22222222-2222-2222-2222-222222222222'
+     where id = 'a0000000-0000-0000-0000-000000000003';
+    raise exception 'FAIL an operator moved somebody between territories';
+  exception when insufficient_privilege then
+    raise notice 'ok  an operator cannot move somebody between territories';
+  end;
+end $$;
+
+-- The franchisor can, through the supported path.
+reset role;
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000005');
+set local role authenticated;
+select assign_territory_operator('22222222-2222-2222-2222-222222222222',
+                                 'a0000000-0000-0000-0000-000000000001');
+select pg_temp.check('the franchisor can reassign an operator',
+  (select territory_id from profiles where id = 'a0000000-0000-0000-0000-000000000001'),
+  '22222222-2222-2222-2222-222222222222'::uuid);
+
 reset role;
 rollback;

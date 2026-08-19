@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { onAuthChange, onPasswordRecovery, sendPasswordReset, updatePassword, signOut } from '@servdgo/supabase';
-import { isStaffRole, type StaffRole,
+import { isConsoleRole, type ConsoleRole,
   errMessage,
 } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { IconScooter } from './icons.tsx';
 
-const RoleContext = createContext<StaffRole>('admin');
-/** The signed-in staff member's role (defaults to admin in preview mode). */
+const RoleContext = createContext<ConsoleRole>('admin');
+/** The signed-in person's console role (defaults to admin in preview mode). */
 export const useAdminRole = () => useContext(RoleContext);
 
 /**
@@ -43,7 +43,7 @@ function Gate({ children }: { children: ReactNode }) {
   if (userId === undefined) return <Center>Loading…</Center>;
   if (!userId) return <SignIn />;
   if (role === null) return <Center>Checking access…</Center>;
-  if (!isStaffRole(role)) return <NotAuthorized />;
+  if (!isConsoleRole(role)) return <NotAuthorized />;
   return <RoleContext.Provider value={role}>{children}</RoleContext.Provider>;
 }
 
