@@ -18,6 +18,7 @@ import { useAdminRole } from './AdminGate.tsx';
 import { can, ROLE_LABEL, type AdminSection } from '@servdgo/shared';
 import { Territories } from './Territories.tsx';
 import { Royalty } from './Royalty.tsx';
+import { Merchants } from './Merchants.tsx';
 import {
   IconDashboard, IconChart, IconStore, IconRiders, IconScooter, IconOrders, IconHistory, IconWallet,
   IconSettings, IconMegaphone, IconUsers, IconSearch, IconMenu,
@@ -35,6 +36,7 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'history', label: 'Order history', icon: IconHistory },
   { key: 'settlements', label: 'Settlements', icon: IconWallet },
   { key: 'royalty', label: 'Franchise royalty', icon: IconWallet },
+  { key: 'merchants', label: 'Partner restaurants', icon: IconStore },
   { key: 'broadcast', label: 'Broadcast SMS', icon: IconMegaphone },
   { key: 'areas', label: 'Service areas', icon: IconStore },
   { key: 'users', label: 'Users & installs', icon: IconUsers },
@@ -47,7 +49,7 @@ const TITLES: Record<Tab, string> = {
   dashboard: 'Dashboard', analytics: 'Analytics', stores: 'Stores & menus',
   ridersActive: 'Riders', riders: 'Rider applications',
   orders: 'Live orders', history: 'Order history', settlements: 'Settlements',
-  royalty: 'Franchise royalty',
+  royalty: 'Franchise royalty', merchants: 'Partner restaurants',
   broadcast: 'Broadcast SMS', areas: 'Service areas', users: 'Users & installs', staff: 'Staff', settings: 'Settings',
   territories: 'Territories',
 };
@@ -140,6 +142,7 @@ export function App() {
               {tab === 'dashboard' && <Dashboard onNavigate={(t) => can(role, t as Tab) && setTab(t as Tab)} />}
               {tab === 'analytics' && <Analytics />}
               {tab === 'territories' && <Territories />}
+              {tab === 'merchants' && <Merchants />}
               {tab === 'royalty' && <Royalty />}
               {tab === 'stores' && <Stores />}
               {tab === 'ridersActive' && <Riders />}

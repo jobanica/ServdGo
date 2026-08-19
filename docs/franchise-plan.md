@@ -44,7 +44,7 @@ money that never reached them. It is painful to change later.
 | 1 | Territory as a first-class thing | Large | **Built** — see [territories.md](./territories.md) |
 | 2 | The 30/70 split, in code | Large | **Built** — see [territories.md](./territories.md#the-royalty) |
 | 3 | Put the brand on it | Small | Done — ServdGo naming, palette and icons |
-| 4 | The Servd door — an API for restaurants to book deliveries | Medium | Not started |
+| 4 | The Servd door — an API for restaurants to book deliveries | Medium | **Built** — see [merchant-api.md](./merchant-api.md) |
 | 5 | First city live | — | Operator's |
 
 ### Phase 2 — what was built

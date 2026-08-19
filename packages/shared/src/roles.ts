@@ -17,8 +17,8 @@ export type ConsoleRole = StaffRole | 'franchisor';
 
 export type AdminSection =
   | 'dashboard' | 'analytics' | 'stores' | 'ridersActive' | 'riders'
-  | 'orders' | 'history' | 'settlements' | 'royalty' | 'broadcast' | 'areas'
-  | 'users' | 'settings' | 'staff' | 'territories';
+  | 'orders' | 'history' | 'settlements' | 'royalty' | 'merchants' | 'broadcast'
+  | 'areas' | 'users' | 'settings' | 'staff' | 'territories';
 
 export const STAFF_ROLES: StaffRole[] = ['admin', 'manager', 'dispatcher', 'support'];
 
@@ -31,7 +31,7 @@ export const ROLE_LABEL: Record<ConsoleRole, string> = {
 
 const ALL: AdminSection[] = [
   'dashboard', 'analytics', 'stores', 'ridersActive', 'riders',
-  'orders', 'history', 'settlements', 'royalty', 'broadcast', 'areas',
+  'orders', 'history', 'settlements', 'royalty', 'merchants', 'broadcast', 'areas',
   'users', 'settings', 'staff', 'territories',
 ];
 
@@ -39,7 +39,7 @@ const ALL: AdminSection[] = [
  *  operator's; territories are the franchisor's. */
 const ACCESS: Record<ConsoleRole, AdminSection[]> = {
   admin: ALL.filter((s) => s !== 'territories'),
-  manager: ['dashboard', 'analytics', 'stores', 'ridersActive', 'riders', 'orders', 'history', 'settlements', 'broadcast', 'areas', 'users'],
+  manager: ['dashboard', 'analytics', 'stores', 'ridersActive', 'riders', 'orders', 'history', 'settlements', 'merchants', 'broadcast', 'areas', 'users'],
   dispatcher: ['dashboard', 'ridersActive', 'riders', 'orders', 'history'],
   support: ['dashboard', 'orders', 'history', 'broadcast'],
   franchisor: ['territories'],

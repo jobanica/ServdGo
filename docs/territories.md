@@ -69,6 +69,16 @@ Two things are deliberately *not* scoped:
 - **Customer profiles.** Staff can read them regardless of city, otherwise nobody
   could work an order placed by a visitor.
 
+## Partner restaurants
+
+A restaurant booking over the API is routed by its own pickup pin, the same rule
+an order placed in the app follows, and its orders carry `merchant_id` alongside
+the territory. `orders.customer_id` is now nullable with a check that an order
+has either a customer or a merchant — a Servd restaurant is not a customer, and
+inventing a customer row for it would put a fiction in the table the operator
+reads to answer "who ordered this". See
+[merchant-api.md](./merchant-api.md) for the contract.
+
 ## Running the tests
 
 ```
@@ -146,4 +156,5 @@ is exactly when it is expensive.
   policy question.** The ledger has a `joining_fee` kind and
   `charge_territory_fee()` to record one, so the decision does not need code
   when it is made.
-- **Phase 4, the Servd door** — the API for restaurants to book deliveries.
+- **Whether a partner platform is billed instead of the diner paying at the
+  door.** See [merchant-api.md](./merchant-api.md#still-open).
