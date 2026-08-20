@@ -11,3 +11,12 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 export const supabase = url && anonKey ? createEbdClient(url, anonKey) : null;
 
 export const isSupabaseConfigured = supabase !== null;
+
+/**
+ * Where a partner platform points its integration.
+ *
+ * Derived from the project URL rather than typed into a settings screen: it is
+ * not a preference, it is where this deployment's endpoints actually are, and
+ * an operator handing it over should never have to ask anybody for it.
+ */
+export const functionsBaseUrl = url ? `${url.replace(/\/+$/, '')}/functions/v1` : null;

@@ -17,7 +17,7 @@ import {
   generatePassword, keyUsage, territoryForPoint, refreshMerchantTerritory,
   listTerritories, type KeyUsage, type Territory,
 } from '@servdgo/supabase';
-import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
+import { supabase, isSupabaseConfigured, functionsBaseUrl } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td } from './ui.tsx';
 import { MapPicker, type MapValue } from './MapPicker.tsx';
 
@@ -60,6 +60,7 @@ export function Merchants() {
   const [deliveries, setDeliveries] = useState<WebhookDelivery[]>([]);
   const [freshKey, setFreshKey] = useState<string | null>(null);
   const [whUrl, setWhUrl] = useState('');
+  const [note, setNote] = useState<string | null>(null);
   const [whSecret, setWhSecret] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -164,6 +165,7 @@ export function Merchants() {
   return (
     <div className="space-y-5">
       {error && <ErrorNote msg={error} />}
+      {note && <p className="rounded-xl bg-brand-orange/10 px-3 py-2 text-sm text-brand-orange">{note}</p>}
 
       <Card title="Partner restaurants" action={
         <button onClick={() => setAdding((a) => !a)}
@@ -447,6 +449,58 @@ export function Merchants() {
             )}
           </Card>
 
+          <Card title="What the restaurant needs from us">
+            <p className="text-sm text-black/60">
+              Three values go into their side. Two are secrets you send once; the third is simply
+              where our API lives, and it is the same for every restaurant.
+            </p>
+
+            <div className="mt-3 divide-y divide-black/5">
+              <CopyRow label="API base URL" value={functionsBaseUrl}
+                missing="Set VITE_SUPABASE_URL to show this."
+                hint="No trailing slash. Their client appends /merchant-quote, /merchant-book and the rest." />
+              <CopyRow label="API key" value={freshKey}
+                missing={keys.some((k) => !k.revoked_at)
+                  ? 'Already issued, and never shown again. Mint another above if it was lost.'
+                  : 'Mint one above — it appears here once, at that moment.'}
+                hint="Sent as X-API-Key, or Authorization: Bearer. One key per restaurant." />
+              <CopyRow label="Signing secret" value={whSecret.trim() || null}
+                missing="Write-only once saved. Generate a new one below if it was lost."
+                hint="Only shown while it is in the field below — we keep no readable copy." />
+              <CopyRow label="Provider name" value="servdgo"
+                hint="If they run Servd, typing this in their delivery settings selects the ServdGo adapter." />
+            </div>
+
+            {functionsBaseUrl && (
+              <button type="button"
+                onClick={() => {
+                  const lines = [
+                    `ServdGo delivery API — ${current.name}`,
+                    `Provider name: servdgo`,
+                    `API base URL: ${functionsBaseUrl}`,
+                    freshKey ? `API key: ${freshKey}` : 'API key: (sent separately)',
+                    whSecret.trim()
+                      ? `Webhook signing secret: ${whSecret.trim()}`
+                      : 'Webhook signing secret: (sent separately)',
+                    '',
+                    'Endpoints: POST /merchant-quote, POST /merchant-book,',
+                    'GET /merchant-order?reference=…, POST /merchant-cancel',
+                    'Callbacks are signed: X-ServdGo-Signature: t=<unix>,v1=<hex>',
+                    'v1 = HMAC-SHA256(secret, `${t}.${raw body}`) — reject anything over 5 minutes old.',
+                  ];
+                  void navigator.clipboard.writeText(lines.join('\n')).catch(() => {});
+                  setNote('Copied — paste it into the message you send them.');
+                }}
+                className="mt-3 rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white hover:opacity-90">
+                Copy the whole hand-over
+              </button>
+            )}
+            <Muted>
+              The base URL is not a setting — it is where this deployment's endpoints are. Nobody
+              should have to ask for it.
+            </Muted>
+          </Card>
+
           <Card title="Where callbacks go">
             <p className="text-sm text-black/60">
               When an order changes hands — accepted, picked up, delivered — we POST it to the
@@ -499,6 +553,45 @@ v1 = HMAC-SHA256(secret, "\${t}.\${raw request body}")`}
           </Card>
         </>
       )}
+    </div>
+  );
+}
+
+/**
+ * One value the restaurant has to be given, with the button that puts it on the
+ * clipboard. Copying is the whole point — these are long strings that get typed
+ * into somebody else's settings screen, and a typo is a support ticket.
+ */
+function CopyRow({ label, value, hint, missing }: {
+  label: string; value: string | null; hint?: string; missing?: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="py-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="w-40 shrink-0 text-xs font-semibold uppercase tracking-wide text-black/40">
+          {label}
+        </span>
+        {value ? (
+          <>
+            <code className="min-w-0 flex-1 break-all rounded-lg bg-white px-2 py-1 text-xs ring-1 ring-black/5">
+              {value}
+            </code>
+            <button type="button"
+              onClick={() => {
+                void navigator.clipboard.writeText(value).catch(() => {});
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="shrink-0 rounded-lg px-2 py-1 text-xs font-semibold ring-1 ring-black/10 hover:bg-black/5">
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </>
+        ) : (
+          <span className="flex-1 text-xs text-black/45">{missing}</span>
+        )}
+      </div>
+      {hint && <p className="mt-1 pl-0 text-xs text-black/45 sm:pl-[10.5rem]">{hint}</p>}
     </div>
   );
 }
