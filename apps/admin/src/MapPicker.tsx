@@ -24,11 +24,18 @@ export interface MapValue { lat: number; lng: number }
  * Uses OpenStreetMap tiles (no API key) and Nominatim for optional address search.
  */
 export function MapPicker({
-  value, onChange, height = 260,
-}: { value: MapValue | null; onChange: (v: MapValue) => void; height?: number }) {
+  value, onChange, height = 260, radiusKm,
+}: {
+  value: MapValue | null;
+  onChange: (v: MapValue) => void;
+  height?: number;
+  /** Draws a circle of this radius around the pin — a service area, not a point. */
+  radiusKm?: number;
+}) {
   const elRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
+  const circleRef = useRef<L.Circle | null>(null);
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
@@ -66,9 +73,33 @@ export function MapPicker({
 
     // Leaflet needs a size recalculation once the container has laid out.
     setTimeout(() => map.invalidateSize(), 0);
-    return () => { map.remove(); mapRef.current = null; markerRef.current = null; };
+    return () => {
+      map.remove();
+      mapRef.current = null; markerRef.current = null; circleRef.current = null;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // The circle follows the pin and the radius, and the map zooms to fit it —
+  // a 20 km area on a street-level zoom is a boundary nobody can see.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (!value || !radiusKm || radiusKm <= 0) {
+      if (circleRef.current) { circleRef.current.remove(); circleRef.current = null; }
+      return;
+    }
+    const centre: L.LatLngTuple = [value.lat, value.lng];
+    if (circleRef.current) {
+      circleRef.current.setLatLng(centre).setRadius(radiusKm * 1000);
+    } else {
+      circleRef.current = L.circle(centre, {
+        radius: radiusKm * 1000,
+        color: '#D2552F', weight: 2, fillColor: '#D2552F', fillOpacity: 0.12,
+      }).addTo(map);
+    }
+    map.fitBounds(circleRef.current.getBounds(), { padding: [20, 20], maxZoom: 16 });
+  }, [value?.lat, value?.lng, radiusKm]);
 
   // Reflect an externally-changed value (e.g. switching which store is edited).
   useEffect(() => {
@@ -81,8 +112,9 @@ export function MapPicker({
         const p = this.getLatLng();
         onChangeRef.current({ lat: +p.lat.toFixed(6), lng: +p.lng.toFixed(6) });
       });
-    map.setView([value.lat, value.lng], Math.max(map.getZoom(), 16));
-  }, [value?.lat, value?.lng]);
+    // With a circle on the map, the effect below fits the whole area instead.
+    if (!radiusKm) map.setView([value.lat, value.lng], Math.max(map.getZoom(), 16));
+  }, [value?.lat, value?.lng, radiusKm]);
 
   async function search(e: React.FormEvent) {
     e.preventDefault();
@@ -139,8 +171,11 @@ export function MapPicker({
       <div ref={elRef} style={{ height }} className="w-full overflow-hidden rounded-lg ring-1 ring-black/10" />
       <p className="mt-1.5 text-xs text-black/50">
         {value
-          ? <>Pinned at <span className="font-mono">{value.lat.toFixed(5)}, {value.lng.toFixed(5)}</span> — click or drag to adjust.</>
-          : <>Click the map (or search) to pin the store’s exact location.</>}
+          ? <>
+              Pinned at <span className="font-mono">{value.lat.toFixed(5)}, {value.lng.toFixed(5)}</span>
+              {radiusKm ? ` — the shaded circle is ${radiusKm} km across the map` : ''} — click or drag to adjust.
+            </>
+          : <>Click the map (or search) to drop the pin.</>}
       </p>
     </div>
   );

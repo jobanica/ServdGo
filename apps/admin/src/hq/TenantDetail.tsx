@@ -20,6 +20,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td, peso } from '../ui.tsx';
 import { ViewAsButton } from './ViewAs.tsx';
 import { OperatorAccount } from './OperatorAccount.tsx';
+import { MapPicker, type MapValue } from '../MapPicker.tsx';
 import { Export } from './Export.tsx';
 
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
@@ -247,6 +248,12 @@ function BoundaryEditor({ t, onSaved }: { t: Territory; onSaved: () => Promise<v
   const nums = { lat: Number(lat), lng: Number(lng), radiusKm: Number(radius) };
   const valid = [nums.lat, nums.lng, nums.radiusKm].every(Number.isFinite) && nums.radiusKm > 0;
 
+  // The map and the two number fields are one value seen twice.
+  const pin: MapValue | null =
+    lat && lng && Number.isFinite(nums.lat) && Number.isFinite(nums.lng)
+      ? { lat: nums.lat, lng: nums.lng }
+      : null;
+
   useEffect(() => {
     if (!supabase || !valid) { setClash([]); return; }
     let cancelled = false;
@@ -264,14 +271,39 @@ function BoundaryEditor({ t, onSaved }: { t: Territory; onSaved: () => Promise<v
         A city is a centre and a radius. The pickup decides which city an order belongs to, so this
         is what routes work — and two cities may not overlap.
       </p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+
+      <div className="mt-3">
+        <MapPicker
+          value={pin}
+          onChange={(v) => { setLat(String(v.lat)); setLng(String(v.lng)); }}
+          radiusKm={Number.isFinite(nums.radiusKm) && nums.radiusKm > 0 ? nums.radiusKm : undefined}
+          height={300} />
+      </div>
+
+      <label className="mt-3 block">
+        <span className="mb-1 block text-sm font-medium">Radius — {radius || '0'} km</span>
+        <input type="range" min={1} max={60} step={1} className="w-full accent-brand-orange"
+          value={Number.isFinite(nums.radiusKm) && nums.radiusKm > 0 ? nums.radiusKm : 10}
+          onChange={(e) => setRadius(e.target.value)} />
+        <span className="mt-1 block text-xs text-black/45">
+          Everything inside the circle is this city's. A rider is offered a job because its pickup
+          falls in here.
+        </span>
+      </label>
+
+      <details className="mt-3">
+        <summary className="cursor-pointer text-xs font-semibold text-black/50">
+          Type the numbers instead
+        </summary>
+        <div className="mt-2 grid gap-3 sm:grid-cols-3">
         <label className="block"><span className="mb-1 block text-sm font-medium">Centre latitude</span>
           <input className={inp} value={lat} inputMode="decimal" onChange={(e) => setLat(e.target.value)} /></label>
         <label className="block"><span className="mb-1 block text-sm font-medium">Centre longitude</span>
           <input className={inp} value={lng} inputMode="decimal" onChange={(e) => setLng(e.target.value)} /></label>
         <label className="block"><span className="mb-1 block text-sm font-medium">Radius (km)</span>
           <input className={inp} value={radius} inputMode="decimal" onChange={(e) => setRadius(e.target.value)} /></label>
-      </div>
+        </div>
+      </details>
 
       {clash.length > 0 && (
         <p className="mt-3 rounded-xl bg-brand-yellow/25 px-3 py-2 text-sm text-yellow-900">
