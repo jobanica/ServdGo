@@ -13,13 +13,15 @@
 // Nothing here credits anything. Only the callback does that, because only the
 // callback knows the money arrived.
 //
-// Secrets: XENDIT_SECRET_KEY. Without it, the endpoint says so plainly rather
-// than pretending to work.
+// The Xendit key comes from XENDIT_SECRET_KEY, or from the franchisor's setup
+// in HQ → Platform settings → Xendit, which keeps it in Vault. Without either,
+// the endpoint says so plainly rather than pretending to work.
 //
 // Deploy: supabase functions deploy wallet-topup
 
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, preflight } from '../_shared/cors.ts';
+import { serviceClient, xenditConfig, xenditAuth } from '../_shared/xendit.ts';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -71,7 +73,9 @@ Deno.serve(async (req) => {
     return json({ error: 'refused', message: error.message }, 422);
   }
 
-  const key = Deno.env.get('XENDIT_SECRET_KEY');
+  const service = serviceClient();
+  const config = await xenditConfig(service);
+  const key = config.enabled ? config.secretKey : null;
   if (!key) {
     return json({
       error: 'not_configured',
@@ -80,13 +84,13 @@ Deno.serve(async (req) => {
     }, 503);
   }
 
-  const success = httpsOnly(body.returnUrl);
+  const success = httpsOnly(body.returnUrl) ?? httpsOnly(config.successUrl);
   const invoice = {
     external_id: topup.reference,
     amount: Number(topup.amount),
     currency: 'PHP',
     description: `ServdGo rider wallet top-up (${topup.reference})`,
-    invoice_duration: 3600,
+    invoice_duration: config.invoiceDuration,
     should_send_email: false,
     ...(success ? { success_redirect_url: success, failure_redirect_url: success } : {}),
   };
@@ -94,7 +98,7 @@ Deno.serve(async (req) => {
   const res = await fetch('https://api.xendit.co/v2/invoices', {
     method: 'POST',
     headers: {
-      authorization: `Basic ${btoa(`${key}:`)}`,
+      authorization: xenditAuth(key),
       'content-type': 'application/json',
     },
     body: JSON.stringify(invoice),
@@ -103,7 +107,6 @@ Deno.serve(async (req) => {
 
   if (!res.ok) {
     // Close the reservation: a top-up nobody can pay should not sit pending.
-    const service = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
     await service.rpc('wallet_topup_close', {
       p_reference: topup.reference,
       p_status: 'failed',
@@ -115,7 +118,6 @@ Deno.serve(async (req) => {
     }, 502);
   }
 
-  const service = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   await service.rpc('wallet_topup_attach_provider', {
     p_reference: topup.reference,
     p_provider: 'xendit',

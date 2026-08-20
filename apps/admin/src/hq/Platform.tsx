@@ -15,6 +15,7 @@ import {
 import { errMessage } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.ts';
 import { Card, Muted, ErrorNote, Toggle } from '../ui.tsx';
+import { Xendit } from './Xendit.tsx';
 
 const Field = ({ label, hint, children }:
   { label: string; hint?: string; children: React.ReactNode }) => (
@@ -193,6 +194,8 @@ export function Platform() {
           Save
         </button>
       </Card>
+
+      <Xendit />
 
       <Card title="Feature flags">
         {flags.length === 0 ? <p className="text-sm text-black/50">No flags defined.</p> : (

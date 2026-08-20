@@ -359,5 +359,103 @@ select pg_temp.check('the summary agrees with the ledger',
 select pg_temp.check('the city sees every wallet it is responsible for',
   (select count(*)::int from territory_rider_wallets()), 1);
 
+-- ---------------------------------------------------------------------------
+-- The payment account. The key is write-only: the console can say which key is
+-- stored and when, and cannot read it back — not even for the person who set
+-- it. These checks are about who may touch it, since a throwaway Postgres has
+-- no Vault to put a secret in.
+-- ---------------------------------------------------------------------------
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000001');
+do $$
+begin
+  begin
+    perform set_xendit_credentials(p_mode => 'live');
+    raise exception 'FAIL an operator configured the payment account';
+  exception when insufficient_privilege then
+    raise notice 'ok  an operator cannot configure the payment account';
+  end;
+end $$;
+
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000003');
+do $$
+begin
+  begin
+    perform xendit_status();
+    raise exception 'FAIL a rider read the payment settings';
+  exception when insufficient_privilege then
+    raise notice 'ok  a rider cannot read the payment settings';
+  end;
+end $$;
+
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000005');
+do $$
+begin
+  begin
+    perform set_xendit_credentials(p_secret_key => 'sk_live_not_a_xendit_key');
+    raise exception 'FAIL a key that is not a Xendit key was accepted';
+  exception when check_violation then
+    raise notice 'ok  a key that is not a Xendit key is refused';
+  end;
+end $$;
+
+do $$
+begin
+  begin
+    perform set_xendit_credentials(p_mode => 'production');
+    raise exception 'FAIL an unknown environment was accepted';
+  exception when check_violation then
+    raise notice 'ok  the environment is test or live, nothing else';
+  end;
+end $$;
+
+select pg_temp.check('the franchisor can read the payment settings',
+  (xendit_status() ->> 'keySet')::boolean, false);
+select pg_temp.check('and nothing is enabled before a key is stored',
+  (xendit_status() ->> 'enabled')::boolean, false);
+select pg_temp.check('the settings say plainly that there is nowhere to keep a key here',
+  (xendit_status() ->> 'vaultAvailable')::boolean, false);
+
+-- ---------------------------------------------------------------------------
+-- The doors that must stay shut.
+--
+-- These are not "the app does not call them" — they are reachable by name with
+-- the anon key, which ships inside every app, so the grant is the only thing
+-- standing between a signed-in stranger and the payment key or somebody else's
+-- wallet. 0121 closed them; this is what notices if they ever reopen.
+-- ---------------------------------------------------------------------------
+reset role;
+set local role authenticated;
+select pg_temp.act_as('a0000000-0000-0000-0000-000000000003');
+
+do $$
+begin
+  begin
+    perform xendit_credentials();
+    raise exception 'FAIL a signed-in user read the payment key';
+  exception when insufficient_privilege then
+    raise notice 'ok  the payment key is not readable from a browser';
+  end;
+end $$;
+
+do $$
+begin
+  begin
+    perform wallet_topup_mark_paid('TOP-ANYTHING', null, 999999);
+    raise exception 'FAIL a rider credited their own wallet';
+  exception when insufficient_privilege then
+    raise notice 'ok  a rider cannot credit their own wallet';
+  end;
+end $$;
+
+do $$
+begin
+  begin
+    perform verify_merchant_key('sgo_guess');
+    raise exception 'FAIL partner keys can be tested from a browser';
+  exception when insufficient_privilege then
+    raise notice 'ok  partner keys cannot be tested from a browser';
+  end;
+end $$;
+
 reset role;
 rollback;

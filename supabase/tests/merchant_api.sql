@@ -483,6 +483,12 @@ begin
   end;
 end $$;
 
+-- The partner API reaches this as the edge function does, with the service
+-- role: merchant_order_view() takes a merchant id as an argument, so it is not
+-- something a browser may hold.
+reset role;
+set local role service_role;
+
 select pg_temp.check('a partner is handed the finished tracking link, not a token',
   (merchant_order_view((select id from orders where merchant_reference = 'SERVD-1001')) ->> 'trackingUrl')
     like 'https://%/track?t=%', true);

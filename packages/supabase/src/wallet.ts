@@ -330,3 +330,112 @@ export async function listOperatorPayouts(
   if (error) throw error;
   return (data ?? []) as OperatorPayout[];
 }
+
+// ---------------------------------------------------------------------------
+// The payment account itself.
+//
+// The secret key is write-only from here down: it goes in through
+// set_xendit_credentials() and comes back only as a four-character hint and a
+// timestamp. Nothing in this file can read a Xendit key, which is the point.
+// ---------------------------------------------------------------------------
+
+export interface XenditStatus {
+  enabled: boolean;
+  mode: 'test' | 'live';
+  keySet: boolean;
+  keyHint: string | null;
+  keySetAt: string | null;
+  callbackSet: boolean;
+  callbackSetAt: string | null;
+  successUrl: string | null;
+  invoiceDuration: number;
+  walletEnabled: boolean;
+  /** False on a database with no Vault, where secrets must stay in the shell. */
+  vaultAvailable: boolean;
+}
+
+export interface XenditTestResult {
+  ok: boolean;
+  reason?: 'no_key' | 'rejected' | 'unreachable' | 'error';
+  message?: string;
+  mode?: 'test' | 'live';
+  keyIsProduction?: boolean;
+  /** A production key on an account set to test, or the other way round. */
+  modeMismatch?: boolean;
+  balance?: number | null;
+  callbackTokenSet?: boolean;
+}
+
+const asStatus = (data: unknown): XenditStatus => {
+  const s = (data ?? {}) as Record<string, unknown>;
+  return {
+    enabled: Boolean(s.enabled),
+    mode: (s.mode as 'test' | 'live') ?? 'test',
+    keySet: Boolean(s.keySet),
+    keyHint: (s.keyHint as string | null) ?? null,
+    keySetAt: (s.keySetAt as string | null) ?? null,
+    callbackSet: Boolean(s.callbackSet),
+    callbackSetAt: (s.callbackSetAt as string | null) ?? null,
+    successUrl: (s.successUrl as string | null) ?? null,
+    invoiceDuration: Number(s.invoiceDuration ?? 3600),
+    walletEnabled: Boolean(s.walletEnabled),
+    vaultAvailable: s.vaultAvailable !== false,
+  };
+};
+
+/** How the payment account is set up. Never includes a secret. */
+export async function xenditStatus(db: SupabaseClient): Promise<XenditStatus> {
+  const { data, error } = await db.rpc('xendit_status');
+  if (error) throw error;
+  return asStatus(data);
+}
+
+/**
+ * Save the payment account. Franchisor only.
+ *
+ * Leave a secret out to keep the one already stored, so changing the mode does
+ * not mean retyping a key nobody can read to check.
+ */
+export async function saveXendit(
+  db: SupabaseClient,
+  patch: {
+    secretKey?: string;
+    callbackToken?: string;
+    mode?: 'test' | 'live';
+    enabled?: boolean;
+    successUrl?: string;
+    invoiceDuration?: number;
+  },
+): Promise<XenditStatus> {
+  const { data, error } = await db.rpc('set_xendit_credentials', {
+    p_secret_key: patch.secretKey ?? null,
+    p_callback_token: patch.callbackToken ?? null,
+    p_mode: patch.mode ?? null,
+    p_enabled: patch.enabled ?? null,
+    p_success_url: patch.successUrl ?? null,
+    p_invoice_duration: patch.invoiceDuration ?? null,
+  });
+  if (error) throw error;
+  return asStatus(data);
+}
+
+/** Forget the credentials entirely. */
+export async function disconnectXendit(db: SupabaseClient): Promise<XenditStatus> {
+  const { data, error } = await db.rpc('clear_xendit_credentials');
+  if (error) throw error;
+  return asStatus(data);
+}
+
+/** Ask Xendit whether the stored key actually works. */
+export async function testXendit(db: SupabaseClient): Promise<XenditTestResult> {
+  const { data, error } = await db.functions.invoke('xendit-test', { body: {} });
+  if (error) {
+    const res = (error as { context?: Response }).context;
+    if (res) {
+      const detail = await res.json().catch(() => null) as { message?: string } | null;
+      if (detail?.message) return { ok: false, reason: 'error', message: detail.message };
+    }
+    throw error;
+  }
+  return (data ?? { ok: false }) as XenditTestResult;
+}

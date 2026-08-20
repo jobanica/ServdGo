@@ -5,7 +5,8 @@
 //   { "external_id": "TOP-1A2B3C4D", "status": "PAID", "paid_amount": 500, ... }
 //
 // Set this URL under Settings → Webhooks → Invoices paid / expired in Xendit,
-// and put the same callback token in XENDIT_CALLBACK_TOKEN here.
+// and put the same callback token in XENDIT_CALLBACK_TOKEN, or into HQ →
+// Platform settings → Xendit, which keeps it in Vault.
 //
 // The token is compared in constant time, because a comparison that returns
 // early tells an attacker how much of their guess was right.
@@ -17,7 +18,7 @@
 //
 // Deploy: supabase functions deploy xendit-webhook --no-verify-jwt
 
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { serviceClient, xenditConfig } from '../_shared/xendit.ts';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -32,7 +33,8 @@ function sameToken(a: string, b: string): boolean {
 Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405);
 
-  const expected = Deno.env.get('XENDIT_CALLBACK_TOKEN');
+  const db = serviceClient();
+  const expected = (await xenditConfig(db)).callbackToken;
   if (!expected) return json({ error: 'not_configured' }, 503);
   if (!sameToken(req.headers.get('x-callback-token') ?? '', expected)) {
     return json({ error: 'unauthorised' }, 401);
@@ -49,11 +51,6 @@ Deno.serve(async (req) => {
   const providerRef = event.id ? String(event.id) : null;
   const status = String(event.status ?? '').toUpperCase();
   if (!reference) return json({ ignored: 'no external_id' });
-
-  const db = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-  );
 
   if (status === 'PAID' || status === 'SETTLED') {
     // paid_amount is what actually cleared; the database refuses if it is not
