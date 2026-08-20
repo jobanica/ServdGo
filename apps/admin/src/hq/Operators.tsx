@@ -9,19 +9,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  listTerritories, listStaff, TERRITORY_STATUS_LABEL,
+  listTerritories, listStaff, getPlatformSettings, TERRITORY_STATUS_LABEL,
   type Territory, type StaffMember,
 } from '@servdgo/supabase';
 import { errMessage, ROLE_LABEL } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from '../lib/supabase.ts';
 import { Card, Muted, ErrorNote } from '../ui.tsx';
 import { OperatorAccount } from './OperatorAccount.tsx';
+import { NewCity } from './NewCity.tsx';
 
 export function Operators() {
   const navigate = useNavigate();
   const [cities, setCities] = useState<Territory[]>([]);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [openCity, setOpenCity] = useState<string | null>(null);
+  const [band, setBand] = useState<{ min: number; max: number } | undefined>();
+  const [note, setNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -30,6 +33,10 @@ export function Operators() {
     try {
       const [t, s] = await Promise.all([listTerritories(supabase), listStaff(supabase)]);
       setCities(t); setStaff(s);
+      try {
+        const cfg = await getPlatformSettings(supabase);
+        setBand({ min: cfg.commission_rate_min, max: cfg.commission_rate_max });
+      } catch { /* the band is a nicety; the form has sane bounds without it */ }
     } catch (e) { setError(errMessage(e)); }
   }, []);
   useEffect(() => { void load(); }, [load]);
@@ -45,8 +52,16 @@ export function Operators() {
   return (
     <div className="space-y-5">
       {error && <ErrorNote msg={error} />}
+      {note && <p className="rounded-xl bg-brand-orange/10 px-3 py-2 text-sm text-brand-orange">{note}</p>}
 
-      <Card title="How a franchisee gets in">
+      <Card title="How a franchisee gets in" action={
+        <NewCity band={band} onCreated={(id, name) => {
+          // Straight into the thing they came here to do.
+          setNote(`${name} is open as a lead. Create its operator account below.`);
+          setOpenCity(id);
+          void load();
+        }} />
+      }>
         <p className="text-sm text-black/60">
           There is no sign-up screen, on purpose — an account that opens a city's console can see
           its customers' addresses and move its money. You create the login here and send them the
@@ -62,7 +77,8 @@ export function Operators() {
 
       {cities.length === 0 ? (
         <Muted>
-          No cities yet. Create one under Territories first — an operator account belongs to a city.
+          No cities yet. Use <b>Add a city</b> above — an operator account belongs to a city, so
+          there has to be one for them to run.
         </Muted>
       ) : cities.map((c) => {
         const runner = runnerOf(c);

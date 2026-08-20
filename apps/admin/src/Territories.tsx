@@ -15,6 +15,7 @@ import {
 import { manilaDay, presetRange, errMessage } from '@servdgo/shared';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td, peso } from './ui.tsx';
+import { NewCity } from './hq/NewCity.tsx';
 
 const inp = 'w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/30';
 
@@ -114,13 +115,16 @@ export function Territories() {
       </div>
 
       <Card title="Every city" action={
-        <select value={pipeline} onChange={(e) => setPipeline(e.target.value as TerritoryStatus | 'all')}
-          className="rounded-lg border border-black/10 bg-white px-2 py-1 text-xs">
-          <option value="all">All stages</option>
-          {TERRITORY_PIPELINE.map((s2) => (
-            <option key={s2} value={s2}>{TERRITORY_STATUS_LABEL[s2]}</option>
-          ))}
-        </select>
+        <div className="flex items-center gap-2">
+          <select value={pipeline} onChange={(e) => setPipeline(e.target.value as TerritoryStatus | 'all')}
+            className="rounded-lg border border-black/10 bg-white px-2 py-1 text-xs">
+            <option value="all">All stages</option>
+            {TERRITORY_PIPELINE.map((s2) => (
+              <option key={s2} value={s2}>{TERRITORY_STATUS_LABEL[s2]}</option>
+            ))}
+          </select>
+          <NewCity onCreated={(id) => navigate(`/hq/tenants/${id}`)} />
+        </div>
       }>
         <Muted>This month for the counts; the balances are whatever is outstanding right now.</Muted>
         <div className="mt-3 overflow-x-auto">
