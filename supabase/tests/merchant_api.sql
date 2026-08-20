@@ -434,4 +434,53 @@ begin
   end;
 end $$;
 
+-- ---------------------------------------------------------------------------
+-- Tracking: the rider's position is a fact anybody with the token can ask for,
+-- but only while they are actually carrying the order.
+-- ---------------------------------------------------------------------------
+set local role service_role;
+update orders set rider_id = 'b0000000-0000-0000-0000-000000000003', status = 'accepted'
+ where merchant_reference = 'SERVD-1001';
+
+-- The rider records a fix through the function, not by writing the table.
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000003', true);
+select record_rider_position((select id from orders where merchant_reference = 'SERVD-1001'),
+                             10.3180, 123.8870);
+
+set local role service_role;
+select pg_temp.check('a fix was recorded',
+  (select count(*)::int from rider_locations
+    where order_id = (select id from orders where merchant_reference = 'SERVD-1001')), 1);
+select pg_temp.check('but tracking hides it before pickup',
+  (track_merchant_order((select tracking_token from orders where merchant_reference = 'SERVD-1001'))
+     -> 'rider' -> 'position'), 'null'::jsonb);
+
+update orders set status = 'on_the_way' where merchant_reference = 'SERVD-1001';
+select pg_temp.check('once it is on the way, the position is there',
+  ((track_merchant_order((select tracking_token from orders where merchant_reference = 'SERVD-1001'))
+     -> 'rider' -> 'position' ->> 'lat')::numeric), 10.3180::numeric);
+select pg_temp.check('and the partner view carries it too',
+  ((merchant_order_view((select id from orders where merchant_reference = 'SERVD-1001'))
+     -> 'rider' -> 'position' ->> 'lng')::numeric), 123.8870::numeric);
+select pg_temp.check('the drop-off is on the tracking page, for the map',
+  ((track_merchant_order((select tracking_token from orders where merchant_reference = 'SERVD-1001'))
+     -> 'dropoff' ->> 'lat')::numeric), 10.3200::numeric);
+
+-- A rider who is not on the order cannot plant a position on it.
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000001', true);
+do $$
+begin
+  begin
+    perform record_rider_position(
+      (select id from orders where merchant_reference = 'SERVD-1001'), 0, 0);
+    raise exception 'FAIL a non-rider recorded a position';
+  exception when insufficient_privilege then
+    null;
+  end;
+end $$;
+
 rollback;

@@ -91,6 +91,23 @@ export function startPublishingLocation(
   };
 }
 
+/**
+ * Persist where the rider is, for whoever opens the tracking link later.
+ *
+ * The broadcast above is what the customer app draws from — instant, no round
+ * trip. This is the other half: a last known position that exists whether or
+ * not anybody was listening at the time. The database checks the order really
+ * is this rider's and still in flight.
+ */
+export async function recordRiderPosition(
+  db: SupabaseClient, orderId: string, pos: LatLng,
+): Promise<void> {
+  const { error } = await db.rpc('record_rider_position', {
+    p_order: orderId, p_lat: pos.lat, p_lng: pos.lng,
+  });
+  if (error) throw error;
+}
+
 /** Optional: persist a ping to rider_locations for replay/audit. */
 export async function persistRiderLocation(
   db: SupabaseClient,

@@ -10,6 +10,13 @@
 // what is owed at the door. No internal ids, no merchant reference, nothing
 // about the restaurant beyond its name.
 //
+// The map appears once the rider is actually carrying it, and shows only their
+// last known position and the drop-off — never the restaurant's exact pin, and
+// never a history of where they have been. Leaflet and OpenStreetMap tiles are
+// loaded from a CDN; if that fails the page still tells the diner everything
+// that matters in words, which is the part that has to work on a bad connection
+// in someone's hand.
+//
 // Deploy: supabase functions deploy track --no-verify-jwt
 
 import { serviceClient, merchantCors } from '../_shared/merchant.ts';
@@ -41,7 +48,12 @@ background:#f8f6f4;color:#1e1e1e;text-align:center;padding:1.5rem}</style>
   }
 
   const status = String(o.status ?? 'pending');
-  const rider = o.rider as { name?: string; contact?: string; vehicle?: string } | null;
+  const rider = o.rider as {
+    name?: string; contact?: string; vehicle?: string;
+    position?: { lat: number; lng: number; at: string } | null;
+  } | null;
+  const dropoff = o.dropoff as { lat: number; lng: number } | null;
+  const pos = rider?.position ?? null;
   const done = STEPS.indexOf(status);
 
   const steps = STEPS.map((s, i) => {
@@ -64,7 +76,10 @@ background:#f8f6f4;color:#1e1e1e;text-align:center;padding:1.5rem}</style>
   ul{list-style:none;margin:0;padding:0}
   a.call{display:inline-block;margin-top:.6rem;background:#E8552F;color:#fff;text-decoration:none;
     padding:.55rem 1rem;border-radius:.7rem;font-weight:700;font-size:.95rem}
+  #map{height:16rem;border-radius:.8rem;margin-top:.75rem;background:#eceae8}
+  .waiting{font-size:.85rem;color:#8a8a8a;margin:.6rem 0 0}
 </style>
+${pos ? '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">' : ''}
 <div class="wrap">
   <p class="muted">ServdGo</p>
   <h1>${escape(WORDS[status] ?? status)}</h1>
@@ -77,6 +92,10 @@ background:#f8f6f4;color:#1e1e1e;text-align:center;padding:1.5rem}</style>
     <p style="font-weight:700;margin:.1rem 0">${escape(rider.name)}${
       rider.vehicle ? ` · ${escape(rider.vehicle)}` : ''}</p>
     ${rider.contact ? `<a class="call" href="tel:${escape(rider.contact)}">Call ${escape(rider.contact)}</a>` : ''}
+    ${pos ? '<div id="map"></div><p class="waiting" id="seen"></p>'
+          : (status === 'picked_up' || status === 'on_the_way'
+              ? '<p class="waiting">Waiting for your rider\'s location — it appears here once their phone reports in.</p>'
+              : '')}
   </div>` : ''}
 
   <div class="card">
@@ -85,7 +104,56 @@ background:#f8f6f4;color:#1e1e1e;text-align:center;padding:1.5rem}</style>
       Number(o.amountDue ?? 0).toFixed(2)}</p>
     <p class="muted">Delivery only — the food is already paid for.</p>
   </div>
-</div>`;
+</div>
+${pos ? `<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function () {
+  var rider = ${JSON.stringify(pos)};
+  var drop = ${JSON.stringify(dropoff)};
+  var el = document.getElementById('map');
+  if (!el || typeof L === 'undefined') return;   // CDN blocked — words still work
+
+  var map = L.map(el, { zoomControl: false, attributionControl: false })
+             .setView([rider.lat, rider.lng], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+  var icon = function (bg, glyph) {
+    return L.divIcon({ className: '', iconSize: [30, 30], iconAnchor: [15, 15],
+      html: '<div style="display:flex;align-items:center;justify-content:center;width:30px;'
+          + 'height:30px;border-radius:50%;background:' + bg + ';box-shadow:0 0 0 2px #fff,'
+          + '0 1px 4px rgba(0,0,0,.4);font-size:15px">' + glyph + '</div>' });
+  };
+  var mark = L.marker([rider.lat, rider.lng], { icon: icon('#E8552F', '\u{1F6F5}') }).addTo(map);
+  if (drop) {
+    L.marker([drop.lat, drop.lng], { icon: icon('#1e1e1e', '\u{1F4CD}') }).addTo(map);
+    map.fitBounds(L.latLngBounds([[rider.lat, rider.lng], [drop.lat, drop.lng]]).pad(0.35));
+  }
+
+  var seen = document.getElementById('seen');
+  var since = function (iso) {
+    var s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+    return s < 60 ? 'just now' : Math.round(s / 60) + ' min ago';
+  };
+  var show = function (at) { if (seen) seen.textContent = 'Location updated ' + since(at); };
+  show(rider.at);
+
+  // Poll rather than hold a socket open: this page sits in a phone's browser
+  // for the length of a delivery, and a dropped socket is worse than a request
+  // every fifteen seconds.
+  setInterval(function () {
+    fetch(location.href, { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (o) {
+        var p = o && o.rider && o.rider.position;
+        if (!p) return;
+        mark.setLatLng([p.lat, p.lng]);
+        show(p.at);
+        if (o.status === 'delivered') location.reload();
+      })
+      .catch(function () {});
+  }, 15000);
+}());
+</script>` : ''}`;
 }
 
 Deno.serve(async (req) => {

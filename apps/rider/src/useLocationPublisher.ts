@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import type { OrderStatus } from '@servdgo/shared';
-import { startPublishingLocation, openLocationChannel } from '@servdgo/supabase';
+import { startPublishingLocation, openLocationChannel, recordRiderPosition } from '@servdgo/supabase';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { supabase } from './lib/supabase.ts';
 
@@ -29,13 +29,39 @@ interface BackgroundGeolocationPlugin {
 }
 const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>('BackgroundGeolocation');
 
+/**
+ * Write the position down as well as broadcasting it, at most this often.
+ *
+ * The broadcast is for whoever is watching right now; this is for whoever opens
+ * the tracking link in a minute. Throttled because a row every few seconds per
+ * order is a lot of writing for a fact that only has to be roughly current.
+ */
+const PERSIST_EVERY_MS = 20_000;
+
+function persister(orderId: string): (pos: { lat: number; lng: number }) => void {
+  let last = 0;
+  return (pos) => {
+    const now = Date.now();
+    if (now - last < PERSIST_EVERY_MS) return;
+    last = now;
+    // Never let a failed write break the live broadcast — the map matters more
+    // than the audit trail.
+    void recordRiderPosition(supabase!, orderId, pos).catch(() => {});
+  };
+}
+
 /** Browser poll fallback (foreground only) via navigator.geolocation. */
 function webPoll(orderId: string): () => void {
+  const persist = persister(orderId);
   return startPublishingLocation(supabase!, orderId, () =>
     new Promise((resolve, reject) => {
       if (!('geolocation' in navigator)) return reject(new Error('no geolocation'));
       navigator.geolocation.getCurrentPosition(
-        (p) => resolve({ lat: p.coords.latitude, lng: p.coords.longitude }),
+        (p) => {
+          const pos = { lat: p.coords.latitude, lng: p.coords.longitude };
+          persist(pos);
+          resolve(pos);
+        },
         reject,
         { enableHighAccuracy: true, maximumAge: 2000, timeout: 8000 },
       );
@@ -49,6 +75,7 @@ function webPoll(orderId: string): () => void {
  */
 function nativeWatch(orderId: string): () => void {
   const chan = openLocationChannel(supabase!, orderId);
+  const persist = persister(orderId);
   let watcherId: string | null = null;
 
   void BackgroundGeolocation.addWatcher(
@@ -61,7 +88,9 @@ function nativeWatch(orderId: string): () => void {
     },
     (location, error) => {
       if (error || !location) return;
-      void chan.publish({ lat: location.latitude, lng: location.longitude });
+      const pos = { lat: location.latitude, lng: location.longitude };
+      void chan.publish(pos);
+      persist(pos);
     },
   ).then((id) => { watcherId = id; });
 
