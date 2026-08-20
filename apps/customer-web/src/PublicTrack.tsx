@@ -28,6 +28,8 @@ const WORDS: Record<string, string> = {
   cancelled: 'Cancelled',
 };
 
+import { askToNotify, notify, notifyState, type NotifyState } from './notify.ts';
+
 interface ChatMessage {
   id: string;
   sender_role: 'customer' | 'rider';
@@ -37,6 +39,8 @@ interface ChatMessage {
 
 interface TrackData {
   status: string;
+  /** Set the moment the rider says they are at the gate. Not a status (0053). */
+  arrivedAt: string | null;
   from: string | null;
   dropoffAddress: string | null;
   amountDue: number;
@@ -54,6 +58,24 @@ const pin = (bg: string, glyph: string) =>
       border-radius:50%;background:${bg};box-shadow:0 0 0 2px #fff,0 1px 4px rgba(0,0,0,.4);
       font-size:15px">${glyph}</div>`,
   });
+
+/**
+ * The one button that makes this page useful once it is in a pocket.
+ *
+ * Shown only while it can change something: a diner who has already allowed or
+ * already refused does not need to be asked again on every delivery.
+ */
+function AlertMe() {
+  const [state, setState] = useState<NotifyState>(() => notifyState());
+  if (state !== 'default') return null;
+  return (
+    <button
+      onClick={() => { void askToNotify().then(setState); }}
+      className="mt-3 w-full rounded-2xl bg-white px-4 py-3 text-sm font-bold text-brand-charcoal shadow-sm">
+      🔔 Alert me when the rider arrives
+    </button>
+  );
+}
 
 function ago(iso: string): string {
   const s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
@@ -98,10 +120,23 @@ function Chat({ token, canSend }: { token: string; canSend: boolean }) {
   const [sending, setSending] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
+  // The first load is history, not news. Everything after it is a message that
+  // arrived while the diner was on this page, so it makes a noise.
+  const seen = useRef<Set<string> | null>(null);
+
   const load = useCallback(async () => {
     if (!supabase) return;
     const { data } = await supabase.rpc('track_messages', { p_token: token });
-    setMessages((data ?? []) as ChatMessage[]);
+    const rows = (data ?? []) as ChatMessage[];
+    if (seen.current === null) {
+      seen.current = new Set(rows.map((m) => m.id));
+    } else {
+      const fresh = rows.filter((m) => m.sender_role === 'rider' && !seen.current!.has(m.id));
+      for (const m of rows) seen.current.add(m.id);
+      const last = fresh[fresh.length - 1];
+      if (last) void notify('Your rider', (last.body ?? '').trim() || 'Sent you a message', 'servdgo-chat');
+    }
+    setMessages(rows);
   }, [token]);
 
   useEffect(() => { void load(); }, [load]);
@@ -193,6 +228,27 @@ export function PublicTrack({ token }: { token: string }) {
     return () => clearInterval(t);
   }, [load]);
 
+  // "I'm outside" is the one that matters: it is the only moment on this page
+  // where somebody is waiting on the diner rather than the other way round.
+  const announced = useRef<string>('');
+  useEffect(() => {
+    if (!data || data === 'missing') return;
+    const mark = `${data.status}|${data.arrivedAt ?? ''}`;
+    if (announced.current === '') { announced.current = mark; return; }
+    if (announced.current === mark) return;
+    const wasArrived = announced.current.split('|')[1];
+    announced.current = mark;
+
+    if (data.arrivedAt && !wasArrived) {
+      void notify('Your rider is outside 🛵',
+                  'They are at your drop-off with your order.', 'servdgo-arrived');
+    } else if (data.status === 'on_the_way') {
+      void notify('On the way 🛵', 'Your order has left the restaurant.', 'servdgo-status');
+    } else if (data.status === 'delivered') {
+      void notify('Delivered ✅', 'Enjoy your order.', 'servdgo-status');
+    }
+  }, [data]);
+
   if (data === null) {
     return <Shell><p className="text-sm text-black/50">Finding your delivery…</p></Shell>;
   }
@@ -216,6 +272,14 @@ export function PublicTrack({ token }: { token: string }) {
       <p className="mt-1 text-sm text-black/55">
         From {data.from} to {data.dropoffAddress}
       </p>
+
+      {data.arrivedAt && data.status !== 'delivered' && (
+        <p className="mt-3 rounded-2xl bg-brand-charcoal px-4 py-3 text-sm font-bold text-white">
+          🛵 Your rider is outside with your order.
+        </p>
+      )}
+
+      <AlertMe />
 
       <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
         <ul>

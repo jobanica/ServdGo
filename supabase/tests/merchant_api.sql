@@ -366,6 +366,47 @@ select pg_temp.check('it gives up eventually',
   (select status from merchant_webhook_deliveries where id = :'second_delivery'), 'failed');
 
 -- ---------------------------------------------------------------------------
+-- 8b. The two things that used to happen silently.
+--
+-- Arrival is not a status — it happens inside 'on_the_way' and the delivery is
+-- not over until somebody takes the food — so the status trigger never fired
+-- for it and the diner was never told. Same for a message: realtime for anyone
+-- with the thread open, nothing for anyone without it.
+-- ---------------------------------------------------------------------------
+update orders set arrived_at = now()
+ where merchant_reference = 'SERVD-1001' and merchant_id = 'd0000000-0000-0000-0000-000000000001';
+
+select pg_temp.check('saying "I am outside" is a callback',
+  (select count(*)::int from merchant_webhook_deliveries where event = 'order.arrived'), 1);
+select pg_temp.check('and it carries the moment it happened',
+  (select (payload ->> 'arrivedAt') is not null from merchant_webhook_deliveries
+    where event = 'order.arrived'), true);
+
+-- Stamping it again is the same arrival, not a second one.
+update orders set arrived_at = arrived_at
+ where merchant_reference = 'SERVD-1001' and merchant_id = 'd0000000-0000-0000-0000-000000000001';
+select pg_temp.check('and saying it twice does not ring twice',
+  (select count(*)::int from merchant_webhook_deliveries where event = 'order.arrived'), 1);
+
+insert into order_messages (order_id, sender_profile, sender_role, body)
+select id, 'a0000000-0000-0000-0000-000000000003', 'rider', 'I am at the blue gate.'
+  from orders where merchant_reference = 'SERVD-1001'
+   and merchant_id = 'd0000000-0000-0000-0000-000000000001';
+
+select pg_temp.check('a message is a callback too',
+  (select count(*)::int from merchant_webhook_deliveries where event = 'order.message'), 1);
+select pg_temp.check('carrying who said it',
+  (select payload -> 'message' ->> 'from' from merchant_webhook_deliveries
+    where event = 'order.message'), 'rider');
+select pg_temp.check('and what they said',
+  (select payload -> 'message' ->> 'body' from merchant_webhook_deliveries
+    where event = 'order.message'), 'I am at the blue gate.');
+
+-- Leave the thread as it was found. The diner's own chat is tested further
+-- down and it counts what is on there.
+delete from order_messages where body = 'I am at the blue gate.';
+
+-- ---------------------------------------------------------------------------
 -- 10. A restaurant is the operator's record, and only theirs.
 -- ---------------------------------------------------------------------------
 reset role;

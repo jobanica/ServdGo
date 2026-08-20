@@ -297,19 +297,46 @@ Two layers:
    publication (migration `0007`). Note: Realtime honours RLS, so the rider must
    be signed in for pool visibility.
 2. **App closed** — FCM push. The native app registers on launch
-   (`usePushRegistration`) and stores its token in `rider_push_tokens`. A server
-   Edge Function sends the push:
+   (`usePushRegistration`) and stores its token in `rider_push_tokens`. Two Edge
+   Functions send them: `notify-riders` for a new request in the pool, and
+   `notify-message` when a diner writes to the rider carrying their order.
+
+   Both use **FCM HTTP v1**. The legacy `FCM_SERVER_KEY` endpoint these used to
+   post to was switched off by Google in June 2024, so a deployment still
+   holding that secret has been sending nothing. One secret replaces it — the
+   whole service-account JSON, on one line:
 
 ```bash
-# one-time: create a Firebase project, get the FCM server key
-supabase secrets set FCM_SERVER_KEY=<key>
+# Firebase console → Project settings → Service accounts → Generate new private key
+supabase secrets set FCM_SERVICE_ACCOUNT="$(cat service-account.json)"
 supabase functions deploy notify-riders
+supabase functions deploy notify-message
 # Dashboard → Database → Webhooks: on orders INSERT → call notify-riders
 ```
 
-The function (`supabase/functions/notify-riders`) reads approved/unlocked riders'
-tokens and pushes the order summary. Adjust the audience query to your
-rider-assignment model (open decision #7).
+Without the secret both answer `{ sent: 0, reason: 'not_configured' }` rather
+than throwing: a rider missing a chime must never fail the thing that was trying
+to tell them. Dead tokens (a reinstalled app) are pruned as FCM reports them.
+
+The audience is no longer a query the function writes for itself —
+`pool_push_targets()` and `order_message_push()` answer it in the database,
+beside the rules the claim policy already enforces.
+
+`notify-message` is poked by a trigger on `order_messages` through pg_net, so it
+needs the same two Vault secrets as the callback drain (`service_role_key`,
+`functions_base_url` — see migration `0114`).
+
+### What the partner hears
+
+Alongside the status callbacks, two events fire for things that are not
+statuses (migration `0122`):
+
+| Event | When |
+| --- | --- |
+| `order.arrived` | the rider tapped "I'm outside". Not a status — it happens *inside* `on_the_way`, and the delivery is not over until somebody takes the food. |
+| `order.message` | anything said on the order thread, either direction, with `message.from`, `message.body` and `message.imageUrl`. |
+
+Both carry the usual order body, so one parser handles every callback.
 
 ## Store SMS on a new order (optional)
 

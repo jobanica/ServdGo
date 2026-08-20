@@ -42,6 +42,7 @@ import { useRiderPosition, formatDistance } from './useRiderPosition.ts';
 import { ChatButton } from './Chat.tsx';
 import { usePushRegistration } from './usePushRegistration.ts';
 import { useNewOrderAlert } from './useNewOrderAlert.ts';
+import { useMessageAlert, requestNotificationPermission } from './useMessageAlert.ts';
 import { isAlertMuted, setAlertMuted, playNewOrderAlert } from './alert.ts';
 import { usePlatformStatus, ClosedBanner } from './PlatformStatus.tsx';
 import { AnnouncementBanner } from './Announcements.tsx';
@@ -116,6 +117,14 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
   const head = pool[0] ?? null;
   // Only announce what the rider could actually take right now.
   useNewOrderAlert(pool.map((o) => o.id), online && !locked);
+
+  // A message on any live delivery, not only the card that happens to be open.
+  const message = useMessageAlert(active.map((o) => o.id));
+  useEffect(() => {
+    const ask = () => requestNotificationPermission();
+    window.addEventListener('pointerdown', ask, { once: true, passive: true });
+    return () => window.removeEventListener('pointerdown', ask);
+  }, []);
   const transfers = pool.filter((o) => o.isTransfer);
   const newRequests = pool.filter((o) => !o.isTransfer);
 
@@ -181,6 +190,19 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
         <ClosedBanner status={platform} workLeft={pool.length + active.length} />
         <AnnouncementBanner />
         {error && <p className="mb-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+
+        {message.latest && (
+          <button
+            onClick={() => { setTab('deliveries'); message.dismiss(); }}
+            className="mb-4 flex w-full items-start gap-3 rounded-2xl bg-brand-charcoal px-4 py-3 text-left text-white">
+            <span className="text-lg">💬</span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-bold">Message from your customer</span>
+              <span className="block truncate text-xs text-white/70">{message.latest.body || 'Tap to read'}</span>
+            </span>
+            <span className="text-xs font-bold text-white/60">Open</span>
+          </button>
+        )}
 
         {tab === 'dashboard' && (
           <Dashboard

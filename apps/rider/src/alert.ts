@@ -89,3 +89,25 @@ export function playNewOrderAlert(): void {
       .vibrate?.([180, 90, 180]);
   } catch { /* ignore */ }
 }
+
+/**
+ * Announce a message: one ping, a short buzz.
+ *
+ * Deliberately not the request alarm. A rider learns the difference between
+ * "there is work" and "your customer is saying something" by ear, and the
+ * second one must not sound like the first or they will both start being
+ * ignored.
+ */
+export function playMessageAlert(): void {
+  if (isAlertMuted()) return;
+  try {
+    if (ctx && ctx.state !== 'closed') {
+      if (ctx.state === 'suspended') void ctx.resume();
+      ping(ctx.currentTime);
+    }
+  } catch { /* fall through to the buzz */ }
+  try {
+    (navigator as Navigator & { vibrate?: (p: number | number[]) => boolean })
+      .vibrate?.([90, 60, 90]);
+  } catch { /* ignore */ }
+}
