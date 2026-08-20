@@ -13,6 +13,7 @@
  * function still answers with the JSON it feeds on.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from './lib/supabase.ts';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -26,6 +27,13 @@ const WORDS: Record<string, string> = {
   delivered: 'Delivered',
   cancelled: 'Cancelled',
 };
+
+interface ChatMessage {
+  id: string;
+  sender_role: 'customer' | 'rider';
+  body: string;
+  created_at: string;
+}
 
 interface TrackData {
   status: string;
@@ -80,6 +88,87 @@ function RiderMap({ rider, dropoff }: {
   useEffect(() => { markRef.current?.setLatLng([rider.lat, rider.lng]); }, [rider.lat, rider.lng]);
 
   return <div ref={elRef} className="mt-3 h-64 w-full overflow-hidden rounded-xl bg-black/[0.06]" />;
+}
+
+/** Talk to the rider, with nothing but the tracking token. */
+function Chat({ token, canSend }: { token: string; canSend: boolean }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [draft, setDraft] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const endRef = useRef<HTMLDivElement>(null);
+
+  const load = useCallback(async () => {
+    if (!supabase) return;
+    const { data } = await supabase.rpc('track_messages', { p_token: token });
+    setMessages((data ?? []) as ChatMessage[]);
+  }, [token]);
+
+  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    // Polled, not subscribed: the diner has no session, so realtime would have
+    // nothing to authorise them with. Ten seconds is a conversation, not a lag.
+    const t = setInterval(() => void load(), 10_000);
+    return () => clearInterval(t);
+  }, [load]);
+  useEffect(() => { endRef.current?.scrollIntoView({ block: 'nearest' }); }, [messages.length]);
+
+  async function send() {
+    const body = draft.trim();
+    if (!body || !supabase) return;
+    setSending(true); setError(null);
+    const { error: err } = await supabase.rpc('track_send_message', { p_token: token, p_body: body });
+    if (err) setError(err.message);
+    else { setDraft(''); await load(); }
+    setSending(false);
+  }
+
+  return (
+    <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
+      <p className="text-sm text-black/45">Message your rider</p>
+
+      {messages.length > 0 && (
+        <div className="mt-2 max-h-56 space-y-2 overflow-y-auto">
+          {messages.map((m) => {
+            const mine = m.sender_role === 'customer';
+            return (
+              <div key={m.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
+                <p className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
+                  mine ? 'bg-brand-orange text-white' : 'bg-black/[0.06] text-black'}`}>
+                  {m.body}
+                </p>
+              </div>
+            );
+          })}
+          <div ref={endRef} />
+        </div>
+      )}
+
+      {canSend ? (
+        <div className="mt-3 flex gap-2">
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') void send(); }}
+            placeholder="e.g. the gate is locked, please ring"
+            maxLength={1000}
+            className="min-w-0 flex-1 rounded-xl border border-black/10 px-3 py-2 text-sm"
+          />
+          <button onClick={() => void send()} disabled={sending || !draft.trim()}
+            className="shrink-0 rounded-xl bg-brand-orange px-4 py-2 text-sm font-bold text-white disabled:opacity-40">
+            Send
+          </button>
+        </div>
+      ) : (
+        <p className="mt-2 text-xs text-black/45">
+          {messages.length > 0
+            ? 'This delivery is over — the messages are kept here.'
+            : 'You can message your rider once one is carrying your order.'}
+        </p>
+      )}
+      {error && <p className="mt-2 text-xs text-red-700">{error}</p>}
+    </div>
+  );
 }
 
 export function PublicTrack({ token }: { token: string }) {
@@ -166,6 +255,8 @@ export function PublicTrack({ token }: { token: string }) {
               )}
         </div>
       )}
+
+      {data.rider?.name && <Chat token={token} canSend={carrying} />}
 
       <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
         <p className="text-sm text-black/45">To pay on delivery</p>

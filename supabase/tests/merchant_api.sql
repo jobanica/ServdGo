@@ -488,4 +488,66 @@ select pg_temp.check('a partner is handed the finished tracking link, not a toke
     like 'https://%/track?t=%', true);
 select pg_temp.check('and no link at all without a token', tracking_link(null), null::text);
 
+-- ---------------------------------------------------------------------------
+-- The diner on a tracking link can talk to their rider.
+-- ---------------------------------------------------------------------------
+set local role service_role;
+update orders set rider_id = 'b0000000-0000-0000-0000-000000000003', status = 'on_the_way'
+ where merchant_reference = 'SERVD-1001';
+-- The token is all the diner has, so take a copy of it the way they would: it
+-- was handed to them. Under anon they cannot read orders to find it.
+select tracking_token as tok from orders where merchant_reference = 'SERVD-1001' \gset
+
+-- Anonymous, with nothing but the token.
+reset role;
+set local role anon;
+select set_config('request.jwt.claim.sub', '', true);
+
+select track_send_message(:'tok', 'The gate is locked — please ring 09170000222.');
+
+select pg_temp.check('the diner''s message is on the thread',
+  (select count(*)::int from track_messages(:'tok')), 1);
+select pg_temp.check('and it is attributed to the customer side',
+  (select sender_role from track_messages(:'tok') limit 1), 'customer');
+set local role service_role;
+select pg_temp.check('with nobody''s account behind it',
+  (select sender_profile from order_messages limit 1), null::uuid);
+reset role;
+set local role anon;
+
+-- psql does not interpolate :variables inside a $$ block, so refusals are
+-- checked through a helper that hands back the message instead.
+create or replace function pg_temp.send_fails(p_token text, p_body text)
+returns text language plpgsql as $$
+begin
+  perform track_send_message(p_token, p_body);
+  return 'NO ERROR — it went through';
+exception when others then
+  return sqlerrm;
+end $$;
+
+select pg_temp.check('a made-up token reaches no thread',
+  pg_temp.send_fails('not-a-real-token', 'hello?'), 'no such order');
+select pg_temp.check('an empty message is refused',
+  pg_temp.send_fails(:'tok', '   '), 'Nothing to send');
+
+-- The rider sees it through the policy they already had.
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000003', true);
+select pg_temp.check('the rider reads the diner''s message',
+  (select count(*)::int from order_messages
+    where order_id = (select id from orders where merchant_reference = 'SERVD-1001')), 1);
+
+-- Once it is delivered there is nobody left to read a message.
+set local role service_role;
+update orders set status = 'delivered' where merchant_reference = 'SERVD-1001';
+reset role;
+set local role anon;
+select pg_temp.check('and once it is delivered, the chat closes',
+  pg_temp.send_fails(:'tok', 'thanks!') like '%delivery is over%', true);
+select pg_temp.check('but the thread is still readable afterwards',
+  (select count(*)::int from track_messages(:'tok')), 1);
+reset role;
+
 rollback;
