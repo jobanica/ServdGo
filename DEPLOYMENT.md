@@ -389,27 +389,35 @@ royalty keeps being booked on a confirmed settlement.
 
 ### Xendit
 
-Top-ups go through Xendit invoices. Two secrets, both from the Xendit
-dashboard:
+Set this up in the console, not the shell:
+
+> HQ → Platform settings → **Xendit — rider top-ups**
+
+Paste the secret key and the callback verification token from the Xendit
+dashboard, pick test or live, press **Test connection**, then copy the webhook
+URL shown there into Xendit → **Settings → Webhooks** for both *Invoices paid*
+and *Invoices expired*. Without that webhook a rider's money arrives and their
+balance never moves.
+
+The secrets go into Vault, and the console cannot read them back — it shows the
+last four characters of the key and when it was set. The only way out is
+`xendit_credentials()`, granted to `service_role` and to nothing else, which is
+what `wallet-topup` and `xendit-webhook` call.
+
+The environment variables still work and still take precedence where they are
+set, so an older deployment keeps behaving the way it did:
 
 ```bash
 supabase secrets set XENDIT_SECRET_KEY=<xnd_production_… or xnd_development_…>
 supabase secrets set XENDIT_CALLBACK_TOKEN=<the callback verification token>
-supabase functions deploy wallet-topup
-supabase functions deploy xendit-webhook --no-verify-jwt
 ```
 
-Then, in Xendit → **Settings → Webhooks**, point *Invoices paid* and *Invoices
-expired* at:
-
-```
-https://<project-ref>.supabase.co/functions/v1/xendit-webhook
-```
-
-`XENDIT_SECRET_KEY` never leaves the edge function — the rider app calls
-`wallet-topup`, which reserves the top-up in the database first and only then
-asks Xendit for a payment page. Until the key is set, `wallet-topup` answers
-503 with a readable message and riders top up at the city office instead.
+Either way the key never leaves the server. The rider app calls `wallet-topup`,
+which reserves the top-up in the database first and only then asks Xendit for a
+payment page — so a Xendit outage costs a rider an error message, not a payment
+against a top-up this database never heard of. Until a key is stored,
+`wallet-topup` answers 503 with a readable message and riders top up at the city
+office instead.
 
 The callback credits the wallet through `wallet_topup_mark_paid()`, which is
 idempotent on the top-up row: Xendit will deliver the same event more than once
