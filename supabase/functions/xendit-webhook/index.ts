@@ -16,12 +16,22 @@
 // row rather than on this request. Anything unrecognised is answered 200 on
 // purpose, so Xendit stops retrying a message we will never understand.
 //
+// One Xendit account can be collecting for more than one thing. If the same
+// account also bills something else — Servd's own subscriptions, say — then
+// every one of those invoices is delivered here too, correctly signed, because
+// the callback token belongs to the account rather than to us. Ours are the
+// ones whose external_id we minted, so that is the test: anything else is
+// somebody else's money and is left alone without a word.
+//
 // Deploy: supabase functions deploy xendit-webhook --no-verify-jwt
 
 import { serviceClient, xenditConfig } from '../_shared/xendit.ts';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
+
+/** What wallet_topup_reference() mints, and nothing else. */
+const TOPUP_REFERENCE = /^TOP-[0-9A-F]{8}$/;
 
 function sameToken(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -51,6 +61,10 @@ Deno.serve(async (req) => {
   const providerRef = event.id ? String(event.id) : null;
   const status = String(event.status ?? '').toUpperCase();
   if (!reference) return json({ ignored: 'no external_id' });
+  if (!TOPUP_REFERENCE.test(reference)) {
+    // Not a rider wallet top-up. 200, so Xendit does not retry it at us.
+    return json({ ignored: 'not a wallet top-up' });
+  }
 
   if (status === 'PAID' || status === 'SETTLED') {
     // paid_amount is what actually cleared; the database refuses if it is not
