@@ -20,9 +20,9 @@ API="https://api.supabase.com/v1/projects/$REF/functions/deploy"
 
 # Functions the browser or a partner calls without a user session. Each does its
 # own authorisation, so the gateway's JWT check would only get in the way.
-NO_JWT="create-staff v1-config track merchant-quote merchant-book merchant-order"
+NO_JWT="create-staff v1-config track merchant-quote merchant-book merchant-order merchant-cancel"
 
-DEFAULT="create-staff v1-config hq-export track merchant-quote merchant-book merchant-order merchant-webhooks"
+DEFAULT="create-staff v1-config hq-export track merchant-quote merchant-book merchant-order merchant-cancel merchant-webhooks"
 TARGETS=("${@:-}")
 [ -z "${TARGETS[*]}" ] && read -ra TARGETS <<< "$DEFAULT"
 

@@ -117,6 +117,19 @@ rider to the street, the address gets them to the door.
 
 The same body, for polling or for reconciling after an outage.
 
+## POST /merchant-cancel
+
+```json
+{ "reference": "SERVD-1001", "reason": "customer changed their mind" }
+```
+
+Returns the order, cancelled — the same body every other endpoint returns.
+
+Cancelling twice is **not** an error: a retry after a timeout must not report a
+failure for something that already happened. Once a rider has collected it is
+refused with a 422, because they are carrying somebody's food and are owed the
+trip; ring them on the number in the status response instead.
+
 ## Errors
 
 | Status | `error` | When |
@@ -124,7 +137,7 @@ The same body, for polling or for reconciling after an outage.
 | 400 | `bad_request` | A required field is missing or the body is not JSON |
 | 401 | `unauthorized` | Unknown, revoked, or belonging to a deactivated restaurant |
 | 404 | `not_found` | No order with that reference for this restaurant |
-| 422 | `unprocessable` | We will not do it: out of area, city closed, missing contact |
+| 422 | `unprocessable` | We will not do it: out of area, city closed, missing contact, a cancel that came too late |
 | 500 | `server_error` | Ours. Retry with backoff |
 
 `message` on a 422 is written for a person and can be shown to the restaurant.

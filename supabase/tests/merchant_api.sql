@@ -387,4 +387,51 @@ select pg_temp.check('seeing only its prefix',
   (select prefix from merchant_api_keys), left(:'key', 12));
 
 reset role;
+-- ---------------------------------------------------------------------------
+-- A restaurant can call off its own order, until a rider is carrying it.
+-- ---------------------------------------------------------------------------
+set local role service_role;
+
+select pg_temp.check('cancelling an unclaimed order works',
+  (merchant_cancel('d0000000-0000-0000-0000-000000000002', 'SERVD-2001') ->> 'status'),
+  'cancelled');
+select pg_temp.check('and cancelling it again is not an error',
+  (merchant_cancel('d0000000-0000-0000-0000-000000000002', 'SERVD-2001') ->> 'status'),
+  'cancelled');
+
+do $$
+begin
+  begin
+    perform merchant_cancel('d0000000-0000-0000-0000-000000000002', 'SERVD-NOPE');
+    raise exception 'FAIL an unknown reference was cancelled';
+  exception when no_data_found then
+    null;
+  end;
+end $$;
+
+-- Once the rider has it, the trip is theirs.
+insert into orders (id, customer_id, rider_id, merchant_id, merchant_reference, service_type,
+                    status, delivery_fee, delivery_lat, delivery_lng, delivery_address,
+                    customer_name, customer_contact, recipient_name, recipient_contact,
+                    territory_id)
+values ('e0000000-0000-0000-0000-0000000000aa', null,
+        'b0000000-0000-0000-0000-000000000003', 'd0000000-0000-0000-0000-000000000001',
+        'SERVD-2002', 'padala', 'picked_up', 50, 10.3200, 123.8880, '9 Mango Ave',
+        'Lutong Bahay', '09171112222', 'Maria Santos', '09175556666',
+        '11111111-1111-1111-1111-111111111111');
+
+do $$
+declare msg text;
+begin
+  begin
+    perform merchant_cancel('d0000000-0000-0000-0000-000000000001', 'SERVD-2002');
+    raise exception 'FAIL an order already with a rider was cancelled';
+  exception when check_violation then
+    get stacked diagnostics msg = message_text;
+    if msg not like '%rider already has%' then
+      raise exception 'FAIL refused for the wrong reason: %', msg;
+    end if;
+  end;
+end $$;
+
 rollback;
