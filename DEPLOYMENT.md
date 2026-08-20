@@ -371,6 +371,57 @@ so it also authorizes an authenticated **admin** caller (verifies
 `profiles.role = 'admin'`) — the shared secret is only needed for server-to-server
 use. Respect consent/opt-out before broadcasting to customers.
 
+## Rider wallets and Xendit
+
+A rider prepays into a wallet, and every delivered order deducts its commission
+from that balance the moment the ledger books it. Because the money reaches the
+franchisor's account rather than the city's, the franchisor's royalty is
+collected up front and the rest becomes a daily debt to the operator — visible
+on **Operator payouts** in HQ, and on **Rider wallets** for the city itself.
+
+Wallets ship **off**. Turning them on moves every rider onto prepay overnight,
+so it is a deliberate act:
+
+> HQ → Platform settings → Rider wallets → toggle on
+
+Nothing else changes when it is off: riders keep settling in cash and the
+royalty keeps being booked on a confirmed settlement.
+
+### Xendit
+
+Top-ups go through Xendit invoices. Two secrets, both from the Xendit
+dashboard:
+
+```bash
+supabase secrets set XENDIT_SECRET_KEY=<xnd_production_… or xnd_development_…>
+supabase secrets set XENDIT_CALLBACK_TOKEN=<the callback verification token>
+supabase functions deploy wallet-topup
+supabase functions deploy xendit-webhook --no-verify-jwt
+```
+
+Then, in Xendit → **Settings → Webhooks**, point *Invoices paid* and *Invoices
+expired* at:
+
+```
+https://<project-ref>.supabase.co/functions/v1/xendit-webhook
+```
+
+`XENDIT_SECRET_KEY` never leaves the edge function — the rider app calls
+`wallet-topup`, which reserves the top-up in the database first and only then
+asks Xendit for a payment page. Until the key is set, `wallet-topup` answers
+503 with a readable message and riders top up at the city office instead.
+
+The callback credits the wallet through `wallet_topup_mark_paid()`, which is
+idempotent on the top-up row: Xendit will deliver the same event more than once
+and it must credit once.
+
+### Cash at the city office
+
+`wallet_record_topup()` records money handed over in person. Who took it
+matters: cash collected by an operator is float belonging to the franchisor, so
+it is netted off that day's payout automatically. Cash or a transfer recorded by
+the franchisor is not.
+
 ## Platform config and CSV exports
 
 Two more functions, both thin wrappers over database functions that hold the

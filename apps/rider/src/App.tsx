@@ -48,6 +48,7 @@ import { AnnouncementBanner } from './Announcements.tsx';
 import { supabase } from './lib/supabase.ts';
 import { APP_VERSION } from './config.ts';
 import { DeleteAccount } from './DeleteAccount.tsx';
+import { WalletPanel, useWalletGate } from './Wallet.tsx';
 
 const SERVICES: { key: string; label: string }[] = [
   { key: 'food', label: 'Food' }, { key: 'pabili', label: 'Pabili' }, { key: 'padala', label: 'Padala' },
@@ -99,9 +100,12 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
     return subscribeToNewOrders(supabase, () => void refresh());
   }, [refresh]);
 
-  const locked = isLockedOut(ledger, today);
-  const overdue = overdueBalance(ledger, today);
-  const owed = owedBalance(ledger);
+  // With a wallet the commission ledger settles the moment it is written, so
+  // the database's own answer is the only one that means anything.
+  const wallet = useWalletGate(riderId);
+  const locked = wallet.enabled ? wallet.overdue > 0 : isLockedOut(ledger, today);
+  const overdue = wallet.enabled ? wallet.overdue : overdueBalance(ledger, today);
+  const owed = wallet.enabled ? -Math.min(wallet.balance, 0) : owedBalance(ledger);
   const accepts = (t: string) => !profile?.services_accepted || profile.services_accepted.includes(t);
   // The pool is a queue, not a menu: transfers first (a released delivery may
   // already have paid-for goods waiting), then oldest request first. Only the
@@ -186,7 +190,7 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
         )}
 
         {tab === 'requests' && (
-          locked ? <LockCard overdue={overdue} onSettle={() => setTab('earnings')} />
+          locked ? <LockCard overdue={overdue} wallet={wallet.enabled} onSettle={() => setTab('earnings')} />
             : !online ? <OfflineCard onGoOnline={toggleOnline} busy={onlineBusy} />
             : pool.length === 0 ? <Empty icon="📭">No requests in the pool right now.</Empty>
             : <div className="space-y-5">
@@ -229,7 +233,7 @@ export function App({ riderId, riderName }: { riderId?: string; riderName?: stri
         )}
 
         {tab === 'earnings' && (
-          <EarningsView live={data.live} data={data} ledger={ledger} owed={owed} overdue={overdue} onSettle={submitSettlement} />
+          <EarningsView live={data.live} data={data} riderId={riderId} ledger={ledger} owed={owed} overdue={overdue} onSettle={submitSettlement} />
         )}
 
         {tab === 'settings' && (
@@ -1638,8 +1642,8 @@ function dayLabel(day: string, todayDay: string): string {
   });
 }
 
-function EarningsView({ live, data, ledger, owed, overdue, onSettle }:
-  { live: boolean; data: RiderData; ledger: LedgerEntry[]; owed: number; overdue: number;
+function EarningsView({ live, data, riderId, ledger, owed, overdue, onSettle }:
+  { live: boolean; data: RiderData; riderId?: string; ledger: LedgerEntry[]; owed: number; overdue: number;
     onSettle: (extra?: { reference?: string; receiptUrl?: string }) => Promise<void> }) {
   const history = useMemo(() => [...ledger].sort((a, b) => b.businessDay.localeCompare(a.businessDay)), [ledger]);
   const [payOpen, setPayOpen] = useState(false);
@@ -1649,6 +1653,8 @@ function EarningsView({ live, data, ledger, owed, overdue, onSettle }:
   return (
     <div className="space-y-4">
       <SectionTitle>Earnings &amp; settlement</SectionTitle>
+
+      <WalletPanel riderId={riderId} />
 
       <EarningsBoard data={data} />
 
@@ -2145,15 +2151,22 @@ function OnlineToggle({ online, busy, onToggle }: { online: boolean; busy: boole
   );
 }
 
-function LockCard({ overdue, onSettle, compact = false }: { overdue: number; onSettle: () => void; compact?: boolean }) {
+function LockCard({ overdue, onSettle, compact = false, wallet = false }: {
+  overdue: number; onSettle: () => void; compact?: boolean; wallet?: boolean;
+}) {
   return (
     <div className={`rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-black/5 ${compact ? '' : 'mt-2'}`}>
       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-2xl">🔒</div>
       <h2 className="text-lg font-bold">Account locked</h2>
-      <p className="mt-1 text-sm text-black/60">Settle yesterday's commission balance to accept new orders.</p>
+      <p className="mt-1 text-sm text-black/60">
+        {wallet
+          ? 'Your wallet ran short. Top it up to accept new orders.'
+          : "Settle yesterday's commission balance to accept new orders."}
+      </p>
       <p className="my-4 text-3xl font-black text-brand-charcoal">{peso(overdue)}</p>
       <button onClick={onSettle} className="w-full rounded-xl bg-brand-orange py-3 font-semibold text-white">
-        {compact ? 'Go to settlement' : `Settle ${peso(overdue)} to continue`}
+        {compact ? (wallet ? 'Go to wallet' : 'Go to settlement')
+                 : wallet ? `Top up ${peso(overdue)} to continue` : `Settle ${peso(overdue)} to continue`}
       </button>
     </div>
   );

@@ -7,6 +7,7 @@ import { Stores } from './Stores.tsx';
 import { RiderApplications } from './RiderApplications.tsx';
 import { LiveOrders } from './LiveOrders.tsx';
 import { Settlements } from './Settlements.tsx';
+import { Wallets } from './Wallets.tsx';
 import { ServiceAreas } from './ServiceAreas.tsx';
 import { UserMonitor } from './UserMonitor.tsx';
 import { Settings } from './Settings.tsx';
@@ -31,6 +32,7 @@ import { Audit } from './hq/Audit.tsx';
 import { Platform } from './hq/Platform.tsx';
 import { ViewAsBanner, useViewingAs } from './hq/ViewAs.tsx';
 import { Operators } from './hq/Operators.tsx';
+import { Payouts } from './hq/Payouts.tsx';
 import { Merchants } from './Merchants.tsx';
 import {
   IconDashboard, IconChart, IconStore, IconRiders, IconScooter, IconOrders, IconHistory, IconWallet,
@@ -48,6 +50,7 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'orders', label: 'Live orders', icon: IconOrders },
   { key: 'history', label: 'Order history', icon: IconHistory },
   { key: 'settlements', label: 'Settlements', icon: IconWallet },
+  { key: 'wallets', label: 'Rider wallets', icon: IconWallet },
   { key: 'royalty', label: 'Franchise royalty', icon: IconWallet },
   { key: 'merchants', label: 'Partner restaurants', icon: IconStore },
   { key: 'broadcast', label: 'Broadcast SMS', icon: IconMegaphone },
@@ -58,6 +61,7 @@ const NAV: { key: Tab; label: string; icon: () => React.ReactNode }[] = [
   { key: 'territories', label: 'Territories', icon: IconStore },
   { key: 'operators', label: 'Operator accounts', icon: IconUsers },
   { key: 'invoices', label: 'Invoices', icon: IconWallet },
+  { key: 'payouts', label: 'Operator payouts', icon: IconWallet },
   { key: 'scorecard', label: 'Scorecard', icon: IconChart },
   { key: 'hqAlerts', label: 'Alerts', icon: IconMegaphone },
   { key: 'hqDeliveries', label: 'Delivery overrides', icon: IconOrders },
@@ -72,6 +76,7 @@ const TITLES: Record<Tab, string> = {
   dashboard: 'Dashboard', analytics: 'Analytics', stores: 'Stores & menus',
   ridersActive: 'Riders', riders: 'Rider applications',
   orders: 'Live orders', history: 'Order history', settlements: 'Settlements',
+  wallets: 'Rider wallets', payouts: 'Operator payouts',
   royalty: 'Franchise royalty', merchants: 'Partner restaurants',
   broadcast: 'Broadcast SMS', areas: 'Service areas', users: 'Users & installs', staff: 'Staff', settings: 'Settings',
   territories: 'Territories', operators: 'Operator accounts', invoices: 'Invoices',
@@ -93,10 +98,11 @@ const TITLES: Record<Tab, string> = {
 const PATHS: Record<Tab, string> = {
   dashboard: '/', analytics: '/analytics', stores: '/stores',
   ridersActive: '/riders', riders: '/rider-applications', orders: '/orders',
-  history: '/history', settlements: '/settlements', royalty: '/royalty',
+  history: '/history', settlements: '/settlements', wallets: '/wallets', royalty: '/royalty',
   merchants: '/merchants', broadcast: '/broadcast', areas: '/areas',
   users: '/users', settings: '/settings', staff: '/staff',
   territories: '/hq/tenants', operators: '/hq/operators', invoices: '/hq/invoices',
+  payouts: '/hq/payouts',
   scorecard: '/hq/scorecard', hqAlerts: '/hq/alerts',
   hqDeliveries: '/hq/deliveries', integrations: '/hq/integrations',
   webhooks: '/hq/webhooks', announcements: '/hq/announcements',
@@ -233,6 +239,8 @@ export function App() {
               {tab === 'orders' && <LiveOrders />}
               {tab === 'history' && <OrderHistory />}
               {tab === 'settlements' && <Settlements />}
+              {tab === 'wallets' && <Wallets />}
+              {tab === 'payouts' && <Payouts />}
               {tab === 'areas' && <ServiceAreas />}
               {tab === 'users' && <UserMonitor />}
               {tab === 'broadcast' && <Broadcast />}

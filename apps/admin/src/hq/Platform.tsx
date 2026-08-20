@@ -139,6 +139,61 @@ export function Platform() {
         </button>
       </Card>
 
+      <Card title="Rider wallets">
+        <p className="mb-4 max-w-2xl text-sm text-black/55">
+          With wallets on, a rider prepays and every delivery deducts its commission
+          the moment it is booked — so nobody settles cash at the end of the day, and
+          your royalty is collected before the city ever sees the money. What is left
+          of each commission becomes a daily payout you owe that city, on the
+          Operator payouts screen.
+        </p>
+        <p className="mb-4 max-w-2xl rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900 ring-1 ring-amber-200">
+          Turning this on moves every rider onto prepay. A rider whose wallet is
+          short at midnight cannot accept work the next day until they top up, so
+          tell them before you switch it.
+        </p>
+        <div className="flex items-center gap-3">
+          <Toggle on={settings.wallet_enabled}
+            onChange={(on) => void run(() => savePlatformSettings(supabase!, { wallet_enabled: on })
+              .then(() => { patch({ wallet_enabled: on }); }), on ? 'Wallets are on' : 'Wallets are off')} />
+          <span className="text-sm font-semibold">
+            {settings.wallet_enabled ? 'On — riders prepay' : 'Off — riders settle in cash'}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <Field label="Smallest top-up">
+            <input type="number" step="1" value={settings.wallet_min_topup}
+              onChange={(e) => patch({ wallet_min_topup: Number(e.target.value) })}
+              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+          </Field>
+          <Field label="Largest top-up">
+            <input type="number" step="1" value={settings.wallet_max_topup}
+              onChange={(e) => patch({ wallet_max_topup: Number(e.target.value) })}
+              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+          </Field>
+          <Field label="Warn below" hint="The rider app nudges them to top up.">
+            <input type="number" step="1" value={settings.wallet_low_balance}
+              onChange={(e) => patch({ wallet_low_balance: Number(e.target.value) })}
+              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+          </Field>
+          <Field label="Credit limit" hint="How far under they may go overnight. Zero is strict prepay.">
+            <input type="number" step="1" value={settings.wallet_credit_limit}
+              onChange={(e) => patch({ wallet_credit_limit: Number(e.target.value) })}
+              className="mt-1 w-full rounded-lg border border-black/10 px-3 py-2 text-sm" />
+          </Field>
+        </div>
+        <button disabled={busy}
+          onClick={() => void run(() => savePlatformSettings(supabase!, {
+            wallet_min_topup: settings.wallet_min_topup,
+            wallet_max_topup: settings.wallet_max_topup,
+            wallet_low_balance: settings.wallet_low_balance,
+            wallet_credit_limit: settings.wallet_credit_limit,
+          }), 'Saved')}
+          className="mt-4 rounded-xl bg-brand-orange px-3 py-2 text-sm font-semibold text-white disabled:opacity-50">
+          Save
+        </button>
+      </Card>
+
       <Card title="Feature flags">
         {flags.length === 0 ? <p className="text-sm text-black/50">No flags defined.</p> : (
           <div className="-mx-5 overflow-x-auto px-5">

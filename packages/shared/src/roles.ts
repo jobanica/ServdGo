@@ -17,10 +17,10 @@ export type ConsoleRole = StaffRole | 'franchisor';
 
 export type AdminSection =
   | 'dashboard' | 'analytics' | 'stores' | 'ridersActive' | 'riders'
-  | 'orders' | 'history' | 'settlements' | 'royalty' | 'merchants' | 'broadcast'
+  | 'orders' | 'history' | 'settlements' | 'wallets' | 'royalty' | 'merchants' | 'broadcast'
   | 'areas' | 'users' | 'settings' | 'staff' | 'territories' | 'invoices' | 'scorecard' | 'hqAlerts'
   | 'hqDeliveries' | 'integrations' | 'webhooks' | 'announcements' | 'audit' | 'platform'
-  | 'operators';
+  | 'operators' | 'payouts';
 
 export const STAFF_ROLES: StaffRole[] = ['admin', 'manager', 'dispatcher', 'support'];
 
@@ -33,8 +33,8 @@ export const ROLE_LABEL: Record<ConsoleRole, string> = {
 
 const ALL: AdminSection[] = [
   'dashboard', 'analytics', 'stores', 'ridersActive', 'riders',
-  'orders', 'history', 'settlements', 'royalty', 'merchants', 'broadcast', 'areas',
-  'users', 'settings', 'staff', 'territories', 'operators', 'invoices', 'scorecard',
+  'orders', 'history', 'settlements', 'wallets', 'royalty', 'merchants', 'broadcast', 'areas',
+  'users', 'settings', 'staff', 'territories', 'operators', 'invoices', 'payouts', 'scorecard',
   'hqAlerts', 'hqDeliveries', 'integrations', 'webhooks', 'announcements', 'audit', 'platform',
 ];
 
@@ -45,7 +45,7 @@ const ALL: AdminSection[] = [
  * them as the franchisor, so this list closes and the operator's opens.
  */
 const HQ_ONLY: AdminSection[] = [
-  'territories', 'operators', 'invoices', 'scorecard', 'hqAlerts', 'hqDeliveries',
+  'territories', 'operators', 'invoices', 'payouts', 'scorecard', 'hqAlerts', 'hqDeliveries',
   'integrations', 'webhooks', 'announcements', 'audit', 'platform',
 ];
 
@@ -53,7 +53,7 @@ const HQ_ONLY: AdminSection[] = [
  *  operator's; territories are the franchisor's. */
 const ACCESS: Record<ConsoleRole, AdminSection[]> = {
   admin: ALL.filter((s) => !HQ_ONLY.includes(s)),
-  manager: ['dashboard', 'analytics', 'stores', 'ridersActive', 'riders', 'orders', 'history', 'settlements', 'merchants', 'broadcast', 'areas', 'users'],
+  manager: ['dashboard', 'analytics', 'stores', 'ridersActive', 'riders', 'orders', 'history', 'settlements', 'wallets', 'merchants', 'broadcast', 'areas', 'users'],
   dispatcher: ['dashboard', 'ridersActive', 'riders', 'orders', 'history'],
   support: ['dashboard', 'orders', 'history', 'broadcast'],
   franchisor: [...HQ_ONLY],

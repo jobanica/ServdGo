@@ -27,3 +27,4 @@ export * from './merchants.ts';
 export * from './settings.ts';
 export * from './analytics.ts';
 export * from './platform.ts';
+export * from './wallet.ts';

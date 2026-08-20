@@ -30,6 +30,13 @@ export interface PlatformSettings {
   royalty_cycle: string;
   webhook_max_attempts: number;
   cod_float_limit: number | null;
+  /** When on, a delivery deducts its commission from the rider's wallet. */
+  wallet_enabled: boolean;
+  wallet_min_topup: number;
+  wallet_max_topup: number;
+  wallet_low_balance: number;
+  /** How far below zero a wallet may sit overnight before the rider is locked. */
+  wallet_credit_limit: number;
 }
 
 export interface FeatureFlag {
@@ -166,7 +173,7 @@ export async function listViewSessions(db: SupabaseClient): Promise<ViewSession[
 export async function getPlatformSettings(db: SupabaseClient): Promise<PlatformSettings> {
   const { data, error } = await db
     .from('platform_settings')
-    .select('min_rider_app_version, min_customer_app_version, support_email, support_mobile, maintenance_message, commission_rate_min, commission_rate_max, royalty_rate, royalty_cycle, webhook_max_attempts, cod_float_limit')
+    .select('min_rider_app_version, min_customer_app_version, support_email, support_mobile, maintenance_message, commission_rate_min, commission_rate_max, royalty_rate, royalty_cycle, webhook_max_attempts, cod_float_limit, wallet_enabled, wallet_min_topup, wallet_max_topup, wallet_low_balance, wallet_credit_limit')
     .eq('id', true)
     .single();
   if (error) throw error;
