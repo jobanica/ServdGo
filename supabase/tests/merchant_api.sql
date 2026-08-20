@@ -62,6 +62,55 @@ select pg_temp.check('and a restaurant in another city to that one',
   (select territory_id from merchants where slug = 'davao-grill'),
   '22222222-2222-2222-2222-222222222222'::uuid);
 
+-- A restaurant whose pin lands nowhere cannot be given a key, and the refusal
+-- has to say why — this is the first thing anybody hits on a fresh install,
+-- where the seeded city has no boundary at all.
+set local role service_role;
+insert into merchants (id, name, slug, pickup_lat, pickup_lng, pickup_address, contact_number)
+values ('d0000000-0000-0000-0000-00000000000f', 'Nowhere Cafe', 'nowhere-cafe',
+        0.5, 0.5, 'In the sea', '09170000009');
+select pg_temp.check('a pin outside every city gets no territory',
+  (select territory_id from merchants where slug = 'nowhere-cafe'), null::uuid);
+
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000001', true);
+do $$
+declare msg text;
+begin
+  begin
+    perform create_merchant_api_key('d0000000-0000-0000-0000-00000000000f');
+    raise exception 'FAIL a key was minted for a restaurant in no city';
+  exception when check_violation then
+    get stacked diagnostics msg = message_text;
+    if msg not like '%not inside any live city%' then
+      raise exception 'FAIL the refusal did not say why: %', msg;
+    end if;
+    if msg not like '%Nowhere Cafe%' then
+      raise exception 'FAIL the refusal did not name the restaurant: %', msg;
+    end if;
+  end;
+end $$;
+
+-- Moving the boundary to cover it is the fix, and re-deriving picks it up.
+set local role service_role;
+update territories set service_center_lat = 0.5, service_center_lng = 0.5, service_radius_km = 5
+ where slug = 'davao';
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000002', true);
+select pg_temp.check('re-deriving lands it in the city that now covers it',
+  refresh_merchant_territory('d0000000-0000-0000-0000-00000000000f'),
+  '22222222-2222-2222-2222-222222222222'::uuid);
+select pg_temp.check('and a key can be minted now',
+  left(create_merchant_api_key('d0000000-0000-0000-0000-00000000000f'), 4), 'sgo_');
+
+set local role service_role;
+update territories set service_center_lat = 7.1907, service_center_lng = 125.4553,
+                       service_radius_km = 20 where slug = 'davao';
+delete from merchants where slug = 'nowhere-cafe';
+reset role;
+
 -- ---------------------------------------------------------------------------
 -- 2. Keys: one per restaurant, stored only as a hash.
 -- ---------------------------------------------------------------------------

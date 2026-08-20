@@ -13,7 +13,10 @@ import {
   type Merchant, type MerchantApiKey, type WebhookDelivery,
 } from '@servdgo/supabase';
 import { errMessage } from '@servdgo/shared';
-import { generatePassword, keyUsage, type KeyUsage } from '@servdgo/supabase';
+import {
+  generatePassword, keyUsage, territoryForPoint, refreshMerchantTerritory,
+  listTerritories, type KeyUsage, type Territory,
+} from '@servdgo/supabase';
 import { supabase, isSupabaseConfigured } from './lib/supabase.ts';
 import { Card, Muted, ErrorNote, Th, Td } from './ui.tsx';
 import { MapPicker, type MapValue } from './MapPicker.tsx';
@@ -66,6 +69,10 @@ export function Merchants() {
     contactName: '', contactNumber: '', webhookUrl: '', webhookSecret: '',
   });
   const [allKeys, setAllKeys] = useState<KeyUsage[]>([]);
+  const [cities, setCities] = useState<Territory[]>([]);
+  // Which city the pin currently falls in — the answer the operator needs
+  // *before* saving, since it is what decides whether a key can ever be minted.
+  const [pinCity, setPinCity] = useState<string | null | undefined>(undefined);
   const [slugTouched, setSlugTouched] = useState(false);
   const [fillingAddress, setFillingAddress] = useState(false);
 
@@ -79,8 +86,10 @@ export function Merchants() {
   const load = useCallback(async () => {
     if (!supabase || !isSupabaseConfigured) return;
     try {
-      const [ms, ks] = await Promise.all([listMerchants(supabase), keyUsage(supabase)]);
-      setRows(ms); setAllKeys(ks);
+      const [ms, ks, ts] = await Promise.all([
+        listMerchants(supabase), keyUsage(supabase), listTerritories(supabase),
+      ]);
+      setRows(ms); setAllKeys(ks); setCities(ts);
     } catch (e) { setError(errMessage(e)); }
   }, []);
   useEffect(() => { void load(); }, [load]);
@@ -106,6 +115,20 @@ export function Merchants() {
     catch (e) { setError(errMessage(e)); }
     finally { setBusy(false); }
   }
+
+  // Ask the database which city the pin lands in. Doing it here rather than
+  // comparing circles in the browser means the answer is the same one that will
+  // be used when the row is written.
+  useEffect(() => {
+    if (!supabase || !pin) { setPinCity(undefined); return; }
+    let alive = true;
+    const t = setTimeout(() => {
+      void territoryForPoint(supabase!, pin.lat, pin.lng)
+        .then((id) => { if (alive) setPinCity(id); })
+        .catch(() => { if (alive) setPinCity(undefined); });
+    }, 350);
+    return () => { alive = false; clearTimeout(t); };
+  }, [pin?.lat, pin?.lng]);
 
   /**
    * Mint a key for a restaurant and leave it on screen.
@@ -170,6 +193,19 @@ export function Merchants() {
               <MapPicker value={pin} onChange={(v) => {
                 setDraft((d) => ({ ...d, pickupLat: String(v.lat), pickupLng: String(v.lng) }));
               }} height={260} />
+              {pin && pinCity && (
+                <p className="mt-2 rounded-lg bg-brand-orange/10 px-3 py-2 text-xs text-brand-orange">
+                  This pin is in <b>{cities.find((c) => c.id === pinCity)?.name ?? 'a city you run'}</b> —
+                  its riders will see the job.
+                </p>
+              )}
+              {pin && pinCity === null && (
+                <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
+                  This pin is not inside any live city with a boundary drawn. The restaurant can be
+                  added, but it cannot be given an API key until a city covers it — the franchisor
+                  draws boundaries under <b>Territories → the city → Territory</b>.
+                </p>
+              )}
             </Field>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -287,13 +323,21 @@ export function Merchants() {
                     </Td>
                     <Td>{m.pickup_address ?? <span className="text-black/40">not pinned</span>}</Td>
                     <Td>
-                      {activeKeys(m.id) > 0
-                        ? <span className="text-xs">{activeKeys(m.id)} active</span>
-                        : (
+                      {activeKeys(m.id) > 0 ? <span className="text-xs">{activeKeys(m.id)} active</span>
+                        : m.territory_id ? (
                           <button disabled={busy} onClick={() => void mintFor(m.id)}
                             className="rounded-lg bg-brand-orange px-2.5 py-1 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-50">
                             Mint a key
                           </button>
+                        ) : (
+                          <div>
+                            <span className="block text-xs text-red-700">in no city</span>
+                            <button disabled={busy}
+                              onClick={() => void run(() => refreshMerchantTerritory(supabase!, m.id))}
+                              className="mt-1 rounded-lg px-2 py-0.5 text-[11px] font-semibold ring-1 ring-black/10 hover:bg-black/5 disabled:opacity-50">
+                              Re-check the pin
+                            </button>
+                          </div>
                         )}
                     </Td>
                     <Td>{m.webhook_url

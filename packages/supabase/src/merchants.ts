@@ -153,3 +153,18 @@ export async function listWebhookDeliveries(
   if (error) throw error;
   return (data ?? []) as WebhookDelivery[];
 }
+
+/**
+ * Re-derive a restaurant's city from its pin.
+ *
+ * The city is stamped when the restaurant is created, so one added before its
+ * city had a boundary keeps a null territory until somebody asks again. This is
+ * that ask.
+ */
+export async function refreshMerchantTerritory(
+  db: SupabaseClient, merchantId: string,
+): Promise<string> {
+  const { data, error } = await db.rpc('refresh_merchant_territory', { p_merchant: merchantId });
+  if (error) throw error;
+  return data as string;
+}
