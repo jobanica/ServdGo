@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 import './index.css';
 import { App } from './App.tsx';
+import { PublicTrack } from './PublicTrack.tsx';
 import { AuthProvider } from './auth/AuthContext.tsx';
 import { AuthGate } from './auth/AuthGate.tsx';
 import { recordAppInstall, isInstalledApp } from '@servdgo/supabase';
@@ -47,12 +48,22 @@ const updateSW = registerSW({
   },
 });
 
+// A tracking link belongs to somebody with no account, so it renders before the
+// auth gate — signing in to watch a delivery you already paid for would be
+// absurd, and the token is the whole credential.
+const trackToken = new URLSearchParams(window.location.search).get('t');
+const isTrackingLink = trackToken && window.location.pathname.startsWith('/track');
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <AuthGate>
-        <App />
-      </AuthGate>
-    </AuthProvider>
+    {isTrackingLink ? (
+      <PublicTrack token={trackToken} />
+    ) : (
+      <AuthProvider>
+        <AuthGate>
+          <App />
+        </AuthGate>
+      </AuthProvider>
+    )}
   </StrictMode>,
 );

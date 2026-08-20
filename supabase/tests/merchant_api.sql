@@ -483,4 +483,9 @@ begin
   end;
 end $$;
 
+select pg_temp.check('a partner is handed the finished tracking link, not a token',
+  (merchant_order_view((select id from orders where merchant_reference = 'SERVD-1001')) ->> 'trackingUrl')
+    like 'https://%/track?t=%', true);
+select pg_temp.check('and no link at all without a token', tracking_link(null), null::text);
+
 rollback;
